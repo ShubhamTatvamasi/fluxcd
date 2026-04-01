@@ -1,5 +1,11 @@
 # fluxcd
 
+https://fluxcd.io/flux/
+
+Install Flux cli tool:
+```bash
+brew install fluxcd/tap/flux
+```
 
 Install Flux Operator:
 ```bash
