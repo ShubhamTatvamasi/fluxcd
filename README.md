@@ -24,7 +24,7 @@ flux bootstrap github \
   --path=clusters/shubham \
   --personal
 ```
-> remove `--personal` flag if deploying for org
+> remove `--personal` flag if deploying for org,
 > add `--hostname` if using for GitHub Enterprise
 
 ---
