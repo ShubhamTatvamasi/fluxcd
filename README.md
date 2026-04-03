@@ -19,7 +19,7 @@ flux bootstrap github \
   --path=clusters/my-cluster \
   --personal
 ```
-
+> remove `--personal` flag if deploying for org
 
 ---
 
