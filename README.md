@@ -7,6 +7,11 @@ Install Flux cli tool:
 brew install fluxcd/tap/flux
 ```
 
+Check prerequisites before installing flux:
+```bash
+flux check --pre
+```
+
 Deploy Flux on a cluster: 
 ```bash
 export GITHUB_TOKEN=<gh-token>
