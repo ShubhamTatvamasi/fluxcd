@@ -16,7 +16,7 @@ flux bootstrap github \
   --owner=ShubhamTatvamasi \
   --repository=fluxcd \
   --branch=main \
-  --path=clusters/my-cluster \
+  --path=clusters/shubham \
   --personal
 ```
 > remove `--personal` flag if deploying for org
