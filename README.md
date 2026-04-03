@@ -12,7 +12,7 @@ Check prerequisites before installing flux:
 flux check --pre
 ```
 
-Setup Fine-grained personal access tokens:
+Setup `Fine-grained` personal access tokens:
 ```
 export GITHUB_TOKEN=<gh-token>
 ```
@@ -30,6 +30,11 @@ flux bootstrap github \
 ```
 > remove `--personal` flag if deploying for org,
 > add `--hostname` if using for GitHub Enterprise
+
+Check flux installation after bootstrap:
+```bash
+flux check
+```
 
 ---
 
