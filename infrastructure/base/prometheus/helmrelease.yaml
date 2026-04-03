@@ -15,4 +15,4 @@ spec:
   values:
     server:
       image:
-        tag: ""
+        tag: "v3.11.0"
