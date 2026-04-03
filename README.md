@@ -2,7 +2,7 @@
 
 https://fluxcd.io/flux/
 
-Install Flux cli tool:
+Install `flux` cli tool:
 ```bash
 brew install fluxcd/tap/flux
 ```
