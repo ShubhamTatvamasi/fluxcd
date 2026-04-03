@@ -5,7 +5,7 @@ metadata:
   name: prometheus
   namespace: prometheus
 spec:
-  interval: 1m
+  interval: 10m
   chartRef:
     kind: HelmChart
     name: prometheus
