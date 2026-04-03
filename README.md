@@ -9,7 +9,15 @@ brew install fluxcd/tap/flux
 
 Deploy Flux on a cluster: 
 ```bash
-flux bootstrap
+export GITHUB_TOKEN=<gh-token>
+
+flux bootstrap github \
+  --token-auth \
+  --owner=ShubhamTatvamasi \
+  --repository=fluxcd \
+  --branch=main \
+  --path=clusters/my-cluster \
+  --personal
 ```
 
 
