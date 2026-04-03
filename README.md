@@ -24,4 +24,6 @@ helm install flux-operator \
   --namespace flux-system \
   --create-namespace
 ```
+> This helm chart is maintained and released by the fluxcd-community on a best effort basis.
+
 
