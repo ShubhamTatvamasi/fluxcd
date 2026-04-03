@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
 - namespace.yaml
 - pod.yaml
-- service.yaml
+# - service.yaml
