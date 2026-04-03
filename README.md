@@ -16,6 +16,7 @@ Setup Fine-grained personal access tokens:
 ```
 export GITHUB_TOKEN=<gh-token>
 ```
+> Read and write `Contents`
 
 Deploy Flux on a cluster: 
 ```bash
