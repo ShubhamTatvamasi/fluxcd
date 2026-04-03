@@ -15,7 +15,7 @@ flux bootstrap
 
 ---
 
-# Helm method
+# Helm Setup - fluxcd-community
 
 Install Flux Operator:
 ```bash
