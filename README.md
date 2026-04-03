@@ -12,7 +12,7 @@ Check prerequisites before installing flux:
 flux check --pre
 ```
 
-Setup Fine-grained personal access tokens:
+Setup `Fine-grained` personal access tokens:
 ```
 export GITHUB_TOKEN=<gh-token>
 ```
