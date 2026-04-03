@@ -31,6 +31,11 @@ flux bootstrap github \
 > remove `--personal` flag if deploying for org,
 > add `--hostname` if using for GitHub Enterprise
 
+Check flux installation after bootstrap:
+```bash
+flux check
+```
+
 ---
 
 ### Helm Setup
