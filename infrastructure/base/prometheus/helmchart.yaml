@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 10m
   chart: prometheus
-  version: "28.x"
+  version: "28.15.x"
   sourceRef:
     name: prometheus
     kind: HelmRepository
