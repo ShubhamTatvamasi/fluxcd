@@ -36,6 +36,22 @@ Check flux installation after bootstrap:
 flux check
 ```
 
+Get list of deployed kustomizations:
+```bash
+kubectl get kustomization -A
+```
+```
+NAMESPACE     NAME             AGE     READY   STATUS
+flux-system   apps             7m19s   True    Applied revision: main@sha1:d641dd40b288515663bc1fb682f4780d7372849a
+flux-system   flux-system      7m42s   True    Applied revision: main@sha1:d641dd40b288515663bc1fb682f4780d7372849a
+flux-system   infrastructure   7m19s   True    Applied revision: main@sha1:d641dd40b288515663bc1fb682f4780d7372849a
+```
+
+flux reconcile if you don't want to wait: 
+```bash
+flux reconcile kustomization infrastructure
+```
+
 ---
 
 ### Helm Setup
