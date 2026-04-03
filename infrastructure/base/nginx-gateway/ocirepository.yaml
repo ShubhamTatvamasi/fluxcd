@@ -7,3 +7,8 @@ metadata:
 spec:
   interval: 5m
   url: oci://ghcr.io/nginx/charts/nginx-gateway-fabric
+  layerSelector:
+    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
+    operation: copy
+  ref:
+    semver: "^2.5.0"
