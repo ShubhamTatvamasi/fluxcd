@@ -25,6 +25,7 @@ flux bootstrap github \
   --personal
 ```
 > remove `--personal` flag if deploying for org
+> add `--hostname` if using for GitHub Enterprise
 
 ---
 
