@@ -12,10 +12,13 @@ Check prerequisites before installing flux:
 flux check --pre
 ```
 
+Setup Fine-grained personal access tokens:
+```
+export GITHUB_TOKEN=<gh-token>
+```
+
 Deploy Flux on a cluster: 
 ```bash
-export GITHUB_TOKEN=<gh-token>
-
 flux bootstrap github \
   --token-auth \
   --owner=ShubhamTatvamasi \
