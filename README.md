@@ -13,6 +13,10 @@ flux bootstrap
 ```
 
 
+---
+
+# Helm method
+
 Install Flux Operator:
 ```bash
 helm install flux-operator \
