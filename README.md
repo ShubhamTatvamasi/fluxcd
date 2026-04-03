@@ -7,6 +7,12 @@ Install Flux cli tool:
 brew install fluxcd/tap/flux
 ```
 
+Deploy Flux on a cluster: 
+```bash
+flux bootstrap
+```
+
+
 Install Flux Operator:
 ```bash
 helm install flux-operator \
