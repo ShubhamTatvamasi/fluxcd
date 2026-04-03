@@ -5,14 +5,11 @@ metadata:
   name: prometheus
   namespace: prometheus
 spec:
-  interval: 5m
-  chart:
-    spec:
-      chart: prometheus
-      version: "28.x"
-      sourceRef:
-        kind: HelmRepository
-        name: prometheus
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: prometheus
+    namespace: prometheus
   values:
     server:
       image:
