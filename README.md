@@ -68,4 +68,18 @@ helm install flux-operator \
   --create-namespace
 ```
 
+Setup `Fine-grained` personal access tokens:
+```
+export GITHUB_TOKEN=<gh-token>
+```
+> Read and write `Contents`
+
+Create git repo secret fof flux:
+```bash
+flux create secret git flux-system \
+  --url=https://github.com/ShubhamTatvamasi/fluxcd.git \
+  --username=git \
+  --password=$GITHUB_TOKEN
+```
+
 
