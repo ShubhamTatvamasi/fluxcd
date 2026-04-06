@@ -51,7 +51,15 @@ flux-system   infrastructure   7m19s   True    Applied revision: main@sha1:d641d
 
 flux reconcile if you don't want to wait: 
 ```bash
-flux reconcile kustomization infrastructure
+flux reconcile \
+  kustomization infrastructure
+```
+
+reconcile helm chart:
+```bash
+flux -n prometheus \
+  reconcile \
+  source chart prometheus
 ```
 
 ---
