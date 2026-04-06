@@ -64,7 +64,7 @@ flux -n prometheus \
 
 ---
 
-### Helm Setup
+## Flux Operator with Flux UI
 
 https://github.com/controlplaneio-fluxcd/flux-operator
 
