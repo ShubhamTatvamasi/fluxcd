@@ -129,3 +129,10 @@ spec:
 EOF
 ```
 
+http://localhost:9080/
+
+Access the Flux Web UI:
+```bash
+kubectl -n flux-system port-forward svc/flux-operator 9080:9080
+```
+
