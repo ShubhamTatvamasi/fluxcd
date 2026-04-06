@@ -2,6 +2,8 @@
 
 https://fluxcd.io/flux/
 
+https://registry.terraform.io/providers/fluxcd/flux/latest/docs
+
 Install `flux` cli tool:
 ```bash
 brew install fluxcd/tap/flux
