@@ -51,7 +51,8 @@ flux-system   infrastructure   7m19s   True    Applied revision: main@sha1:d641d
 
 flux reconcile if you don't want to wait: 
 ```bash
-flux reconcile \
+flux -n flux-system \
+  reconcile \
   kustomization infrastructure
 ```
 
