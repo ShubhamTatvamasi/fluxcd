@@ -151,3 +151,13 @@ Access the Flux Web UI:
 kubectl -n flux-system port-forward svc/flux-operator 9080:9080
 ```
 
+
+---
+
+
+Delete Airflow:
+```bash
+kubectl -n flux-system delete \
+  kustomization/airflow \
+  kustomization/postgres
+```
