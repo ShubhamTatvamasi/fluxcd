@@ -11,3 +11,10 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
+  wait: true
+  timeout: 10m
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: StatefulSet
+      name: postgres
+      namespace: airflow
