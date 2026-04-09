@@ -23,6 +23,7 @@ spec:
   values:
     airflowVersion: "3.2.0"
     defaultAirflowTag: "3.2.0"
+    executor: "CeleryExecutor"
     postgresql:
       enabled: false
     apiServer:
@@ -30,5 +31,10 @@ spec:
         type: LoadBalancer
     data:
       metadataConnection:
-        host: "postgres"
-    executor: "CeleryExecutor"
+        user: postgres
+        pass: postgres
+        protocol: postgresql
+        host: postgres
+        port: 5432
+        db: postgres
+        sslmode: disable
