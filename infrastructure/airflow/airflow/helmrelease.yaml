@@ -30,5 +30,5 @@ spec:
         type: LoadBalancer
     data:
       metadataConnection:
-        host: postgres
+        host: "postgres"
     executor: "CeleryExecutor"
