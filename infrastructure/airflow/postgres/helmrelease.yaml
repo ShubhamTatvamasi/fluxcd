@@ -10,3 +10,6 @@ spec:
     kind: OCIRepository
     name: postgres
     namespace: airflow
+  values:
+    auth:
+      password: "postgres"
