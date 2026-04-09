@@ -1,0 +1,24 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: airflow
+  namespace: airflow
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: airflow
+    namespace: airflow
+  values:
+    airflowVersion: "3.2.0"
+    defaultAirflowTag: "3.2.0"
+    postgresql:
+      enabled: false
+    apiServer:
+      service:
+        type: LoadBalancer
+    data:
+      metadataConnection:
+        host: postgres
+    executor: "CeleryExecutor"
