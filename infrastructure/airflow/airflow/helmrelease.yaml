@@ -19,12 +19,10 @@ spec:
     apiServer:
       service:
         type: LoadBalancer
+    migrateDatabaseJob:
+      useHelmHooks: false
+    createUserJob:
+      useHelmHooks: false
     data:
       metadataConnection:
-        user: postgres
-        pass: postgres
-        protocol: postgresql
         host: postgres
-        port: 5432
-        db: postgres
-        sslmode: disable
