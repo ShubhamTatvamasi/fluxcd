@@ -10,6 +10,16 @@ spec:
     kind: HelmChart
     name: airflow
     namespace: airflow
+  install:
+    timeout: 10m
+    remediation:
+      retries: 3
+    disableWait: false
+  upgrade:
+    timeout: 10m
+    remediation:
+      retries: 3
+    disableWait: false
   values:
     airflowVersion: "3.2.0"
     defaultAirflowTag: "3.2.0"
