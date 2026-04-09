@@ -49,6 +49,13 @@ flux-system   flux-system      7m42s   True    Applied revision: main@sha1:d641d
 flux-system   infrastructure   7m19s   True    Applied revision: main@sha1:d641dd40b288515663bc1fb682f4780d7372849a
 ```
 
+reconcile flux-system kustomization:
+```bash
+flux -n flux-system \
+  reconcile \
+  kustomization flux-system
+```
+
 flux reconcile if you don't want to wait: 
 ```bash
 flux -n flux-system \
