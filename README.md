@@ -70,6 +70,11 @@ flux -n prometheus \
   source chart prometheus
 ```
 
+Check Flux git repos:
+```bash
+kubectl get gitrepositories -A
+```
+
 Fetch the latest code from git repo:
 ```bash
 flux -n flux-system \
