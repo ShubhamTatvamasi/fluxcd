@@ -3,7 +3,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: airflow
-  namespace: airflow
+  namespace: airflow-base
 spec:
   interval: 10m
   chart: airflow
@@ -11,3 +11,4 @@ spec:
   sourceRef:
     name: airflow
     kind: HelmRepository
+    namespace: airflow-base
