@@ -11,19 +11,17 @@ spec:
       dependsOn: ""
       wait: ""
       timeout: ""
-      workers_replicas: ""
     - service: "postgres"
       path: "./infrastructure/airflow/postgres"
       dependsOn: "airflow-base"
       wait: "true"
       timeout: "10m"
-      workers_replicas: ""
     - service: "airflow"
       path: "./infrastructure/airflow/airflow"
       dependsOn: "postgres"
       wait: ""
       timeout: ""
-      workers_replicas: "2"
+      workers_celery_replicas: "2"
   resourcesTemplate: |
     ---
     apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -42,8 +40,8 @@ spec:
       postBuild:
         substitute:
           namespace: airflow-two
-          << if inputs.workers_replicas >>
-          workers_replicas: << inputs.workers_replicas >>
+          << if inputs.workers_celery_replicas >>
+          workers_celery_replicas: << inputs.workers_celery_replicas >>
           << end >>
       << if inputs.dependsOn >>
       dependsOn:
