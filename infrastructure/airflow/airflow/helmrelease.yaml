@@ -3,13 +3,13 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: airflow
-  namespace: airflow
+  namespace: ${namespace}
 spec:
   interval: 10m
   chartRef:
     kind: HelmChart
     name: airflow
-    namespace: airflow-base
+    namespace: ${namespace}
   install:
     timeout: 10m
     remediation:
