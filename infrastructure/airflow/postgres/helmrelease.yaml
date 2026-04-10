@@ -3,13 +3,13 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: postgres
-  namespace: airflow
+  namespace: ${namespace}
 spec:
   interval: 10m
   chartRef:
     kind: OCIRepository
     name: postgres
-    namespace: airflow-base
+    namespace: ${namespace}
   install:
     timeout: 10m
     remediation:

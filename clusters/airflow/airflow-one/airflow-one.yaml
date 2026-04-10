@@ -1,0 +1,49 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: airflow-one
+  namespace: airflow-one
+spec:
+  inputs:
+    - service: "airflow-base"
+      path: "./infrastructure/airflow/base"
+      dependsOn: ""
+      wait: ""
+      timeout: ""
+    - service: "postgres"
+      path: "./infrastructure/airflow/postgres"
+      dependsOn: "airflow-base"
+      wait: "true"
+      timeout: "10m"
+    - service: "airflow"
+      path: "./infrastructure/airflow/airflow"
+      dependsOn: "postgres"
+      wait: ""
+      timeout: ""
+  resourcesTemplate: |
+    ---
+    apiVersion: kustomize.toolkit.fluxcd.io/v1
+    kind: Kustomization
+    metadata:
+      name: << inputs.service >>
+      namespace: airflow-one
+    spec:
+      interval: 10m0s
+      path: << inputs.path >>
+      prune: true
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+      postBuild:
+        substitute:
+          namespace: airflow-one
+      << if inputs.dependsOn >>
+      dependsOn:
+        - name: << inputs.dependsOn >>
+      << end >>
+      << if inputs.wait >>
+      wait: << inputs.wait >>
+      timeout: << inputs.timeout >>
+      << end >>
