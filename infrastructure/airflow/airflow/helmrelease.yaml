@@ -34,7 +34,8 @@ spec:
     createUserJob:
       useHelmHooks: false
     workers:
-      replicas: ${workers_replicas}
+      celery:
+        replicas: ${workers_celery_replicas}
     data:
       metadataConnection:
         host: postgres
