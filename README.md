@@ -38,6 +38,8 @@ Check flux installation after bootstrap:
 flux check
 ```
 
+---
+
 Get list of deployed kustomizations:
 ```bash
 kubectl get kustomization -A
@@ -56,12 +58,14 @@ flux -n flux-system \
   kustomization flux-system
 ```
 
-flux reconcile if you don't want to wait: 
+flux reconcile `infrastructure` if you have made any changes: 
 ```bash
 flux -n flux-system \
   reconcile \
   kustomization infrastructure
 ```
+
+---
 
 reconcile helm chart:
 ```bash
@@ -69,6 +73,8 @@ flux -n prometheus \
   reconcile \
   source chart prometheus
 ```
+
+---
 
 Check Flux git repos:
 ```bash
