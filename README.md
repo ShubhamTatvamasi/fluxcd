@@ -70,6 +70,13 @@ flux -n prometheus \
   source chart prometheus
 ```
 
+Fetch the latest code from git repo:
+```bash
+flux -n flux-system \
+  reconcile \
+  source git flux-system
+```
+
 ---
 
 ## Flux Operator with Flux UI
