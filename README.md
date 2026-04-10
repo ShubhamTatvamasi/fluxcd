@@ -188,5 +188,6 @@ Delete Airflow:
 ```bash
 kubectl -n flux-system delete \
   kustomization/airflow \
-  kustomization/postgres
+  kustomization/postgres \
+  kustomization/airflow-base
 ```
