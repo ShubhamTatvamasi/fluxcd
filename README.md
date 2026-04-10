@@ -38,6 +38,8 @@ Check flux installation after bootstrap:
 flux check
 ```
 
+---
+
 Get list of deployed kustomizations:
 ```bash
 kubectl get kustomization -A
@@ -56,18 +58,38 @@ flux -n flux-system \
   kustomization flux-system
 ```
 
-flux reconcile if you don't want to wait: 
+flux reconcile `infrastructure` if you have made any changes: 
 ```bash
 flux -n flux-system \
   reconcile \
   kustomization infrastructure
 ```
 
+---
+
 reconcile helm chart:
 ```bash
 flux -n prometheus \
   reconcile \
   source chart prometheus
+```
+
+---
+
+Check Flux git repos:
+```bash
+kubectl get gitrepositories -A
+```
+```
+NAMESPACE     NAME          URL                                              AGE   READY   STATUS
+flux-system   flux-system   https://github.com/ShubhamTatvamasi/fluxcd.git   10h   True    stored artifact for revision 'refs/heads/main@sha1:87f175aa442c111dfd7334166565a4af9512baa5'
+```
+
+Fetch the latest code from git repo:
+```bash
+flux -n flux-system \
+  reconcile \
+  source git flux-system
 ```
 
 ---
@@ -166,5 +188,6 @@ Delete Airflow:
 ```bash
 kubectl -n flux-system delete \
   kustomization/airflow \
-  kustomization/postgres
+  kustomization/postgres \
+  kustomization/airflow-base
 ```
