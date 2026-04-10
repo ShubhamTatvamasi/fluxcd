@@ -74,6 +74,10 @@ Check Flux git repos:
 ```bash
 kubectl get gitrepositories -A
 ```
+```
+NAMESPACE     NAME          URL                                              AGE   READY   STATUS
+flux-system   flux-system   https://github.com/ShubhamTatvamasi/fluxcd.git   10h   True    stored artifact for revision 'refs/heads/main@sha1:87f175aa442c111dfd7334166565a4af9512baa5'
+```
 
 Fetch the latest code from git repo:
 ```bash
