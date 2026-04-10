@@ -33,6 +33,8 @@ spec:
       useHelmHooks: false
     createUserJob:
       useHelmHooks: false
+    workers:
+      replicas: ${workers_replicas}
     data:
       metadataConnection:
         host: postgres
