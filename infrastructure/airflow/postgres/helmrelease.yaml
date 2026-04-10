@@ -9,7 +9,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: postgres
-    namespace: airflow
+    namespace: airflow-base
   install:
     timeout: 10m
     remediation:

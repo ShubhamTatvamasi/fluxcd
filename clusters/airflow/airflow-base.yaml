@@ -2,16 +2,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: postgres
+  name: airflow-base
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./infrastructure/airflow/postgres
+  path: ./infrastructure/airflow/base
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
-  wait: true
-  timeout: 10m
-  dependsOn:
-    - name: airflow-base

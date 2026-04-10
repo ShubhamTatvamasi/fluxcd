@@ -9,7 +9,7 @@ spec:
   chartRef:
     kind: HelmChart
     name: airflow
-    namespace: airflow
+    namespace: airflow-base
   install:
     timeout: 10m
     remediation:
