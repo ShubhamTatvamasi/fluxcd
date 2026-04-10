@@ -11,4 +11,3 @@ spec:
   sourceRef:
     name: airflow
     kind: HelmRepository
-    namespace: airflow-base
