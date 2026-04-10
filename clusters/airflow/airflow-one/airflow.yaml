@@ -21,6 +21,7 @@ spec:
       dependsOn: "postgres"
       wait: ""
       timeout: ""
+      workers_replicas: ""
   resourcesTemplate: |
     ---
     apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -39,6 +40,9 @@ spec:
       postBuild:
         substitute:
           namespace: airflow-one
+          << if inputs.workers_replicas >>
+          workers_replicas: << inputs.workers_replicas >>
+          << end >>
       << if inputs.dependsOn >>
       dependsOn:
         - name: << inputs.dependsOn >>
