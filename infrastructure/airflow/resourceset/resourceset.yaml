@@ -6,6 +6,8 @@ metadata:
   namespace: ${namespace}
 spec:
   inputs:
+    - service: "git-credentials"
+      path: "./infrastructure/git-credentials"
     - service: "helm"
       path: "./infrastructure/airflow/helm"
     - service: "postgres"
