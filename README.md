@@ -94,6 +94,13 @@ flux -n flux-system \
 
 ---
 
+Check all Resource Sets:
+```bash
+kubectl get resourcesets -A
+```
+
+---
+
 ## Flux Operator with Flux UI
 
 https://github.com/controlplaneio-fluxcd/flux-operator
