@@ -17,6 +17,6 @@ spec:
       namespace: airflow-three
       workers_replicas: "1"
       dags_git_sync_enabled: "true"
-      dags_git_repo: "https://github.com/ShubhamTatvamasi/fluxcd.git"
+      dags_git_repo: "https://github.com/ShubhamTatvamasi/airflow"
       dags_git_branch: "main"
       dags_git_subpath: "dags"
