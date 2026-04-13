@@ -2,7 +2,7 @@
 apiVersion: fluxcd.controlplane.io/v1
 kind: ResourceSet
 metadata:
-  name: ${namespace}
+  name: airflow
   namespace: ${namespace}
 spec:
   inputs:
