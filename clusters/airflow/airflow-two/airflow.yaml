@@ -24,32 +24,31 @@ spec:
       wait: ""
       timeout: ""
       workers_replicas: "2"
-  resourcesTemplate: |
-    ---
-    apiVersion: kustomize.toolkit.fluxcd.io/v1
-    kind: Kustomization
-    metadata:
-      name: << inputs.service >>
-      namespace: airflow-two
-    spec:
-      interval: 10m0s
-      path: << inputs.path >>
-      prune: true
-      sourceRef:
-        kind: GitRepository
-        name: flux-system
-        namespace: flux-system
-      postBuild:
-        substitute:
-          namespace: airflow-two
-          << if inputs.workers_replicas >>
-          workers_replicas: << inputs.workers_replicas >>
-          << end >>
-      << if inputs.dependsOn >>
-      dependsOn:
-        - name: << inputs.dependsOn >>
-      << end >>
-      << if inputs.wait >>
-      wait: << inputs.wait >>
-      timeout: << inputs.timeout >>
-      << end >>
+  resources:
+    - apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: << inputs.service >>
+        namespace: airflow-two
+      spec:
+        interval: 10m0s
+        path: << inputs.path >>
+        prune: true
+        sourceRef:
+          kind: GitRepository
+          name: flux-system
+          namespace: flux-system
+        postBuild:
+          substitute:
+            namespace: airflow-two
+            << if inputs.workers_replicas >>
+            workers_replicas: << inputs.workers_replicas >>
+            << end >>
+        << if inputs.dependsOn >>
+        dependsOn:
+          - name: << inputs.dependsOn >>
+        << end >>
+        << if inputs.wait >>
+        wait: << inputs.wait >>
+        timeout: << inputs.timeout >>
+        << end >>
