@@ -1,0 +1,43 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: ${namespace}
+  namespace: ${namespace}
+spec:
+  inputs:
+    - service: "helm"
+      path: "./infrastructure/airflow/helm"
+    - service: "postgres"
+      path: "./infrastructure/airflow/postgres"
+      dependsOn: "helm"
+    - service: "airflow"
+      path: "./infrastructure/airflow/airflow"
+      dependsOn: "postgres"
+      workers_replicas: "${workers_replicas}"
+  resourcesTemplate: |
+    apiVersion: kustomize.toolkit.fluxcd.io/v1
+    kind: Kustomization
+    metadata:
+      name: << inputs.service >>
+      namespace: ${namespace}
+    spec:
+      interval: 10m0s
+      path: << inputs.path >>
+      prune: true
+      wait: true
+      timeout: 10m
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+      postBuild:
+        substitute:
+          namespace: ${namespace}
+      <<- if index inputs "workers_replicas" >>
+          workers_replicas: "<< index inputs "workers_replicas" >>"
+      <<- end >>
+      <<- if index inputs "dependsOn" >>
+      dependsOn:
+        - name: << index inputs "dependsOn" >>
+      <<- end >>
