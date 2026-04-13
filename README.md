@@ -146,6 +146,7 @@ spec:
     ref: "refs/heads/main"
     path: "clusters/production"
     pullSecret: "flux-system"
+    interval: 10m
   distribution:
     version: "2.x"
     registry: "ghcr.io/fluxcd"
