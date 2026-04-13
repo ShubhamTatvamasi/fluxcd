@@ -37,7 +37,7 @@ spec:
       <<- if index inputs "workers_replicas" >>
           workers_replicas: "<< index inputs "workers_replicas" >>"
       <<- end >>
-      <<- if inputs.dependsOn >>
+      <<- if index inputs "dependsOn" >>
       dependsOn:
-        - name: << inputs.dependsOn >>
+        - name: << index inputs "dependsOn" >>
       <<- end >>
