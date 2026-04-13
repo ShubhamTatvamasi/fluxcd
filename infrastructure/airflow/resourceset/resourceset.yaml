@@ -17,6 +17,7 @@ spec:
       path: "./infrastructure/airflow/airflow"
       dependsOn: "postgres"
       workers_replicas: "${workers_replicas}"
+      dags_git_sync_enabled: "${dags_git_sync_enabled}"
       dags_git_repo: "${dags_git_repo}"
       dags_git_branch: "${dags_git_branch}"
       dags_git_subpath: "${dags_git_subpath}"
@@ -48,6 +49,10 @@ spec:
 
           <<- if index inputs "workers_replicas" >>
           workers_replicas: "<< index inputs "workers_replicas" >>"
+          <<- end >>
+
+          <<- if index inputs "dags_git_sync_enabled" >>
+          dags_git_sync_enabled: "<< index inputs "dags_git_sync_enabled" >>"
           <<- end >>
 
           <<- if index inputs "dags_git_repo" >>

@@ -40,7 +40,7 @@ spec:
         host: postgres
     dags:
       gitSync:
-        enabled: true
+        enabled: ${dags_git_sync_enabled}
         credentialsSecret: git-credentials
         repo: ${dags_git_repo}
         branch: ${dags_git_branch}
