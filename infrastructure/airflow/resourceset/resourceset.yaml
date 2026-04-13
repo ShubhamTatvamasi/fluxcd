@@ -17,6 +17,9 @@ spec:
       path: "./infrastructure/airflow/airflow"
       dependsOn: "postgres"
       workers_replicas: "${workers_replicas}"
+      dags_git_repo: "${dags_git_repo}"
+      dags_git_branch: "${dags_git_branch}"
+      dags_git_subpath: "${dags_git_subpath}"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
@@ -33,13 +36,28 @@ spec:
         kind: GitRepository
         name: flux-system
         namespace: flux-system
-      postBuild:
-        substitute:
-          namespace: ${namespace}
-      <<- if index inputs "workers_replicas" >>
-          workers_replicas: "<< index inputs "workers_replicas" >>"
-      <<- end >>
+
       <<- if index inputs "dependsOn" >>
       dependsOn:
         - name: << index inputs "dependsOn" >>
       <<- end >>
+
+      postBuild:
+        substitute:
+          namespace: ${namespace}
+
+          <<- if index inputs "workers_replicas" >>
+          workers_replicas: "<< index inputs "workers_replicas" >>"
+          <<- end >>
+
+          <<- if index inputs "dags_git_repo" >>
+          dags_git_repo: "<< index inputs "dags_git_repo" >>"
+          <<- end >>
+
+          <<- if index inputs "dags_git_branch" >>
+          dags_git_branch: "<< index inputs "dags_git_branch" >>"
+          <<- end >>
+
+          <<- if index inputs "dags_git_subpath" >>
+          dags_git_subpath: "<< index inputs "dags_git_subpath" >>"
+          <<- end >>
