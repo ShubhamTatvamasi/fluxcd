@@ -34,8 +34,8 @@ spec:
       postBuild:
         substitute:
           namespace: airflow-two
-      <<- if inputs.workers_replicas >>
-          workers_replicas: "<< inputs.workers_replicas >>"
+      <<- if index inputs "workers_replicas" >>
+          workers_replicas: "<< index inputs "workers_replicas" >>"
       <<- end >>
       <<- if inputs.dependsOn >>
       dependsOn:
