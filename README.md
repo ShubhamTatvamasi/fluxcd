@@ -1,7 +1,6 @@
 # fluxcd
 
-https://fluxcd.io/flux/
-
+https://fluxcd.io/flux/ \
 https://registry.terraform.io/providers/fluxcd/flux/latest/docs
 
 Install `flux` cli tool:
@@ -103,8 +102,7 @@ kubectl get resourcesets -A
 
 ## Flux Operator with Flux UI
 
-https://github.com/controlplaneio-fluxcd/flux-operator
-
+https://github.com/controlplaneio-fluxcd/flux-operator \
 https://artifacthub.io/packages/helm/flux-operator/flux-operator
 
 Install Flux Operator:
