@@ -8,9 +8,9 @@ spec:
   inputs:
     - service: "airflow-base"
       path: "./infrastructure/airflow/base"
-      dependsOn: ""
-      wait: ""
-      timeout: ""
+      dependsOn: ~
+      wait: ~
+      timeout: ~
       workers_replicas: ~
     - service: "postgres"
       path: "./infrastructure/airflow/postgres"
@@ -21,8 +21,8 @@ spec:
     - service: "airflow"
       path: "./infrastructure/airflow/airflow"
       dependsOn: "postgres"
-      wait: ""
-      timeout: ""
+      wait: ~
+      timeout: ~
       workers_replicas: ~
   resources:
     - apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -41,14 +41,8 @@ spec:
         postBuild:
           substitute:
             namespace: airflow-one
-            << if inputs.workers_replicas >>
             workers_replicas: << inputs.workers_replicas >>
-            << end >>
-        << if inputs.dependsOn >>
         dependsOn:
           - name: << inputs.dependsOn >>
-        << end >>
-        << if inputs.wait >>
         wait: << inputs.wait >>
         timeout: << inputs.timeout >>
-        << end >>
