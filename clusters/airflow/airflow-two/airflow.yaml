@@ -37,7 +37,7 @@ spec:
       postBuild:
         substitute:
           namespace: airflow-two
-          workers_replicas: << inputs.workers_replicas >>
+          workers_replicas: "<< inputs.workers_replicas >>"
       <<- if inputs.dependsOn >>
       dependsOn:
         - name: << inputs.dependsOn >>
