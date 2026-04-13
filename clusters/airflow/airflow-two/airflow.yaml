@@ -16,6 +16,7 @@ spec:
     substitute:
       namespace: airflow-two
       workers_replicas: "2"
+      dags_git_sync_enabled: "true"
       dags_git_repo: "https://github.com/ShubhamTatvamasi/fluxcd"
       dags_git_branch: "main"
       dags_git_subpath: "dags"
