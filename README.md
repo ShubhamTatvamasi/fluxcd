@@ -105,6 +105,8 @@ kubectl get resourcesets -A
 
 https://github.com/controlplaneio-fluxcd/flux-operator
 
+https://artifacthub.io/packages/helm/flux-operator/flux-operator
+
 Install Flux Operator:
 ```bash
 helm upgrade -i flux-operator \
