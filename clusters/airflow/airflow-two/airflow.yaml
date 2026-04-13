@@ -8,12 +8,12 @@ spec:
   inputs:
     - service: "airflow-base"
       path: "./infrastructure/airflow/base"
-      dependsOn: ~
-      workers_replicas: ~
+      dependsOn: ""
+      workers_replicas: ""
     - service: "postgres"
       path: "./infrastructure/airflow/postgres"
       dependsOn: "airflow-base"
-      workers_replicas: ~
+      workers_replicas: ""
     - service: "airflow"
       path: "./infrastructure/airflow/airflow"
       dependsOn: "postgres"
@@ -38,5 +38,7 @@ spec:
           substitute:
             namespace: airflow-two
             workers_replicas: << inputs.workers_replicas >>
+        << if inputs.dependsOn ->>
         dependsOn:
           - name: << inputs.dependsOn >>
+        <<- end >>
