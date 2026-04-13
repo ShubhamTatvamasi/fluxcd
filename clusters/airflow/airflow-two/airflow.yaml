@@ -28,11 +28,11 @@ spec:
     - apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
       metadata:
-        name: << inputs.service >>
+        name: "{{ .service }}"
         namespace: airflow-two
       spec:
         interval: 10m0s
-        path: << inputs.path >>
+        path: "{{ .path }}"
         prune: true
         sourceRef:
           kind: GitRepository
@@ -41,8 +41,8 @@ spec:
         postBuild:
           substitute:
             namespace: airflow-two
-            workers_replicas: << inputs.workers_replicas >>
+            workers_replicas: "{{ .workers_replicas }}"
         dependsOn:
-          - name: << inputs.dependsOn >>
-        wait: << inputs.wait >>
-        timeout: << inputs.timeout >>
+          - name: "{{ .dependsOn }}"
+        wait: "{{ .wait }}"
+        timeout: "{{ .timeout }}"
