@@ -111,15 +111,7 @@ helm upgrade -i flux-operator \
   oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator \
   --namespace flux-system \
   --create-namespace \
-  --set web.networkPolicy.create=false \
   --wait
-```
-
-Patch Flux UI service as LoadBalancer:
-```bash
-kubectl -n flux-system \
-  patch svc flux-operator \
-  -p '{"spec": {"type": "LoadBalancer"}}'
 ```
 
 Setup `Fine-grained` personal access tokens:
