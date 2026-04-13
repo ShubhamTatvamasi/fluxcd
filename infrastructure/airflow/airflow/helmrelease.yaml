@@ -44,4 +44,5 @@ spec:
         credentialsSecret: git-credentials
         repo: ${dags_git_repo}
         branch: ${dags_git_branch}
+        ref: ${dags_git_branch}
         subPath: ${dags_git_subpath}

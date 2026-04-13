@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: airflow-five
+  name: airflow-six
   namespace: flux-system
 spec:
   interval: 10m0s
@@ -14,7 +14,7 @@ spec:
     namespace: flux-system
   postBuild:
     substitute:
-      namespace: airflow-five
+      namespace: airflow-six
       workers_replicas: "1"
       dags_git_sync_enabled: "true"
       dags_git_repo: "https://github.com/ShubhamTatvamasi/airflow.git"
