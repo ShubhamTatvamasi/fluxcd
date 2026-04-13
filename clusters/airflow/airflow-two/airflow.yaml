@@ -9,31 +9,27 @@ spec:
     - service: "airflow-base"
       path: "./infrastructure/airflow/base"
       dependsOn: ~
-      wait: ~
-      timeout: ~
       workers_replicas: ~
     - service: "postgres"
       path: "./infrastructure/airflow/postgres"
       dependsOn: "airflow-base"
-      wait: "true"
-      timeout: "10m"
       workers_replicas: ~
     - service: "airflow"
       path: "./infrastructure/airflow/airflow"
       dependsOn: "postgres"
-      wait: ~
-      timeout: ~
       workers_replicas: "2"
   resources:
     - apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
       metadata:
-        name: "{{ .service }}"
+        name: << inputs.service >>
         namespace: airflow-two
       spec:
         interval: 10m0s
-        path: "{{ .path }}"
+        path: << inputs.path >>
         prune: true
+        wait: true
+        timeout: 10m
         sourceRef:
           kind: GitRepository
           name: flux-system
@@ -41,8 +37,6 @@ spec:
         postBuild:
           substitute:
             namespace: airflow-two
-            workers_replicas: "{{ .workers_replicas }}"
+            workers_replicas: << inputs.workers_replicas >>
         dependsOn:
-          - name: "{{ .dependsOn }}"
-        wait: "{{ .wait }}"
-        timeout: "{{ .timeout }}"
+          - name: << inputs.dependsOn >>
