@@ -1,7 +1,6 @@
 # fluxcd
 
-https://fluxcd.io/flux/
-
+https://fluxcd.io/flux/ \
 https://registry.terraform.io/providers/fluxcd/flux/latest/docs
 
 Install `flux` cli tool:
@@ -103,14 +102,16 @@ kubectl get resourcesets -A
 
 ## Flux Operator with Flux UI
 
-https://github.com/controlplaneio-fluxcd/flux-operator
+https://github.com/controlplaneio-fluxcd/flux-operator \
+https://artifacthub.io/packages/helm/flux-operator/flux-operator
 
 Install Flux Operator:
 ```bash
 helm upgrade -i flux-operator \
   oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator \
   --namespace flux-system \
-  --create-namespace
+  --create-namespace \
+  --wait
 ```
 
 Setup `Fine-grained` personal access tokens:
@@ -146,6 +147,7 @@ spec:
     ref: "refs/heads/main"
     path: "clusters/production"
     pullSecret: "flux-system"
+    interval: 10m
   distribution:
     version: "2.x"
     registry: "ghcr.io/fluxcd"
