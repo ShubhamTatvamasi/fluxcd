@@ -11,11 +11,13 @@ spec:
       dependsOn: ""
       wait: ""
       timeout: ""
+      workers_replicas: ~
     - service: "postgres"
       path: "./infrastructure/airflow/postgres"
       dependsOn: "airflow-base"
       wait: "true"
       timeout: "10m"
+      workers_replicas: ~
     - service: "airflow"
       path: "./infrastructure/airflow/airflow"
       dependsOn: "postgres"
