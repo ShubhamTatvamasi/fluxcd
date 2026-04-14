@@ -50,4 +50,4 @@ spec:
         ref: ${dags_git_branch}
         subPath: ${dags_git_subpath}
         period: 60s
-        wait: 30s
+        wait: 30
