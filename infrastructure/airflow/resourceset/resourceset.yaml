@@ -53,6 +53,8 @@ spec:
 
           <<- if index inputs "dags_git_sync_enabled" >>
           dags_git_sync_enabled: "<< index inputs "dags_git_sync_enabled" >>"
+          <<- else >>
+          dags_git_sync_enabled: "false"
           <<- end >>
 
           <<- if index inputs "dags_git_repo" >>

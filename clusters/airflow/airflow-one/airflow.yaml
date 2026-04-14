@@ -15,4 +15,3 @@ spec:
   postBuild:
     substitute:
       namespace: airflow-one
-      dags_git_sync_enabled: "false"
