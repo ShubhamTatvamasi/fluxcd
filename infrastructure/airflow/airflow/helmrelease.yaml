@@ -38,6 +38,9 @@ spec:
     data:
       metadataConnection:
         host: postgres
+    images:
+      gitSync:
+        tag: v4.6.0
     dags:
       gitSync:
         enabled: ${dags_git_sync_enabled}
