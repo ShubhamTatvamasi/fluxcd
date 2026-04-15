@@ -8,7 +8,7 @@ spec:
   interval: 10m
   chartRef:
     kind: HelmChart
-    name: airflow-shubham
+    name: airflow
     namespace: ${namespace}
   install:
     timeout: 10m
