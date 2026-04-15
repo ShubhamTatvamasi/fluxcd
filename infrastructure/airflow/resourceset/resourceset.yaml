@@ -14,7 +14,7 @@ spec:
       path: "./infrastructure/airflow/postgres"
       dependsOn: "helm"
     - service: "airflow"
-      path: "./infrastructure/airflow/airflow-shubham"
+      path: "./infrastructure/airflow/airflow"
       dependsOn: "postgres"
       workers_replicas: "${workers_replicas}"
       dags_git_sync_enabled: "${dags_git_sync_enabled}"
