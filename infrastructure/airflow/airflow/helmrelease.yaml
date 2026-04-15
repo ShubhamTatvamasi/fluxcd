@@ -49,5 +49,6 @@ spec:
         branch: ${dags_git_branch}
         ref: ${dags_git_branch}
         subPath: ${dags_git_subpath}
-        period: 60s
-        wait: 30
+        env:
+          - name: GIT_CONFIG_PARAMETERS
+            value: "'http.version=HTTP/1.1'"
