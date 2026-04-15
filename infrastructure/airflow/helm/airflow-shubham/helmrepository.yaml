@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: airflow-shubham
+  namespace: ${namespace}
+spec:
+  interval: 10m
+  url: https://shubhamtatvamasi.com/airflow-chart/
