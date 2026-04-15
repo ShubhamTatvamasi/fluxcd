@@ -49,10 +49,3 @@ spec:
         branch: ${dags_git_branch}
         ref: ${dags_git_branch}
         subPath: ${dags_git_subpath}
-        containerLifecycleHooks:
-          postStart:
-            exec:
-              command:
-                - sh
-                - -c
-                - "curl --max-time 3 https://github.com || true"
