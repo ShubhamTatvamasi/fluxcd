@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: airflow-shubham
+  namespace: ${namespace}
+spec:
+  interval: 10m
+  chart: airflow
+  version: "1.20.0"
+  sourceRef:
+    name: airflow-shubham
+    kind: HelmRepository
