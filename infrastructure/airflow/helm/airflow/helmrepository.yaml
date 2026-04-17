@@ -6,5 +6,5 @@ metadata:
   namespace: ${namespace}
 spec:
   interval: 10m
-  # url: https://airflow.apache.org
-  url: https://shubhamtatvamasi.com/airflow-chart/
+  url: https://airflow.apache.org
+  # url: https://shubhamtatvamasi.com/airflow-chart/
