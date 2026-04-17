@@ -26,9 +26,9 @@ spec:
     executor: "CeleryExecutor"
     postgresql:
       enabled: false
-    ports:
-      apiServer: 80
-      airflowUI: 80
+    # ports:
+    #   apiServer: 80
+    #   airflowUI: 80
     apiServer:
       service:
         type: LoadBalancer
