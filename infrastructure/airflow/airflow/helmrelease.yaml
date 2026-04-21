@@ -31,7 +31,7 @@ spec:
       connection:
         host: "https://opensearch-cluster-master.opensearch"
         port: 9200
-        scheme: "https"
+        scheme: https
         login: "admin"
         password: "StrongPassword123!"
     # ports:
