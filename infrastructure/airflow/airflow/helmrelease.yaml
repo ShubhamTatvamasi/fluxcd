@@ -28,6 +28,12 @@ spec:
       enabled: false
     opensearch:
       enabled: true
+      connection:
+        host: "https://opensearch-cluster-master.opensearch"
+        port: 9200
+        scheme: "https"
+        login: "admin"
+        password: "StrongPassword123!"
     # ports:
     #   apiServer: 80
     #   airflowUI: 80
