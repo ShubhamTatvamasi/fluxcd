@@ -29,7 +29,7 @@ spec:
     opensearch:
       enabled: false
       connection:
-        host: "https://opensearch-cluster-master.opensearch"
+        host: "opensearch-cluster-master.opensearch"
         port: 9200
         scheme: https
         user: "admin"
