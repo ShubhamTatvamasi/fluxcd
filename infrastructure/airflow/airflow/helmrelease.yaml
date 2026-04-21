@@ -26,6 +26,8 @@ spec:
     executor: "KubernetesExecutor"
     postgresql:
       enabled: false
+    opensearch:
+      enabled: true
     # ports:
     #   apiServer: 80
     #   airflowUI: 80
