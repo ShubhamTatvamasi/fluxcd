@@ -27,13 +27,13 @@ spec:
     postgresql:
       enabled: false
     opensearch:
-      enabled: false
+      enabled: true
       connection:
-        host: "opensearch-cluster-master.opensearch"
-        port: 9200
         scheme: https
         user: "admin"
         pass: "StrongPassword123!"
+        host: "opensearch-cluster-master.opensearch"
+        port: 9200
     # ports:
     #   apiServer: 80
     #   airflowUI: 80
