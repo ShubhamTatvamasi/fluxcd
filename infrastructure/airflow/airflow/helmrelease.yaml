@@ -27,7 +27,7 @@ spec:
     postgresql:
       enabled: false
     opensearch:
-      enabled: true
+      enabled: false
       connection:
         host: "https://opensearch-cluster-master.opensearch"
         port: 9200
