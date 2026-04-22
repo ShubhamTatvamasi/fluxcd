@@ -45,7 +45,7 @@ spec:
       elasticsearch_configs:
         use_ssl: 'False'
         verify_certs: 'False'
-        headers: '{"Content-Type": "application/json"}'
+        headers: "Content-Type:application/json"
     extraEnv: |
       - name: AIRFLOW__OPENSEARCH__PORT
         value: '9200'
