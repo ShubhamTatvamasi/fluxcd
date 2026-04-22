@@ -85,6 +85,14 @@ Resume a kustomization:
 flux resume kustomization airflow -n airflow
 ```
 
+Force update (touch the ResourceSet):
+```bash
+kubectl -n airflow \
+  annotate resourceset airflow \
+  reconcile.fluxcd.io/requestedAt="$(date +%s)" \
+  --overwrite
+```
+
 ---
 
 Check Flux git repos:
