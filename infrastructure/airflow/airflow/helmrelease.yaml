@@ -31,7 +31,7 @@ spec:
     opensearch:
       enabled: true
       connection:
-        scheme: https
+        scheme: http
         user: "admin"
         pass: "StrongPassword123!"
         host: "opensearch-cluster-master.opensearch"
