@@ -40,12 +40,12 @@ spec:
       elasticsearch:
         host: "http://opensearch-cluster-master.opensearch:9200"
         log_id_template: "{dag_id}_{task_id}_{run_id}_{try_number}"
-        json_format: True
-        verify_certs: False
+        json_format: "True"
+        verify_certs: "False"
       elasticsearch_configs:
-        use_ssl: False
-        verify_certs: False
-        compatibility_mode: True
+        use_ssl: "False"
+        verify_certs: "False"
+        compatibility_mode: "True"
     extraEnv: |
       - name: AIRFLOW__OPENSEARCH__PORT
         value: '9200'
