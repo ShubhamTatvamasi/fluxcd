@@ -34,7 +34,7 @@ spec:
         scheme: https
         user: "admin"
         pass: "StrongPassword123!"
-        host: "opensearch-cluster-master.opensearch:9200"
+        host: "opensearch-cluster-master.opensearch"
         port: 9200
     # ports:
     #   apiServer: 80
