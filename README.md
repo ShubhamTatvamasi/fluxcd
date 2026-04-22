@@ -75,6 +75,18 @@ flux -n prometheus \
 
 ---
 
+Suspend a kustomization:
+```bash
+flux suspend kustomization airflow -n airflow
+```
+
+Resume a kustomization:
+```bash
+flux resume kustomization airflow -n airflow
+```
+
+---
+
 Check Flux git repos:
 ```bash
 kubectl get gitrepositories -A
