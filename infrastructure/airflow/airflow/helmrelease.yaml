@@ -36,7 +36,6 @@ spec:
         pass: "StrongPassword123!"
         host: "opensearch-cluster-master.opensearch"
         port: 9200
-        verify_certs: false
     extraEnv: |
       - name: AIRFLOW__OPENSEARCH__PORT
         value: '9200'
