@@ -37,18 +37,24 @@ spec:
         host: "opensearch-cluster-master.opensearch"
         port: 9200
     config:
-      elasticsearch:
-        host: "http://opensearch-cluster-master.opensearch:9200"
-        log_id_template: "{dag_id}_{task_id}_{run_id}_{try_number}"
-        json_format: 'True'
-        verify_certs: 'False'
-      elasticsearch_configs:
+      opensearch:
+        host: "http://opensearch-cluster-master.opensearch"
+        port: 9200
+      opensearch_configs:
         use_ssl: 'False'
         verify_certs: 'False'
-        headers: "Content-Type:application/json"
-    extraEnv: |
-      - name: AIRFLOW__OPENSEARCH__PORT
-        value: '9200'
+        ssl_assert_hostname: 'False'
+      # elasticsearch:
+      #   host: "http://opensearch-cluster-master.opensearch:9200"
+      #   log_id_template: "{dag_id}_{task_id}_{run_id}_{try_number}"
+      #   json_format: 'True'
+      #   verify_certs: 'False'
+      # elasticsearch_configs:
+      #   use_ssl: 'False'
+      #   verify_certs: 'False'
+    # extraEnv: |
+    #   - name: AIRFLOW__OPENSEARCH__PORT
+    #     value: '9200'
     # ports:
     #   apiServer: 80
     #   airflowUI: 80
