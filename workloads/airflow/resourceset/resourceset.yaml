@@ -10,6 +10,7 @@ spec:
       path: "./secrets/git-credentials"
     - service: "postgres"
       path: "./workloads/airflow/postgres"
+      dependsOn: "git-credentials"
     - service: "airflow"
       path: "./workloads/airflow/airflow"
       dependsOn: "postgres"
