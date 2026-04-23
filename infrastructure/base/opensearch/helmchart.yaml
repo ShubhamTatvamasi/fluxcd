@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: opensearch
+  namespace: opensearch
+spec:
+  interval: 10m
+  chart: opensearch
+  version: "3.6.0"
+  sourceRef:
+    name: opensearch
+    kind: HelmRepository

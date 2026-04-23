@@ -1,0 +1,25 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: kube-prometheus-stack
+    namespace: monitoring
+  values:
+    prometheus:
+      service:
+        type: LoadBalancer
+      prometheusSpec:
+        serviceMonitorNamespaceSelector:
+          matchLabels:
+            monitoring: enabled
+    grafana:
+      service:
+        type: LoadBalancer
+      adminUser: admin
+      adminPassword: admin

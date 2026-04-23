@@ -6,8 +6,10 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./infrastructure/airflow/resourceset
+  path: ./workloads/airflow/resourceset
   prune: true
+  dependsOn:
+    - name: infrastructure
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -15,7 +17,6 @@ spec:
   postBuild:
     substitute:
       namespace: airflow
-      workers_replicas: "1"
       dags_git_sync_enabled: "true"
       dags_git_repo: "http://gitea-http.gitea/admin/airflow.git"
       dags_git_branch: "main"
