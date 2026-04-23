@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: airflow-statsd
-  namespace: airflow
+  namespace: ${namespace}
   labels:
     release: kube-prometheus-stack
 spec:
@@ -14,7 +14,7 @@ spec:
       release: airflow
   namespaceSelector:
     matchNames:
-      - airflow
+      - ${namespace}
   endpoints:
     - port: statsd-scrape
       interval: 30s
