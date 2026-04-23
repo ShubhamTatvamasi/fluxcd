@@ -39,6 +39,7 @@ spec:
     config:
       logging:
         remote_log_conn_id: "opensearch_default"
+        logging_config_class: "airflow.providers.opensearch.log.opensearch_task_handler.DEFAULT_LOGGING_CONFIG"
       opensearch:
         host: "http://opensearch-cluster-master.opensearch"
         port: 9200
