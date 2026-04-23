@@ -32,13 +32,13 @@ spec:
       enabled: true
       connection:
         scheme: http
-        # user: "admin"
-        # pass: "StrongPassword123!"
         host: "opensearch-cluster-master.opensearch"
         port: 9200
+        # user: "admin"
+        # pass: "StrongPassword123!"
     config:
       logging:
-        remote_log_conn_id: "opensearch_default"
+        delete_local_logs: 'False'
       opensearch:
         host: "http://opensearch-cluster-master.opensearch"
         port: 9200
