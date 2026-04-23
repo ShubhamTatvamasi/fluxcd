@@ -85,6 +85,14 @@ Resume a kustomization:
 flux resume kustomization airflow -n airflow
 ```
 
+---
+
+Delete airflow:
+```bash
+kubectl -n airflow \
+  delete kustomization airflow
+```
+
 Force update (touch the ResourceSet):
 ```bash
 kubectl -n airflow \
