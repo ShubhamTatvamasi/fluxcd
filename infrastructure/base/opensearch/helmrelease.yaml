@@ -1,0 +1,22 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: opensearch
+  namespace: opensearch
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: opensearch
+    namespace: opensearch
+  values:
+    singleNode: true
+    protocol: http
+    config:
+      opensearch.yml: |
+        cluster.name: opensearch-cluster
+        network.host: 0.0.0.0
+        plugins:
+          security:
+            disabled: true

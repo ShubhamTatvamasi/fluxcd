@@ -7,14 +7,11 @@ metadata:
 spec:
   inputs:
     - service: "git-credentials"
-      path: "./infrastructure/git-credentials"
-    - service: "helm"
-      path: "./infrastructure/airflow/helm"
+      path: "./secrets/git-credentials"
     - service: "postgres"
-      path: "./infrastructure/airflow/postgres"
-      dependsOn: "helm"
+      path: "./workloads/airflow/postgres"
     - service: "airflow"
-      path: "./infrastructure/airflow/airflow"
+      path: "./workloads/airflow/airflow"
       dependsOn: "postgres"
       workers_replicas: "${workers_replicas}"
       dags_git_sync_enabled: "${dags_git_sync_enabled}"
