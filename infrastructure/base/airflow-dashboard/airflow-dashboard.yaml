@@ -1192,6 +1192,176 @@ data:
               "legendFormat": "{{namespace}} unmapped"
             }
           ]
+        },
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 124 },
+          "id": 108,
+          "title": "DAG Performance Comparison",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "lineWidth": 2,
+                "lineStyle": { "fill": "solid" },
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "unit": "s"
+            },
+            "overrides": [
+              {
+                "matcher": { "id": "byNamePattern", "options": ".*prev.*" },
+                "properties": [
+                  { "id": "custom.lineStyle", "value": { "fill": "dash", "dash": [8, 4] } },
+                  { "id": "custom.fillOpacity", "value": 0 }
+                ]
+              }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 125 },
+          "id": 80,
+          "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" } },
+          "title": "DAG Run Duration: Now vs $comparison_offset Ago",
+          "type": "timeseries",
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "expr": "increase(airflow_dagrun_duration_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) / increase(airflow_dagrun_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) > 0",
+              "legendFormat": "{{dag_id}} (now)"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "expr": "increase(airflow_dagrun_duration_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) / increase(airflow_dagrun_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) > 0",
+              "legendFormat": "{{dag_id}} (prev)"
+            }
+          ]
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "lineWidth": 2,
+                "lineStyle": { "fill": "solid" },
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "unit": "s"
+            },
+            "overrides": [
+              {
+                "matcher": { "id": "byNamePattern", "options": ".*prev.*" },
+                "properties": [
+                  { "id": "custom.lineStyle", "value": { "fill": "dash", "dash": [8, 4] } },
+                  { "id": "custom.fillOpacity", "value": 0 }
+                ]
+              }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 125 },
+          "id": 81,
+          "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" } },
+          "title": "Task Duration: Now vs $comparison_offset Ago",
+          "type": "timeseries",
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "expr": "increase(airflow_task_duration_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) / increase(airflow_task_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) > 0",
+              "legendFormat": "{{dag_id}} / {{task_id}} (now)"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "expr": "increase(airflow_task_duration_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) / increase(airflow_task_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) > 0",
+              "legendFormat": "{{dag_id}} / {{task_id}} (prev)"
+            }
+          ]
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "lineWidth": 2,
+                "lineStyle": { "fill": "solid" },
+                "showPoints": "never",
+                "spanNulls": true
+              },
+              "unit": "s"
+            },
+            "overrides": [
+              {
+                "matcher": { "id": "byNamePattern", "options": ".*prev.*" },
+                "properties": [
+                  { "id": "custom.lineStyle", "value": { "fill": "dash", "dash": [8, 4] } },
+                  { "id": "custom.fillOpacity", "value": 0 }
+                ]
+              }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 133 },
+          "id": 82,
+          "options": { "legend": { "calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom" } },
+          "title": "Schedule Delay: Now vs $comparison_offset Ago",
+          "type": "timeseries",
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "expr": "increase(airflow_dagrun_schedule_delay_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) / increase(airflow_dagrun_schedule_delay_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) > 0",
+              "legendFormat": "{{dag_id}} delay (now)"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "expr": "increase(airflow_dagrun_schedule_delay_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) / increase(airflow_dagrun_schedule_delay_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) > 0",
+              "legendFormat": "{{dag_id}} delay (prev)"
+            }
+          ]
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": {
+                "drawStyle": "bars",
+                "fillOpacity": 70,
+                "lineWidth": 1,
+                "showPoints": "never",
+                "spanNulls": false,
+                "barAlignment": 0
+              },
+              "unit": "short"
+            }
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 133 },
+          "id": 83,
+          "options": { "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "bottom" } },
+          "title": "DAG Run Count: Now vs $comparison_offset Ago",
+          "type": "timeseries",
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "expr": "increase(airflow_dagrun_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) > 0",
+              "legendFormat": "{{dag_id}} runs (now)"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "expr": "increase(airflow_dagrun_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) > 0",
+              "legendFormat": "{{dag_id}} runs (prev)"
+            }
+          ]
         }
       ],
       "refresh": "30s",
@@ -1245,6 +1415,21 @@ data:
             "refresh": 2,
             "sort": 1,
             "type": "query"
+          },
+          {
+            "current": { "selected": true, "text": "7d", "value": "7d" },
+            "hide": 0,
+            "includeAll": false,
+            "label": "Compare vs",
+            "name": "comparison_offset",
+            "options": [
+              { "selected": false, "text": "1d", "value": "1d" },
+              { "selected": true,  "text": "7d", "value": "7d" },
+              { "selected": false, "text": "14d", "value": "14d" },
+              { "selected": false, "text": "30d", "value": "30d" }
+            ],
+            "query": "1d,7d,14d,30d",
+            "type": "custom"
           }
         ]
       },
@@ -1253,5 +1438,5 @@ data:
       "timezone": "browser",
       "title": "Airflow Multi-Namespace",
       "uid": "airflow-multi-ns",
-      "version": 1
+      "version": 2
     }
