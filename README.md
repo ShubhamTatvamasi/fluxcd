@@ -91,6 +91,9 @@ Delete airflow:
 ```bash
 kubectl -n airflow \
   delete kustomization airflow
+
+kubectl -n airflow \
+  delete kustomization postgres
 ```
 
 Force update (touch the ResourceSet):
