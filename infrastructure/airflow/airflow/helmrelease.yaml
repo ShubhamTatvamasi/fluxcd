@@ -37,6 +37,8 @@ spec:
         host: "opensearch-cluster-master.opensearch"
         port: 9200
     config:
+      logging:
+        remote_log_conn_id: "opensearch_default"
       opensearch:
         host: "http://opensearch-cluster-master.opensearch"
         port: 9200
@@ -44,6 +46,8 @@ spec:
         use_ssl: 'False'
         verify_certs: 'False'
         ssl_assert_hostname: 'False'
+      elasticsearch: ~
+      elasticsearch_configs: ~
       # elasticsearch:
       #   host: "http://opensearch-cluster-master.opensearch:9200"
       #   log_id_template: "{dag_id}_{task_id}_{run_id}_{try_number}"
