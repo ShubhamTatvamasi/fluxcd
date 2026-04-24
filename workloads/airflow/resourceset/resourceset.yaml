@@ -8,6 +8,8 @@ spec:
   inputs:
     - service: "git-credentials"
       path: "./secrets/git-credentials"
+    - service: "airflow-connections"
+      path: "./secrets/airflow-connections"
     - service: "postgres"
       path: "./workloads/airflow/postgres"
       dependsOn: "git-credentials"
