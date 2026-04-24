@@ -37,6 +37,9 @@ spec:
         # user: "admin"
         # pass: "StrongPassword123!"
     config:
+      webserver:
+        expose_config: 'True'
+        update_fab_perms: 'True'
       logging:
         delete_local_logs: 'False'
       opensearch:
