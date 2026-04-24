@@ -23,7 +23,7 @@ spec:
   values:
     airflowVersion: "3.2.1"
     # defaultAirflowTag: "3.2.1"
-    defaultAirflowTag: "3.2.1-1"
+    defaultAirflowTag: "3.2.1-2"
     defaultAirflowRepository: "shubhamtatvamasi/airflow"
     executor: "KubernetesExecutor"
     postgresql:
