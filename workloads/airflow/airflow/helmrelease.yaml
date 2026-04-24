@@ -80,6 +80,9 @@ spec:
     images:
       gitSync:
         tag: v4.6.0
+    extraEnvFrom: |
+      - secretRef:
+          name: 'airflow-connections'
     dags:
       gitSync:
         enabled: ${dags_git_sync_enabled}
