@@ -7,4 +7,4 @@ metadata:
 spec:
   interval: 10m
   url: https://airflow.apache.org
-  # url: https://shubhamtatvamasi.com/airflow-chart/
+  # url: https://shubhamtatvamasi.com/airflow-charts/
