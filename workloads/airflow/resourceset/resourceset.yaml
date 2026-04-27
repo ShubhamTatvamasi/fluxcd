@@ -12,10 +12,12 @@ spec:
       path: "./secrets/airflow-connections"
     - service: "postgres"
       path: "./workloads/airflow/postgres"
-      dependsOn: "git-credentials"
     - service: "airflow"
       path: "./workloads/airflow/airflow"
-      dependsOn: "postgres"
+      dependsOn:
+        - "postgres"
+        - "git-credentials"
+        - "airflow-connections"
       workers_replicas: "${workers_replicas}"
       dags_git_sync_enabled: "${dags_git_sync_enabled}"
       dags_git_repo: "${dags_git_repo}"
@@ -40,7 +42,9 @@ spec:
 
       <<- if index inputs "dependsOn" >>
       dependsOn:
-        - name: << index inputs "dependsOn" >>
+        <<- range index inputs "dependsOn" >>
+        - name: << . >>
+        <<- end >>
       <<- end >>
 
       postBuild:
