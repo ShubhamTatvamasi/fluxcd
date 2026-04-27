@@ -8,8 +8,8 @@ spec:
   inputs:
     - service: "git-credentials"
       path: "./secrets/git-credentials"
-    - service: "airflow-connections"
-      path: "./secrets/airflow-connections"
+    - service: "airflow-config"
+      path: "./deployments/${namespace}"
     - service: "postgres"
       path: "./workloads/airflow/postgres"
     - service: "airflow"
@@ -17,7 +17,7 @@ spec:
       dependsOn:
         - "postgres"
         - "git-credentials"
-        - "airflow-connections"
+        - "airflow-config"
       workers_replicas: "${workers_replicas}"
       dags_git_sync_enabled: "${dags_git_sync_enabled}"
       dags_git_repo: "${dags_git_repo}"
