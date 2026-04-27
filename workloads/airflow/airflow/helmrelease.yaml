@@ -86,6 +86,8 @@ spec:
     extraEnvFrom: |
       - secretRef:
           name: 'airflow-connections'
+      - configMapRef:
+          name: 'airflow-variables'
     dags:
       gitSync:
         enabled: ${dags_git_sync_enabled}
