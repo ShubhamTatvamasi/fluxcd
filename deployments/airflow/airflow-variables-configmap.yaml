@@ -5,4 +5,4 @@ metadata:
   name: airflow-variables
   namespace: ${namespace}
 data:
-  AIRFLOW_VAR_ENVIRONMENT: "airflow-one"
+  AIRFLOW_VAR_MY_ENVIRONMENT: "airflow-one"
