@@ -99,7 +99,6 @@ spec:
     ingress:
       web:
         enabled: true
-        ingressClassName: nginx
         hosts:
           - name: airflow.k8s.shubhamtatvamasi.com
             tls:
