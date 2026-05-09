@@ -68,9 +68,9 @@ spec:
     # ports:
     #   apiServer: 80
     #   airflowUI: 80
-    apiServer:
-      service:
-        type: LoadBalancer
+    # apiServer:
+    #   service:
+    #     type: LoadBalancer
     migrateDatabaseJob:
       useHelmHooks: false
     createUserJob:

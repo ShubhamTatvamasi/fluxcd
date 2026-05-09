@@ -18,6 +18,6 @@ spec:
     substitute:
       namespace: airflow
       dags_git_sync_enabled: "true"
-      dags_git_repo: "http://gitea-http.gitea/admin/airflow.git"
+      dags_git_repo: "http://gitea-http.gitea:3000/admin/airflow.git"
       dags_git_branch: "main"
       dags_git_subpath: "dags"
