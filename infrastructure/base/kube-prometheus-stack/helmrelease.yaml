@@ -23,3 +23,11 @@ spec:
       #   type: LoadBalancer
       adminUser: admin
       adminPassword: admin
+      ingress:
+        enabled: true
+        hosts:
+          - grafana.k8s.shubhamtatvamasi.com
+        tls:
+          - secretName: shubhamtatvamasi-tls
+            hosts:
+              - grafana.k8s.shubhamtatvamasi.com
