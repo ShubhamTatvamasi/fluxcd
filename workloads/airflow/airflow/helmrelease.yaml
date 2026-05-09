@@ -97,7 +97,7 @@ spec:
         ref: ${dags_git_branch}
         subPath: ${dags_git_subpath}
     ingress:
-      web:
+      apiServer:
         enabled: true
         hosts:
           - name: airflow.k8s.shubhamtatvamasi.com
