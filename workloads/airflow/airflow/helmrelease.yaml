@@ -96,3 +96,15 @@ spec:
         branch: ${dags_git_branch}
         ref: ${dags_git_branch}
         subPath: ${dags_git_subpath}
+    ingress:
+      web:
+        enabled: true
+        ingressClassName: nginx
+        hosts:
+          - name: airflow.k8s.shubhamtatvamasi.com
+            tls:
+              enabled: true
+              secretName: shubhamtatvamasi-tls
+        tls:
+          enabled: true
+          secretName: shubhamtatvamasi-tls

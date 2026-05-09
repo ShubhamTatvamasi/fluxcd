@@ -6,6 +6,8 @@ metadata:
   namespace: ${namespace}
 spec:
   inputs:
+    - service: "shubhamtatvamasi-tls"
+      path: "./secrets/base/shubhamtatvamasi-tls"
     - service: "git-credentials"
       path: "./secrets/git-credentials"
     - service: "airflow-config"
@@ -16,6 +18,7 @@ spec:
       path: "./workloads/airflow/airflow"
       dependsOn:
         - "postgres"
+        - "shubhamtatvamasi-tls"
         - "git-credentials"
         - "airflow-config"
       workers_replicas: "${workers_replicas}"
