@@ -12,14 +12,14 @@ spec:
     namespace: monitoring
   values:
     prometheus:
-      service:
-        type: LoadBalancer
+      # service:
+      #   type: LoadBalancer
       prometheusSpec:
         serviceMonitorNamespaceSelector:
           matchLabels:
             monitoring: enabled
     grafana:
-      service:
-        type: LoadBalancer
+      # service:
+      #   type: LoadBalancer
       adminUser: admin
       adminPassword: admin
