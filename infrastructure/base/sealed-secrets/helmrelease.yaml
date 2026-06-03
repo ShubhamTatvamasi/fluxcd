@@ -10,3 +10,5 @@ spec:
     kind: HelmChart
     name: sealed-secrets
     namespace: sealed-secrets
+  values:
+    keyrenewperiod: 0
