@@ -1,0 +1,27 @@
+---
+# The metallb-controller reads its own pod for owner references at startup,
+# but the chart's controller Role (v0.16.1) omits get on pods, causing the
+# controller to crash-loop with "cannot get resource pods". Grant it here.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: metallb-controller-pods
+  namespace: metallb-system
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: metallb-controller-pods
+  namespace: metallb-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: metallb-controller-pods
+subjects:
+- kind: ServiceAccount
+  name: metallb-controller
+  namespace: metallb-system

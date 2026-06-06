@@ -6,3 +6,4 @@ resources:
 - helmrepository.yaml
 - helmchart.yaml
 - helmrelease.yaml
+- controller-pods-rbac.yaml
