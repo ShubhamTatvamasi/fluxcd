@@ -6,13 +6,13 @@ metadata:
   namespace: flux-system
 spec:
   inputs:
-    - namespace: "airflow"
-    - namespace: "dex"
     - namespace: "flux-system"
-    - namespace: "gitea"
+    - namespace: "dex"
     - namespace: "harbor"
-    - namespace: "monitoring"
     - namespace: "portainer"
+    # - namespace: "monitoring"
+    # - namespace: "gitea"
+    # - namespace: "airflow"
   resourcesTemplate: |
     ---
     apiVersion: v1
