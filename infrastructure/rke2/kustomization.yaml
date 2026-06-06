@@ -9,5 +9,4 @@ resources:
 - ../base/harbor
 - ../base/dex
 - ../base/portainer
-- metallb-system
 - flux-system
