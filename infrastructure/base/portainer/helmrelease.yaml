@@ -18,7 +18,7 @@ spec:
         tag: node-shell
     trusted_origins:
       enabled: true
-      domains: portainer.k8s.shubhamtatvamasi.com
+      domains: https://portainer.k8s.shubhamtatvamasi.com
     service:
       type: ClusterIP
     ingress:
@@ -51,4 +51,4 @@ spec:
         patch: |
           - op: replace
             path: /spec/template/spec/containers/0/args/2
-            value: "--trusted-origins=portainer.k8s.shubhamtatvamasi.com"
+            value: "--trusted-origins=https://portainer.k8s.shubhamtatvamasi.com"
