@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: harbor
+  namespace: harbor
+spec:
+  interval: 10m
+  chart: harbor
+  version: "1.19.1"
+  sourceRef:
+    name: harbor
+    kind: HelmRepository

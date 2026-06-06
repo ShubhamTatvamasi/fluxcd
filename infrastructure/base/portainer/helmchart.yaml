@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: portainer
+  namespace: portainer
+spec:
+  interval: 10m
+  chart: portainer
+  version: "239.3.0"
+  sourceRef:
+    name: portainer
+    kind: HelmRepository

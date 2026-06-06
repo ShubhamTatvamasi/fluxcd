@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: dex
+  namespace: dex
+spec:
+  interval: 10m
+  chart: dex
+  version: "0.24.1"
+  sourceRef:
+    name: dex
+    kind: HelmRepository

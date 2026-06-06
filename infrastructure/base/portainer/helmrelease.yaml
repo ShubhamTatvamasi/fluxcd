@@ -1,0 +1,38 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: portainer
+  namespace: portainer
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: portainer
+    namespace: portainer
+  values:
+    enterpriseEdition:
+      enabled: true
+      image:
+        repository: harbor.k8s.shubhamtatvamasi.com/portainer/portainer-ee
+        tag: node-shell
+    trusted_origins:
+      enabled: true
+      domains: https://portainer.k8s.shubhamtatvamasi.com
+    service:
+      type: ClusterIP
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      hosts:
+        - host: portainer.k8s.shubhamtatvamasi.com
+          paths: /
+      tls:
+        - secretName: portainer-tls
+          hosts:
+            - portainer.k8s.shubhamtatvamasi.com
+    tls:
+      existingSecret: portainer-tls
+    persistence:
+      annotations:
+        helm.sh/resource-policy: keep

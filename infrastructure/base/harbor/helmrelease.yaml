@@ -1,0 +1,29 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: harbor
+  namespace: harbor
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: harbor
+    namespace: harbor
+  values:
+    expose:
+      type: ingress
+      tls:
+        enabled: true
+        certSource: secret
+        secret:
+          secretName: harbor-tls
+      ingress:
+        hosts:
+          core: harbor.k8s.shubhamtatvamasi.com
+    harborAdminPassword: admin
+    persistence:
+      persistentVolumeClaim:
+        registry:
+          size: 20Gi
+    externalURL: https://harbor.k8s.shubhamtatvamasi.com
