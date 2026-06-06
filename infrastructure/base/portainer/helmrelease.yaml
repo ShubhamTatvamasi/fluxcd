@@ -26,7 +26,8 @@ spec:
       ingressClassName: traefik
       hosts:
         - host: portainer.k8s.shubhamtatvamasi.com
-          paths: /
+          paths:
+            - path: /
       tls:
         - secretName: portainer-tls
           hosts:
