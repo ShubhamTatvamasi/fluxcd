@@ -5,6 +5,9 @@ metadata:
   name: flux-tls
   namespace: flux-system
 spec:
+  dependsOn:
+  - name: controllers
+    namespace: flux-system
   force: false
   interval: 10m0s
   path: ./secrets/base/shubhamtatvamasi-tls

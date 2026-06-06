@@ -2,14 +2,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: metallb-config
+  name: controllers
   namespace: flux-system
 spec:
-  dependsOn:
-  - name: controllers
   interval: 10m0s
-  path: ./infrastructure/rke2/metallb-system
+  path: ./infrastructure/rke2/controllers
   prune: true
+  wait: true
+  timeout: 10m
   sourceRef:
     kind: GitRepository
     name: flux-system

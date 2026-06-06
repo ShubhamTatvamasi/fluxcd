@@ -5,6 +5,8 @@ metadata:
   name: infrastructure
   namespace: flux-system
 spec:
+  dependsOn:
+  - name: controllers
   interval: 10m0s
   path: ./infrastructure/rke2
   prune: true
