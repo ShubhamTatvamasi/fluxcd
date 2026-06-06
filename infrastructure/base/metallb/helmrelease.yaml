@@ -11,5 +11,7 @@ spec:
     name: metallb
     namespace: metallb-system
   values:
+    controller:
+      webhookMode: disabled
     speaker:
       enabled: false
