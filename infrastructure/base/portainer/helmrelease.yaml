@@ -18,7 +18,7 @@ spec:
         tag: node-shell
     trusted_origins:
       enabled: true
-      domains: https://portainer.k8s.shubhamtatvamasi.com
+      domains: portainer.k8s.shubhamtatvamasi.com
     service:
       type: ClusterIP
     ingress:
