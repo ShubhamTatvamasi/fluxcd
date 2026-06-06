@@ -19,6 +19,7 @@ spec:
         secret:
           secretName: harbor-tls
       ingress:
+        className: traefik
         hosts:
           core: harbor.k8s.shubhamtatvamasi.com
     harborAdminPassword: admin
