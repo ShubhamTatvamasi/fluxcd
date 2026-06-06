@@ -7,3 +7,4 @@ resources:
 - helmchart.yaml
 - helmrelease.yaml
 - dex-tls.yaml
+- clusterrolebinding.yaml
