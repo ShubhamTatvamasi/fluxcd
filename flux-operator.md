@@ -7,12 +7,12 @@ helm upgrade -i flux-operator \
   --namespace flux-system \
   --create-namespace \
   --set "web.ingress.enabled=true" \
-  --set "web.ingress.hosts[0].host=fluxcd.k8s.shubhamtatvamasi.com" \
+  --set "web.ingress.hosts[0].host=flux.k8s.shubhamtatvamasi.com" \
   --set "web.ingress.hosts[0].paths[0].path=/" \
   --set "web.ingress.hosts[0].paths[0].pathType=ImplementationSpecific" \
   --set "web.ingress.tls[0].secretName=shubhamtatvamasi-tls" \
-  --set "web.ingress.tls[0].hosts[0]=fluxcd.k8s.shubhamtatvamasi.com" \
-  --set web.config.baseURL=https://fluxcd.k8s.shubhamtatvamasi.com \
+  --set "web.ingress.tls[0].hosts[0]=flux.k8s.shubhamtatvamasi.com" \
+  --set web.config.baseURL=https://flux.k8s.shubhamtatvamasi.com \
   --set web.config.authentication.type=OAuth2 \
   --set web.config.authentication.oauth2.provider=OIDC \
   --set web.config.authentication.oauth2.clientID=flux-web-ui \
@@ -60,21 +60,13 @@ metadata:
   name: flux
   namespace: flux-system
   annotations:
+    fluxcd.controlplane.io/reconcile: "enabled"
     fluxcd.controlplane.io/reconcileEvery: "1h"
-    fluxcd.controlplane.io/reconcileArtifactEvery: "10m"
     fluxcd.controlplane.io/reconcileTimeout: "5m"
 spec:
-  sync:
-    kind: GitRepository
-    url: "https://github.com/ShubhamTatvamasi/fluxcd.git"
-    ref: "refs/heads/main"
-    path: "clusters/production"
-    pullSecret: "flux-system"
-    interval: 10m
   distribution:
     version: "2.x"
     registry: "ghcr.io/fluxcd"
-    artifact: "oci://ghcr.io/controlplaneio-fluxcd/flux-operator-manifests"
   components:
     - source-controller
     - kustomize-controller
@@ -89,6 +81,9 @@ spec:
     multitenant: false
     networkPolicy: true
     domain: "cluster.local"
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: flux
   kustomize:
     patches:
       - target:
@@ -105,6 +100,42 @@ spec:
                 operator: "Exists"
 EOF
 ```
+
+Create a GitRepository resource:
+```bash
+kubectl apply -f - << EOF
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: flux-system
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  url: https://github.com/ShubhamTatvamasi/fluxcd.git
+  ref:
+    branch: main
+EOF
+```
+
+Create a Kustomization resource:
+```bash
+kubectl apply -f - << EOF
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flux-system
+  namespace: flux-system
+spec:
+  force: false
+  interval: 10m0s
+  path: clusters/rke2
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+EOF
+```
+
 
 http://localhost:9080/
 
