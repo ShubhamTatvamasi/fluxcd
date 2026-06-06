@@ -18,7 +18,7 @@ spec:
         tag: node-shell
     trusted_origins:
       enabled: true
-      domains: portainer.k8s.shubhamtatvamasi.com
+      domains: https://portainer.k8s.shubhamtatvamasi.com
     service:
       type: ClusterIP
     ingress:
@@ -37,3 +37,18 @@ spec:
     persistence:
       annotations:
         helm.sh/resource-policy: keep
+  # The chart renders --trusted-origins with helm `quote`, producing
+  # --trusted-origins="https://..." where the literal double-quotes become
+  # part of the value and Portainer rejects it as an invalid origin URL.
+  # Strip the quotes from the rendered arg. The `test` op guards against the
+  # arg index shifting (the patch fails loudly instead of editing the wrong arg).
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: Deployment
+          name: portainer
+        patch: |
+          - op: replace
+            path: /spec/template/spec/containers/0/args/2
+            value: "--trusted-origins=https://portainer.k8s.shubhamtatvamasi.com"
