@@ -40,8 +40,8 @@ spec:
   # The chart renders --trusted-origins with helm `quote`, producing
   # --trusted-origins="https://..." where the literal double-quotes become
   # part of the value and Portainer rejects it as an invalid origin URL.
-  # Strip the quotes from the rendered arg. The `test` op guards against the
-  # arg index shifting (the patch fails loudly instead of editing the wrong arg).
+  # Strip the quotes from the rendered arg, and append --kubectl-shell-image
+  # (the chart has no value for it) so the node-shell EE image is used.
   postRenderers:
   - kustomize:
       patches:
@@ -52,3 +52,6 @@ spec:
           - op: replace
             path: /spec/template/spec/containers/0/args/2
             value: "--trusted-origins=https://portainer.k8s.shubhamtatvamasi.com"
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: "--kubectl-shell-image=portainer/kubectl-shell:2.39.3"
