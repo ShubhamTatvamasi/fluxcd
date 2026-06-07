@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  interval: 10m
+  chart: gitea
+  version: "12.6.0"
+  sourceRef:
+    name: gitea
+    kind: HelmRepository

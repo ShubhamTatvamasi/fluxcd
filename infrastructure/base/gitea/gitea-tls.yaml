@@ -1,0 +1,24 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: gitea-tls
+  namespace: gitea
+spec:
+  dependsOn:
+  - name: sealed-secrets
+    namespace: flux-system
+  force: false
+  interval: 10m0s
+  path: ./secrets/base/shubhamtatvamasi-tls
+  postBuild:
+    substitute:
+      tls_secret_name: gitea-tls
+      namespace: gitea
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  timeout: 10m
+  wait: true

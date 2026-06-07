@@ -1,0 +1,37 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: gitea
+    namespace: gitea
+  values:
+    valkey-cluster:
+      enabled: false
+    valkey:
+      enabled: true
+    postgresql-ha:
+      enabled: false
+    postgresql:
+      enabled: true
+    gitea:
+      admin:
+        username: admin
+        password: admin1234
+    ingress:
+      enabled: true
+      className: traefik
+      hosts:
+        - host: gitea.k8s.shubhamtatvamasi.com
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: gitea-tls
+          hosts:
+            - gitea.k8s.shubhamtatvamasi.com
