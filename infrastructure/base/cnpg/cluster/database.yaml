@@ -1,0 +1,11 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: airflow
+  namespace: cnpg-system
+spec:
+  cluster:
+    name: postgres
+  name: airflow
+  owner: airflow

@@ -21,9 +21,9 @@ spec:
       retries: 3
     disableWait: false
   values:
-    airflowVersion: "3.2.1"
-    # defaultAirflowTag: "3.2.1"
-    defaultAirflowTag: "3.2.1-2"
+    airflowVersion: "3.2.2"
+    # defaultAirflowTag: "3.2.2"
+    defaultAirflowTag: "3.2.2-1"
     defaultAirflowRepository: "shubhamtatvamasi/airflow"
     executor: "KubernetesExecutor"
     postgresql:
@@ -78,8 +78,7 @@ spec:
     workers:
       replicas: ${workers_replicas}
     data:
-      metadataConnection:
-        host: postgres
+      metadataSecretName: airflow-metadata-connection
     images:
       gitSync:
         tag: v4.6.0
@@ -99,11 +98,12 @@ spec:
     ingress:
       apiServer:
         enabled: true
+        ingressClassName: traefik
         hosts:
           - name: airflow.k8s.shubhamtatvamasi.com
             tls:
               enabled: true
-              secretName: shubhamtatvamasi-tls
+              secretName: airflow-tls
         tls:
           enabled: true
-          secretName: shubhamtatvamasi-tls
+          secretName: airflow-tls

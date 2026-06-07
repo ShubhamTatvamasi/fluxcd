@@ -2,12 +2,12 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
-  name: airflow
-  namespace: ${namespace}
+  name: cnpg
+  namespace: cnpg-system
 spec:
   interval: 10m
-  chart: airflow
-  version: "1.22.0"
+  chart: cloudnative-pg
+  version: "0.28.2"
   sourceRef:
-    name: airflow
+    name: cnpg
     kind: HelmRepository

@@ -6,21 +6,23 @@ metadata:
   namespace: ${namespace}
 spec:
   inputs:
-    - service: "shubhamtatvamasi-tls"
+    - service: "airflow-tls"
       path: "./secrets/base/shubhamtatvamasi-tls"
+      tls_secret_name: "airflow-tls"
     - service: "git-credentials"
       path: "./secrets/git-credentials"
+    - service: "airflow-metadata-connection"
+      path: "./secrets/airflow/airflow-metadata-connection"
     - service: "airflow-config"
       path: "./deployments/${namespace}"
-    - service: "postgres"
-      path: "./workloads/airflow/postgres"
     - service: "airflow"
       path: "./workloads/airflow/airflow"
       dependsOn:
         - "postgres"
-        - "shubhamtatvamasi-tls"
+        - "airflow-tls"
         - "git-credentials"
         - "airflow-config"
+        - "airflow-metadata-connection"
       workers_replicas: "${workers_replicas}"
       dags_git_sync_enabled: "${dags_git_sync_enabled}"
       dags_git_repo: "${dags_git_repo}"
@@ -53,6 +55,10 @@ spec:
       postBuild:
         substitute:
           namespace: ${namespace}
+
+          <<- if index inputs "tls_secret_name" >>
+          tls_secret_name: "<< index inputs "tls_secret_name" >>"
+          <<- end >>
 
           <<- if index inputs "workers_replicas" >>
           workers_replicas: "<< index inputs "workers_replicas" >>"
