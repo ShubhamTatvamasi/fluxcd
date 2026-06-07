@@ -10,3 +10,12 @@ spec:
     kind: OCIRepository
     name: traefik
     namespace: traefik
+  values:
+    ports:
+      web:
+        http:
+          redirections:
+            entryPoint:
+              to: websecure
+              scheme: https
+              permanent: true
