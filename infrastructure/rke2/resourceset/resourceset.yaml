@@ -1,0 +1,72 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: infrastructure
+  namespace: flux-system
+spec:
+  inputs:
+    # controllers
+    - service: "metallb"
+      path: "./infrastructure/base/metallb"
+    - service: "openebs"
+      path: "./infrastructure/base/openebs"
+    - service: "sealed-secrets"
+      path: "./infrastructure/base/sealed-secrets"
+
+    # flux web UI TLS (decrypted by sealed-secrets)
+    - service: "flux-tls"
+      path: "./infrastructure/rke2/flux-system"
+      dependsOn:
+        - "sealed-secrets"
+
+    # metallb config (needs the metallb controller CRDs first)
+    - service: "metallb-config"
+      path: "./infrastructure/rke2/metallb-system"
+      dependsOn:
+        - "metallb"
+
+    # base apps
+    - service: "traefik"
+      path: "./infrastructure/base/traefik"
+      dependsOn:
+        - "metallb-config"
+    - service: "harbor"
+      path: "./infrastructure/base/harbor"
+      dependsOn:
+        - "traefik"
+        - "openebs"
+        - "sealed-secrets"
+    - service: "dex"
+      path: "./infrastructure/base/dex"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+    - service: "portainer"
+      path: "./infrastructure/base/portainer"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+  resourcesTemplate: |
+    apiVersion: kustomize.toolkit.fluxcd.io/v1
+    kind: Kustomization
+    metadata:
+      name: << inputs.service >>
+      namespace: flux-system
+    spec:
+      interval: 10m0s
+      path: << inputs.path >>
+      prune: true
+      wait: true
+      timeout: 10m
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+
+      <<- if index inputs "dependsOn" >>
+      dependsOn:
+        <<- range index inputs "dependsOn" >>
+        - name: << . >>
+        <<- end >>
+      <<- end >>

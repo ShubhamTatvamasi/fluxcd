@@ -6,7 +6,7 @@ metadata:
   namespace: portainer
 spec:
   dependsOn:
-  - name: controllers
+  - name: sealed-secrets
     namespace: flux-system
   force: false
   interval: 10m0s
