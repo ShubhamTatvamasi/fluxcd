@@ -28,5 +28,7 @@ spec:
       skip-provider-button: "true"
       approval-prompt: "auto"
       cookie-secure: "true"
+      cookie-csrf-per-request: "true"
+      cookie-csrf-expire: "5m"
       whitelist-domain: .k8s.shubhamtatvamasi.com
       cookie-domain: .k8s.shubhamtatvamasi.com
