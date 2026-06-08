@@ -33,6 +33,7 @@ spec:
       path: "./infrastructure/base/traefik"
       dependsOn:
         - "metallb-config"
+        - "sealed-secrets"
     - service: "harbor"
       path: "./infrastructure/base/harbor"
       dependsOn:
