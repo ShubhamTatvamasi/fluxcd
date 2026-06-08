@@ -12,7 +12,7 @@ spec:
     - service: "git-credentials"
       path: "./secrets/git-credentials"
     - service: "airflow-config"
-      path: "./deployments/${namespace}"
+      path: "./apps/${cluster}/${namespace}"
     - service: "airflow-metadata-connection"
       path: "./secrets/airflow/airflow-metadata-connection"
     - service: "airflow"

@@ -16,6 +16,7 @@ spec:
     namespace: flux-system
   postBuild:
     substitute:
+      cluster: rke2
       namespace: airflow
       dags_git_sync_enabled: "true"
       dags_git_repo: "http://gitea-http.gitea:3000/admin/airflow.git"
