@@ -12,7 +12,6 @@ spec:
       kind: Rule
       services:
         - name: oauth2-proxy
-          namespace: oauth2-proxy
           port: 80
   tls:
     secretName: traefik-tls
