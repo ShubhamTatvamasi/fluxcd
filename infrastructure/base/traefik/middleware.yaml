@@ -8,6 +8,7 @@ spec:
   forwardAuth:
     address: http://oauth2-proxy.oauth2-proxy/oauth2/auth
     trustForwardHeader: true
+    maxResponseBodySize: 4096
     authResponseHeaders:
       - X-Auth-Request-User
       - X-Auth-Request-Email
