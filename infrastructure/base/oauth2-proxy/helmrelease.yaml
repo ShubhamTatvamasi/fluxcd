@@ -12,8 +12,9 @@ spec:
     namespace: oauth2-proxy
   values:
     config:
-      existingSecret: oauth2-proxy
-      cookieName: _oauth2_proxy
+      clientID: traefik-dashboard
+      clientSecret: traefik-dex-client-secret
+      cookieSecret: fc3276bd001f7b4f31dcc9bbcbca9031
     extraArgs:
       provider: oidc
       oidc-issuer-url: https://dex.k8s.shubhamtatvamasi.com
