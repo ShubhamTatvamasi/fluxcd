@@ -25,6 +25,7 @@ spec:
       set-xauthrequest: "true"
       pass-access-token: "true"
       skip-provider-button: "true"
+      approval-prompt: "auto"
       cookie-secure: "true"
       whitelist-domain: .k8s.shubhamtatvamasi.com
       cookie-domain: .k8s.shubhamtatvamasi.com
