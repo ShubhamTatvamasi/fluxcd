@@ -45,6 +45,10 @@ spec:
       dependsOn:
         - "traefik"
         - "sealed-secrets"
+    - service: "oauth2-proxy"
+      path: "./infrastructure/base/oauth2-proxy"
+      dependsOn:
+        - "dex"
     - service: "portainer"
       path: "./infrastructure/base/portainer"
       dependsOn:

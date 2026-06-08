@@ -21,7 +21,7 @@ spec:
         skipApprovalScreen: true
       enablePasswordDB: true
       staticPasswords:
-        - email: "admin@example.com"
+        - email: "admin@shubhamtatvamasi.com"
           hash: "$2y$10$SCGWSS0JvcJYgmbKLltITOnWH.1rc2yHiJOcQgqpDphSZkRrlmoza"
           username: "admin"
           userID: "1"
@@ -31,6 +31,11 @@ spec:
             - "https://flux.k8s.shubhamtatvamasi.com/oauth2/callback"
           name: Flux Web UI
           secret: "flux-dex-client-secret"
+        - id: traefik-dashboard
+          redirectURIs:
+            - "https://traefik.k8s.shubhamtatvamasi.com/oauth2/callback"
+          name: Traefik Dashboard
+          secret: "traefik-dex-client-secret"
     ingress:
       enabled: true
       className: traefik

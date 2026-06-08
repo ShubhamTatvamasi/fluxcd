@@ -1,0 +1,28 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: oauth2-proxy
+  namespace: oauth2-proxy
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: oauth2-proxy
+    namespace: oauth2-proxy
+  values:
+    config:
+      existingSecret: oauth2-proxy
+      cookieName: _oauth2_proxy
+    extraArgs:
+      provider: oidc
+      oidc-issuer-url: https://dex.k8s.shubhamtatvamasi.com
+      redirect-url: https://traefik.k8s.shubhamtatvamasi.com/oauth2/callback
+      email-domain: "*"
+      upstream: static://200
+      reverse-proxy: "true"
+      set-xauthrequest: "true"
+      pass-access-token: "true"
+      cookie-secure: "true"
+      whitelist-domain: .k8s.shubhamtatvamasi.com
+      cookie-domain: .k8s.shubhamtatvamasi.com

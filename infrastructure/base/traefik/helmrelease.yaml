@@ -25,5 +25,8 @@ spec:
         matchRule: Host(`traefik.k8s.shubhamtatvamasi.com`)
         entryPoints:
           - websecure
+        middlewares:
+          - name: oauth2-proxy-auth
+            namespace: traefik
         tls:
           secretName: traefik-tls
