@@ -27,3 +27,5 @@ spec:
       name: oauth2-proxy
       port: 80
     query: "/oauth2/start?rd={url}"
+    statusRewrites:
+      "401": 302
