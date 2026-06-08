@@ -48,6 +48,19 @@ spec:
       path: "./infrastructure/base/portainer"
       dependsOn:
         - "traefik"
+        - "openebs"
+        - "sealed-secrets"
+    - service: "kube-prometheus-stack"
+      path: "./infrastructure/base/kube-prometheus-stack"
+      dependsOn:
+        - "traefik"
+        - "openebs"
+        - "sealed-secrets"
+    - service: "gitea"
+      path: "./infrastructure/base/gitea"
+      dependsOn:
+        - "traefik"
+        - "openebs"
         - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1

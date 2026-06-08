@@ -25,9 +25,10 @@ spec:
       adminPassword: admin
       ingress:
         enabled: true
+        ingressClassName: traefik
         hosts:
           - grafana.k8s.shubhamtatvamasi.com
         tls:
-          - secretName: shubhamtatvamasi-tls
+          - secretName: kube-prometheus-stack-tls
             hosts:
               - grafana.k8s.shubhamtatvamasi.com

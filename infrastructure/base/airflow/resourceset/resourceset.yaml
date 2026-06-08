@@ -11,14 +11,13 @@ spec:
       tls_secret_name: "airflow-tls"
     - service: "git-credentials"
       path: "./secrets/git-credentials"
-    - service: "airflow-metadata-connection"
-      path: "./secrets/airflow/airflow-metadata-connection"
     - service: "airflow-config"
       path: "./deployments/${namespace}"
+    - service: "airflow-metadata-connection"
+      path: "./secrets/airflow/airflow-metadata-connection"
     - service: "airflow"
-      path: "./workloads/airflow/airflow"
+      path: "./infrastructure/base/airflow/airflow"
       dependsOn:
-        - "postgres"
         - "airflow-tls"
         - "git-credentials"
         - "airflow-config"
@@ -28,6 +27,10 @@ spec:
       dags_git_repo: "${dags_git_repo}"
       dags_git_branch: "${dags_git_branch}"
       dags_git_subpath: "${dags_git_subpath}"
+    - service: "airflow-monitoring"
+      path: "./infrastructure/base/airflow/airflow-monitoring"
+      dependsOn:
+        - "airflow"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization

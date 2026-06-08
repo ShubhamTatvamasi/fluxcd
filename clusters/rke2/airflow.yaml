@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: airflow
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./infrastructure/base/airflow/resourceset
+  prune: true
+  dependsOn:
+    - name: airflow-infrastructure
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  postBuild:
+    substitute:
+      namespace: airflow
+      dags_git_sync_enabled: "true"
+      dags_git_repo: "http://gitea-http.gitea:3000/admin/airflow.git"
+      dags_git_branch: "main"
+      dags_git_subpath: "dags"

@@ -1,0 +1,56 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: airflow-infrastructure
+  namespace: flux-system
+spec:
+  inputs:
+    # log/search store
+    - service: "opensearch"
+      path: "./infrastructure/base/opensearch"
+
+    # grafana dashboard for airflow (ConfigMap picked up by kube-prometheus-stack)
+    - service: "airflow-dashboard"
+      path: "./infrastructure/base/airflow/airflow-dashboard"
+
+    # cnpg operator (installs the postgresql.cnpg.io CRDs)
+    - service: "cnpg-operator"
+      path: "./infrastructure/base/cnpg/operator"
+
+    # basic-auth credentials for the cnpg cluster (sealed secret)
+    - service: "airflow-basic-auth"
+      path: "./secrets/airflow/cnpg-system"
+      dependsOn:
+        - "sealed-secrets"
+
+    # cnpg cluster + pooler + database (needs the operator CRDs and the secret)
+    - service: "cnpg-cluster"
+      path: "./infrastructure/base/cnpg/cluster"
+      dependsOn:
+        - "cnpg-operator"
+        - "airflow-basic-auth"
+  resourcesTemplate: |
+    apiVersion: kustomize.toolkit.fluxcd.io/v1
+    kind: Kustomization
+    metadata:
+      name: << inputs.service >>
+      namespace: flux-system
+    spec:
+      interval: 10m0s
+      path: << inputs.path >>
+      prune: true
+      wait: true
+      timeout: 10m
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+
+      <<- if index inputs "dependsOn" >>
+      dependsOn:
+        <<- range index inputs "dependsOn" >>
+        - name: << . >>
+          namespace: flux-system
+        <<- end >>
+      <<- end >>
