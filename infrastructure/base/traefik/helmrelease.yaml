@@ -11,6 +11,9 @@ spec:
     name: traefik
     namespace: traefik
   values:
+    providers:
+      kubernetesCRD:
+        allowExternalNameServices: true
     ports:
       web:
         http:
