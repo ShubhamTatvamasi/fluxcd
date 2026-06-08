@@ -79,7 +79,7 @@ spec:
       metadataSecretName: airflow-metadata-connection
     images:
       gitSync:
-        tag: v4.6.0
+        tag: v4.7.0
     extraEnvFrom: |
       - secretRef:
           name: 'airflow-connections'
