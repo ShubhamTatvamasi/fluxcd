@@ -20,7 +20,6 @@ spec:
       oidc-issuer-url: https://dex.k8s.shubhamtatvamasi.com
       redirect-url: https://traefik.k8s.shubhamtatvamasi.com/oauth2/callback
       scope: openid email profile
-      code-challenge-method: "S256"
       email-domain: "*"
       upstream: static://200
       reverse-proxy: "true"
