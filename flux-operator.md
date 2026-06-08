@@ -78,7 +78,7 @@ spec:
 EOF
 ```
 
-Create a Kustomization resource:
+Sync your cluster:
 ```yaml
 kubectl apply -f - << EOF
 apiVersion: kustomize.toolkit.fluxcd.io/v1
