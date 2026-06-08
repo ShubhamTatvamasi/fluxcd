@@ -13,6 +13,8 @@ spec:
     # grafana dashboard for airflow (ConfigMap picked up by kube-prometheus-stack)
     - service: "airflow-dashboard"
       path: "./infrastructure/base/airflow/airflow-dashboard"
+      dependsOn:
+        - "kube-prometheus-stack"
 
     # cnpg operator (installs the postgresql.cnpg.io CRDs)
     - service: "cnpg-operator"
