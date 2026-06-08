@@ -29,9 +29,9 @@ spec:
         entryPoints:
           - websecure
         middlewares:
-          - name: oauth2-proxy-errors
-            namespace: traefik
           - name: oauth2-proxy-auth
+            namespace: traefik
+          - name: oauth2-proxy-errors
             namespace: traefik
         tls:
           secretName: traefik-tls
