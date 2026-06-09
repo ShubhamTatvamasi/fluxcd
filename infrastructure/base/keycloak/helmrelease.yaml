@@ -1,0 +1,12 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: keycloak
+  namespace: keycloak
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: keycloak
+    namespace: keycloak
