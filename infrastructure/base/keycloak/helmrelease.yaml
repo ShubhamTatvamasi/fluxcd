@@ -10,3 +10,19 @@ spec:
     kind: OCIRepository
     name: keycloak
     namespace: keycloak
+  values:
+    keycloak:
+      adminPassword: admin
+      hostname: https://keycloak.k8s.shubhamtatvamasi.com
+      proxyHeaders: xforwarded
+    ingress:
+      enabled: true
+      className: traefik
+      hosts:
+        - host: keycloak.k8s.shubhamtatvamasi.com
+          paths: /
+          pathType: Prefix
+      tls:
+        - hosts:
+            - keycloak.k8s.shubhamtatvamasi.com
+          secretName: keycloak-tls
