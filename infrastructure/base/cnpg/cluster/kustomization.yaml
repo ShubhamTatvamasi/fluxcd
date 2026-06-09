@@ -4,5 +4,4 @@ kind: Kustomization
 resources:
 - cluster.yaml
 - pooler.yaml
-- airflow-basic-auth.yaml
 - database.yaml
