@@ -6,6 +6,5 @@ resources:
 - ocirepository.yaml
 - helmrelease.yaml
 - traefik-tls.yaml
-- oauth2-proxy-service.yaml
 - middleware.yaml
 - ingressroute.yaml
