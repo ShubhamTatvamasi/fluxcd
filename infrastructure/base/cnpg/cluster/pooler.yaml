@@ -14,3 +14,5 @@ spec:
     parameters:
       max_client_conn: "1000"
       default_pool_size: "25"
+      server_lifetime: "300"
+      server_idle_timeout: "120"
