@@ -67,10 +67,12 @@ spec:
           workers_replicas: "<< index inputs "workers_replicas" >>"
           <<- end >>
 
+          <<- if eq inputs.service "airflow" >>
           <<- if index inputs "dags_git_sync_enabled" >>
           dags_git_sync_enabled: "<< index inputs "dags_git_sync_enabled" >>"
           <<- else >>
           dags_git_sync_enabled: "false"
+          <<- end >>
           <<- end >>
 
           <<- if index inputs "dags_git_repo" >>

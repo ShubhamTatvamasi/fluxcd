@@ -28,12 +28,17 @@ spec:
       dependsOn:
         - "metallb"
 
-    # base apps
+    # network and ingress
+    - service: "gateway-api"
+      path: "./infrastructure/base/gateway-api"
     - service: "traefik"
       path: "./infrastructure/base/traefik"
       dependsOn:
         - "metallb-config"
         - "sealed-secrets"
+        - "gateway-api"
+
+    # applications
     - service: "harbor"
       path: "./infrastructure/base/harbor"
       dependsOn:
