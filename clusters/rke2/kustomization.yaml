@@ -5,3 +5,4 @@ resources:
 - infrastructure.yaml
 - airflow-infrastructure.yaml
 - airflow.yaml
+- nginx.yaml
