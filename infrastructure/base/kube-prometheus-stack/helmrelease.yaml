@@ -18,6 +18,15 @@ spec:
         serviceMonitorNamespaceSelector:
           matchLabels:
             monitoring: enabled
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        hosts:
+          - prometheus.k8s.shubhamtatvamasi.com
+        tls:
+          - secretName: kube-prometheus-stack-tls
+            hosts:
+              - prometheus.k8s.shubhamtatvamasi.com
     grafana:
       # service:
       #   type: LoadBalancer
