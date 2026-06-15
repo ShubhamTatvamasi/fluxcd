@@ -71,6 +71,9 @@ spec:
     # apiServer:
     #   service:
     #     type: LoadBalancer
+    triggerer:
+      persistence:
+        enabled: false
     migrateDatabaseJob:
       useHelmHooks: false
     createUserJob:
