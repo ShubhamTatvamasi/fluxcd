@@ -66,12 +66,14 @@ spec:
         - "traefik"
         - "openebs"
         - "sealed-secrets"
-    - service: "gitea"
-      path: "./infrastructure/base/gitea"
-      dependsOn:
-        - "traefik"
-        - "openebs"
-        - "sealed-secrets"
+
+    # Gitea
+    # - service: "gitea"
+    #   path: "./infrastructure/base/gitea"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "openebs"
+    #     - "sealed-secrets"
 
     # Research
     - service: "keycloak"
