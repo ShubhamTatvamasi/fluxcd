@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 10m
   chart: opensearch
-  version: "3.6.0"
+  version: "3.7.0"
   sourceRef:
     name: opensearch
     kind: HelmRepository
