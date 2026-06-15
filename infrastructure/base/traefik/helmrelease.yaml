@@ -11,6 +11,21 @@ spec:
     name: traefik
     namespace: traefik
   values:
+    logs:
+      access:
+        enabled: true
+    metrics:
+      prometheus:
+        service:
+          enabled: true
+        serviceMonitor:
+          enabled: true
+          namespace: traefik
+          labels:
+            release: kube-prometheus-stack
+        addEntryPointsLabels: true
+        addRoutersLabels: true
+        addServicesLabels: true
     providers:
       kubernetesCRD:
         allowCrossNamespace: true
