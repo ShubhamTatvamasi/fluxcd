@@ -5,4 +5,4 @@ metadata:
   name: portainer-run-config
   namespace: portainer-run
 data:
-  PORTAINER_URL: "https://portainer.k8s.shubhamtatvamasi.com"
+  PORTAINER_URL: "portainer.portainer:9443"
