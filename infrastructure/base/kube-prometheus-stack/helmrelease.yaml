@@ -32,6 +32,9 @@ spec:
       #   type: LoadBalancer
       adminUser: admin
       adminPassword: admin
+      # Logs Drilldown app (Metrics/Traces/Profiles Drilldown ship by default).
+      plugins:
+        - grafana-lokiexplore-app
       ingress:
         enabled: true
         ingressClassName: traefik
