@@ -48,12 +48,23 @@ spec:
     mimir:
       structuredConfig:
         # Classic mode — distributor writes directly to ingesters instead of
-        # going through Kafka. The chart's default config enables this, so we
-        # must explicitly turn it off to match kafka.enabled: false above.
+        # going through Kafka. This mirrors the chart's bundled
+        # classic-architecture.yaml preset: disabling ingest_storage alone is
+        # not enough, we must also null out the Kafka address/topic and
+        # re-enable the ingester Push gRPC method (the default config disables
+        # it because ingest-storage ingesters read from Kafka, not gRPC).
         ingest_storage:
           enabled: false
-        # Single-replica ring; no high-availability.
+          kafka:
+            address: null
+            topic: null
+            auto_create_topic_default_partitions: null
+        distributor:
+          remote_timeout: null
+        # Single-replica ring; no high-availability. push_grpc_method_enabled
+        # back to null (chart default for classic mode = enabled).
         ingester:
+          push_grpc_method_enabled: null
           ring:
             replication_factor: 1
         # 1 year retention for long-term metrics.
