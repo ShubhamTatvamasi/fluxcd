@@ -3,22 +3,39 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: mimir
-  namespace: monitoring
+  namespace: mimir
 spec:
   interval: 10m
   chartRef:
     kind: OCIRepository
     name: mimir
-    namespace: monitoring
+    namespace: mimir
   values:
     # The mimir-distributed chart only supports microservices mode (there is
     # no monolithic/single-binary chart). For a homelab we run a single
     # replica of every component and back it with the chart's bundled MinIO
     # (S3-compatible object store) — Mimir is built around object storage,
     # so filesystem is not a reliable option even for a single node.
+
+    # RKE2's CoreDNS service is rke2-coredns-rke2-coredns in kube-system, not
+    # the upstream "kube-dns" the chart defaults to. The gateway (nginx) uses
+    # global.dnsService/dnsNamespace for its resolver directive, so it must
+    # point at the real service or the gateway crash-loops on startup.
+    global:
+      dnsService: rke2-coredns-rke2-coredns
+      dnsNamespace: kube-system
+
     metaMonitoring:
       grafanaAgent:
         enabled: false
+
+    # Chart 6.x defaults to ingest-storage (Kafka) mode, which adds a Kafka
+    # StatefulSet. That only pays off for multi-replica HA / high write
+    # throughput; at single-replica scale it is pure overhead, so we disable
+    # Kafka and turn ingest_storage off so the distributor writes directly to
+    # the ingester (classic mode).
+    kafka:
+      enabled: false
 
     # Bundled MinIO provides S3-compatible blocks/ruler/alertmanager storage.
     minio:
@@ -30,6 +47,11 @@ spec:
 
     mimir:
       structuredConfig:
+        # Classic mode — distributor writes directly to ingesters instead of
+        # going through Kafka. The chart's default config enables this, so we
+        # must explicitly turn it off to match kafka.enabled: false above.
+        ingest_storage:
+          enabled: false
         # Single-replica ring; no high-availability.
         ingester:
           ring:

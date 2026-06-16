@@ -21,7 +21,7 @@ spec:
         # Ship all scraped metrics to Mimir for long-term storage. Mimir's
         # push API is fronted by the mimir-gateway service.
         remoteWrite:
-          - url: http://mimir-gateway.monitoring.svc.cluster.local/api/v1/push
+          - url: http://mimir-gateway.mimir.svc.cluster.local/api/v1/push
             headers:
               X-Scope-OrgID: anonymous
       ingress:

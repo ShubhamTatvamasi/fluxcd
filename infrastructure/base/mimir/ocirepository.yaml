@@ -3,7 +3,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: mimir
-  namespace: monitoring
+  namespace: mimir
 spec:
   interval: 10m
   url: oci://ghcr.io/grafana/helm-charts/mimir-distributed
