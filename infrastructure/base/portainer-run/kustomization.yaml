@@ -9,5 +9,5 @@ resources:
 - deployment.yaml
 - service.yaml
 - serverstransport.yaml
-- ingress.yaml
+- ingressroute.yaml
 - portainer-run-tls.yaml

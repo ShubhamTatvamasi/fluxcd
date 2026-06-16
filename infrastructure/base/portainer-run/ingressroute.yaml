@@ -1,0 +1,23 @@
+---
+# Traefik terminates TLS with the real wildcard cert (portainer-run-tls) and
+# proxies to the pod over HTTPS. The pod serves a self-signed cert on :443, so
+# the route uses the serversTransport in serverstransport.yaml (insecureSkipVerify).
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: portainer-run
+  namespace: portainer-run
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`portainer-run.k8s.shubhamtatvamasi.com`)
+      kind: Rule
+      services:
+        - name: portainer-run
+          namespace: portainer-run
+          port: 443
+          scheme: https
+          serversTransport: portainer-run
+  tls:
+    secretName: portainer-run-tls
