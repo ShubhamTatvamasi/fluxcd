@@ -11,6 +11,9 @@ spec:
     name: openebs
     namespace: openebs
   values:
+    localpv-provisioner:
+      hostpathClass:
+        isDefaultClass: true
     openebs-crds:
       csi:
         volumeSnapshots:
@@ -19,9 +22,6 @@ spec:
       enabled: false
     loki:
       enabled: false
-    localpv-provisioner:
-      hostpathClass:
-        isDefaultClass: true
     engines:
       local:
         lvm:
