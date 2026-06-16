@@ -3,7 +3,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: alloy
-  namespace: monitoring
+  namespace: alloy
 spec:
   interval: 10m
   url: https://grafana.github.io/helm-charts

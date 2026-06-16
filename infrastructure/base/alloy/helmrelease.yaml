@@ -3,13 +3,13 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: alloy
-  namespace: monitoring
+  namespace: alloy
 spec:
   interval: 10m
   chartRef:
     kind: HelmChart
     name: alloy
-    namespace: monitoring
+    namespace: alloy
   values:
     controller:
       # DaemonSet so a collector runs on every node and tails local pod logs.
@@ -96,6 +96,6 @@ spec:
           // Ship everything to the in-cluster Loki.
           loki.write "default" {
             endpoint {
-              url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+              url = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push"
             }
           }
