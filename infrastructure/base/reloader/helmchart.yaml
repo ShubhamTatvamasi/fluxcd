@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: reloader
+  namespace: reloader
+spec:
+  interval: 10m
+  chart: reloader
+  version: "2.2.12"
+  sourceRef:
+    name: reloader
+    kind: HelmRepository

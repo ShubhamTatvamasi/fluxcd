@@ -13,6 +13,8 @@ spec:
       path: "./infrastructure/base/openebs"
     - service: "sealed-secrets"
       path: "./infrastructure/base/sealed-secrets"
+    - service: "reloader"
+      path: "./infrastructure/base/reloader"
 
     # flux web UI TLS (sealed secret decrypted by sealed-secrets)
     - service: "flux-tls"

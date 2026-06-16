@@ -74,6 +74,9 @@ spec:
     triggerer:
       persistence:
         enabled: false
+      podAnnotations:
+        secret.reloader.stakater.com/reload: "airflow-connections"
+        configmap.reloader.stakater.com/reload: "airflow-variables"
     migrateDatabaseJob:
       useHelmHooks: false
     createUserJob:
@@ -88,6 +91,21 @@ spec:
           name: 'airflow-connections'
       - configMapRef:
           name: 'airflow-variables'
+    # Reloader watches these workloads and restarts them automatically when the
+    # 'airflow-connections' Secret or 'airflow-variables' ConfigMap changes
+    # (env-from-Secret/ConfigMap is not hot-reloaded).
+    apiServer:
+      podAnnotations:
+        secret.reloader.stakater.com/reload: "airflow-connections"
+        configmap.reloader.stakater.com/reload: "airflow-variables"
+    scheduler:
+      podAnnotations:
+        secret.reloader.stakater.com/reload: "airflow-connections"
+        configmap.reloader.stakater.com/reload: "airflow-variables"
+    dagProcessor:
+      podAnnotations:
+        secret.reloader.stakater.com/reload: "airflow-connections"
+        configmap.reloader.stakater.com/reload: "airflow-variables"
     dags:
       gitSync:
         enabled: ${dags_git_sync_enabled}
