@@ -10,6 +10,3 @@ spec:
     kind: HelmChart
     name: metallb
     namespace: metallb-system
-  values:
-    speaker:
-      enabled: true
