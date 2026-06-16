@@ -14,6 +14,11 @@ spec:
     logs:
       access:
         enabled: true
+        # JSON format so Loki/Alloy can parse fields (status, path, duration).
+        format: json
+        fields:
+          headers:
+            defaultmode: keep
     metrics:
       prometheus:
         service:

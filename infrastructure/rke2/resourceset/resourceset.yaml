@@ -69,6 +69,18 @@ spec:
         - "openebs"
         - "sealed-secrets"
 
+    # logging — Loki stores logs, Alloy ships pod logs into it, and the
+    # Grafana sidecar (kube-prometheus-stack) auto-registers the datasource.
+    - service: "loki"
+      path: "./infrastructure/base/loki"
+      dependsOn:
+        - "kube-prometheus-stack"
+        - "openebs"
+    - service: "alloy"
+      path: "./infrastructure/base/alloy"
+      dependsOn:
+        - "loki"
+
     # Gitea
     # - service: "gitea"
     #   path: "./infrastructure/base/gitea"

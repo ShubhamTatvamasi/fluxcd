@@ -1,0 +1,62 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: loki
+  namespace: monitoring
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: loki
+    namespace: monitoring
+  values:
+    # Single-binary mode with filesystem storage — simplest topology for a
+    # homelab cluster. No object store / caches required.
+    deploymentMode: SingleBinary
+    loki:
+      auth_enabled: false
+      commonConfig:
+        replication_factor: 1
+      schemaConfig:
+        configs:
+          - from: "2024-04-01"
+            store: tsdb
+            object_store: filesystem
+            schema: v13
+            index:
+              prefix: index_
+              period: 24h
+      storage:
+        type: filesystem
+      # Disable the structured-metadata feature requirement for older clients
+      # and keep limits sane for a small cluster.
+      limits_config:
+        retention_period: 168h # 7 days
+      # Reduce reported ring members to a single replica.
+      pattern_ingester:
+        enabled: false
+      rulerConfig: {}
+    singleBinary:
+      replicas: 1
+      persistence:
+        enabled: true
+        size: 10Gi
+    # Scale all other component deployments to zero in SingleBinary mode.
+    read:
+      replicas: 0
+    write:
+      replicas: 0
+    backend:
+      replicas: 0
+    # The chart's self-monitoring + canary + gateway are unnecessary here.
+    chunksCache:
+      enabled: false
+    resultsCache:
+      enabled: false
+    lokiCanary:
+      enabled: false
+    test:
+      enabled: false
+    gateway:
+      enabled: false

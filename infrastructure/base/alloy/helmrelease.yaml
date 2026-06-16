@@ -1,0 +1,97 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: alloy
+  namespace: monitoring
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: alloy
+    namespace: monitoring
+  values:
+    controller:
+      # DaemonSet so a collector runs on every node and tails local pod logs.
+      type: daemonset
+    alloy:
+      configMap:
+        content: |-
+          // Discover every pod in the cluster.
+          discovery.kubernetes "pods" {
+            role = "pod"
+          }
+
+          // Build Loki labels from pod metadata and resolve the on-disk log path.
+          discovery.relabel "pod_logs" {
+            targets = discovery.kubernetes.pods.targets
+
+            rule {
+              source_labels = ["__meta_kubernetes_namespace"]
+              target_label  = "namespace"
+            }
+            rule {
+              source_labels = ["__meta_kubernetes_pod_name"]
+              target_label  = "pod"
+            }
+            rule {
+              source_labels = ["__meta_kubernetes_pod_container_name"]
+              target_label  = "container"
+            }
+            rule {
+              source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+              target_label  = "app"
+            }
+            rule {
+              source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_name"]
+              separator     = "/"
+              target_label  = "job"
+            }
+            rule {
+              source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+              separator     = "/"
+              action        = "replace"
+              replacement   = "/var/log/pods/*$1/*.log"
+              target_label  = "__path__"
+            }
+            rule {
+              source_labels = ["__meta_kubernetes_pod_container_id"]
+              regex         = "^(\\w+):\\/\\/.+$"
+              replacement   = "$1"
+              target_label  = "tmp_container_runtime"
+            }
+          }
+
+          // Tail the discovered log files from the node filesystem.
+          local.file_match "pod_logs" {
+            path_targets = discovery.relabel.pod_logs.output
+          }
+
+          loki.source.file "pod_logs" {
+            targets    = local.file_match.pod_logs.targets
+            forward_to = [loki.process.pod_logs.receiver]
+          }
+
+          // Parse CRI/Docker log envelopes so the real message lands in Loki.
+          loki.process "pod_logs" {
+            stage.match {
+              selector = "{tmp_container_runtime=\"containerd\"}"
+              stage.cri {}
+            }
+            stage.match {
+              selector = "{tmp_container_runtime=\"docker\"}"
+              stage.docker {}
+            }
+            // Drop the temporary runtime label before shipping.
+            stage.label_drop {
+              values = ["tmp_container_runtime"]
+            }
+            forward_to = [loki.write.default.receiver]
+          }
+
+          // Ship everything to the in-cluster Loki.
+          loki.write "default" {
+            endpoint {
+              url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+            }
+          }

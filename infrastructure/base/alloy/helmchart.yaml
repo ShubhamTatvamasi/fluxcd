@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: alloy
+  namespace: monitoring
+spec:
+  interval: 10m
+  chart: alloy
+  version: "1.10.0"
+  sourceRef:
+    name: alloy
+    kind: HelmRepository
