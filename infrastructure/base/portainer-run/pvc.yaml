@@ -1,0 +1,14 @@
+---
+# PersistentVolumeClaim — session cache storage.
+# Keeps the deployment cache across pod restarts.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: portainer-run-cache
+  namespace: portainer-run
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

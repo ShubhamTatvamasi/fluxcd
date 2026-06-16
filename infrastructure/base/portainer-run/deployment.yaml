@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portainer-run
+  namespace: portainer-run
+  labels:
+    app: portainer-run
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portainer-run
+  template:
+    metadata:
+      labels:
+        app: portainer-run
+    spec:
+      containers:
+        - name: portainer-run
+          image: portainer/portainer-run:latest
+          imagePullPolicy: Always
+          ports:
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: portainer-run-config
+          env:
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: portainer-run-secret
+                  key: ENCRYPTION_KEY
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: portainer-run-secret
+                  key: ANTHROPIC_API_KEY
+                  optional: true
+          volumeMounts:
+            - name: cache
+              mountPath: /app/data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /config
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /config
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      volumes:
+        - name: cache
+          persistentVolumeClaim:
+            claimName: portainer-run-cache

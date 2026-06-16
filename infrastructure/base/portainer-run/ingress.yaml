@@ -1,0 +1,23 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: portainer-run
+  namespace: portainer-run
+spec:
+  ingressClassName: traefik
+  tls:
+    - secretName: portainer-run-tls
+      hosts:
+        - portainer-run.k8s.shubhamtatvamasi.com
+  rules:
+    - host: portainer-run.k8s.shubhamtatvamasi.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: portainer-run
+                port:
+                  number: 443

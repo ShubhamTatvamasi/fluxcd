@@ -56,12 +56,21 @@ spec:
       path: "./infrastructure/base/oauth2-proxy"
       dependsOn:
         - "dex"
+
+    # portainer and portainer-run
     - service: "portainer"
       path: "./infrastructure/base/portainer"
       dependsOn:
         - "traefik"
         - "openebs"
         - "sealed-secrets"
+    - service: "portainer-run"
+      path: "./infrastructure/base/portainer-run"
+      dependsOn:
+        - "traefik"
+        - "openebs"
+        - "sealed-secrets"
+
     - service: "kube-prometheus-stack"
       path: "./infrastructure/base/kube-prometheus-stack"
       dependsOn:
