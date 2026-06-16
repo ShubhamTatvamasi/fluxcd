@@ -15,6 +15,10 @@ spec:
       # DaemonSet so a collector runs on every node and tails local pod logs.
       type: daemonset
     alloy:
+      mounts:
+        # Mount host /var/log (incl. /var/log/pods) so loki.source.file can
+        # tail container logs. Without this the DaemonSet sees no log files.
+        varlog: true
       configMap:
         content: |-
           // Discover every pod in the cluster.
