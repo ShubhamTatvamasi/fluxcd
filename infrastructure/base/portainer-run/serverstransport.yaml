@@ -1,0 +1,11 @@
+---
+# The pod serves a self-signed cert on :443, so Traefik must reach the backend
+# over HTTPS without rejecting the self-signed cert. Referenced from the Ingress
+# via the service.serverstransport annotation.
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: portainer-run
+  namespace: portainer-run
+spec:
+  insecureSkipVerify: true

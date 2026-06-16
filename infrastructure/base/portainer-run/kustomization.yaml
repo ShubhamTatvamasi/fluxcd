@@ -8,5 +8,6 @@ resources:
 - pvc.yaml
 - deployment.yaml
 - service.yaml
+- serverstransport.yaml
 - ingress.yaml
 - portainer-run-tls.yaml

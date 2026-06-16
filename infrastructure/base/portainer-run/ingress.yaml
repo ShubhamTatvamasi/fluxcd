@@ -1,9 +1,15 @@
 ---
+# The pod serves a self-signed cert on :443 and redirects :80 → :443, so
+# Traefik reaches the backend over HTTPS via the serverstransport in
+# serverstransport.yaml (insecureSkipVerify for the self-signed backend cert).
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: portainer-run
   namespace: portainer-run
+  annotations:
+    traefik.ingress.kubernetes.io/service.serversscheme: https
+    traefik.ingress.kubernetes.io/service.serverstransport: portainer-run-portainer-run@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:
