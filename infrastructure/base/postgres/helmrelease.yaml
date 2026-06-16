@@ -10,16 +10,6 @@ spec:
     kind: OCIRepository
     name: postgres
     namespace: ${namespace}
-  install:
-    timeout: 10m
-    remediation:
-      retries: 3
-    disableWait: false
-  upgrade:
-    timeout: 10m
-    remediation:
-      retries: 3
-    disableWait: false
   values:
     auth:
       password: "postgres"

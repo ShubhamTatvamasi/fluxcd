@@ -69,6 +69,15 @@ spec:
         - "openebs"
         - "sealed-secrets"
 
+    # metrics long-term storage — Mimir stores metrics that Prometheus
+    # remote_writes into it, and the Grafana sidecar auto-registers the
+    # datasource.
+    - service: "mimir"
+      path: "./infrastructure/base/mimir"
+      dependsOn:
+        - "kube-prometheus-stack"
+        - "openebs"
+
     # logging — Loki stores logs, Alloy ships pod logs into it, and the
     # Grafana sidecar (kube-prometheus-stack) auto-registers the datasource.
     - service: "loki"

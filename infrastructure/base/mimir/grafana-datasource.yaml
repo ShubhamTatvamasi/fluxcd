@@ -1,0 +1,24 @@
+---
+# Auto-discovered by the Grafana sidecar (kube-prometheus-stack) via the
+# `grafana_datasource` label. Registers Mimir as a Prometheus-compatible
+# datasource so long-term metrics can be queried with PromQL in
+# Explore / dashboards. Mimir's query API lives under /prometheus.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mimir-grafana-datasource
+  namespace: monitoring
+  labels:
+    grafana_datasource: "1"
+data:
+  mimir-datasource.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Mimir
+        type: prometheus
+        access: proxy
+        url: http://mimir-gateway.monitoring.svc.cluster.local/prometheus
+        isDefault: false
+        jsonData:
+          httpMethod: POST
+          prometheusType: Mimir

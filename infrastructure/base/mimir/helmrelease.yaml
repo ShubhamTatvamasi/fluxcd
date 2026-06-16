@@ -1,0 +1,95 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mimir
+  namespace: monitoring
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: mimir
+    namespace: monitoring
+  values:
+    # The mimir-distributed chart only supports microservices mode (there is
+    # no monolithic/single-binary chart). For a homelab we run a single
+    # replica of every component and back it with the chart's bundled MinIO
+    # (S3-compatible object store) — Mimir is built around object storage,
+    # so filesystem is not a reliable option even for a single node.
+    metaMonitoring:
+      grafanaAgent:
+        enabled: false
+
+    # Bundled MinIO provides S3-compatible blocks/ruler/alertmanager storage.
+    minio:
+      enabled: true
+      replicas: 1
+      mode: standalone
+      persistence:
+        size: 20Gi
+
+    mimir:
+      structuredConfig:
+        # Single-replica ring; no high-availability.
+        ingester:
+          ring:
+            replication_factor: 1
+        # 1 year retention for long-term metrics.
+        limits:
+          compactor_blocks_retention_period: 1y
+
+    # Single replica of each component; disable zone-aware replication and the
+    # rollout-operator machinery that assumes multi-replica HA.
+    distributor:
+      replicas: 1
+    ingester:
+      replicas: 1
+      zoneAwareReplication:
+        enabled: false
+      persistentVolume:
+        size: 10Gi
+    querier:
+      replicas: 1
+    query_frontend:
+      replicas: 1
+    query_scheduler:
+      replicas: 1
+    store_gateway:
+      replicas: 1
+      zoneAwareReplication:
+        enabled: false
+      persistentVolume:
+        size: 5Gi
+    compactor:
+      replicas: 1
+      persistentVolume:
+        size: 5Gi
+    ruler:
+      replicas: 1
+    alertmanager:
+      replicas: 1
+      zoneAwareReplication:
+        enabled: false
+      persistentVolume:
+        size: 1Gi
+    overrides_exporter:
+      replicas: 1
+    rollout_operator:
+      enabled: false
+
+    # The gateway (nginx-based) fronts all components and exposes the
+    # read/write API under a single Service (mimir-gateway). Keep it; Grafana
+    # and Prometheus talk to it.
+    gateway:
+      enabledNonEnterprise: true
+      replicas: 1
+
+    # Caches are optional for a small cluster; disable to save memory.
+    chunks-cache:
+      enabled: false
+    index-cache:
+      enabled: false
+    metadata-cache:
+      enabled: false
+    results-cache:
+      enabled: false
