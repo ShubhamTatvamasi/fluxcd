@@ -6,11 +6,16 @@ metadata:
   namespace: flux-system
 spec:
   inputs:
-    # controllers
+    # infrastructure
     - service: "metallb"
       path: "./infrastructure/base/metallb"
+
+    # storage controllers
     - service: "openebs"
       path: "./infrastructure/base/openebs"
+    # - service: "longhorn"
+    #   path: "./infrastructure/base/longhorn"
+
     - service: "sealed-secrets"
       path: "./infrastructure/base/sealed-secrets"
     - service: "reloader"

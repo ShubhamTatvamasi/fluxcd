@@ -1,0 +1,20 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: longhorn
+  namespace: longhorn-system
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: longhorn
+    namespace: longhorn-system
+  values:
+    persistence:
+      # Longhorn is the cluster-wide default StorageClass.
+      defaultClass: true
+      # Replicate each volume across 3 nodes for HA (needs >= 3 nodes).
+      defaultClassReplicaCount: 3
+    defaultSettings:
+      defaultDataPath: /var/lib/longhorn
