@@ -16,6 +16,10 @@ spec:
       labels:
         app: portainer-run
     spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "3"
       containers:
         - name: portainer-run
           image: portainerci/portainer-run:pr-25
