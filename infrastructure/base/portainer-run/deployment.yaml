@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: portainer-run
-          image: portainerci/portainer-run:pr-25
+          image: portainerci/portainer-run:develop
           imagePullPolicy: Always
           ports:
             - name: https
