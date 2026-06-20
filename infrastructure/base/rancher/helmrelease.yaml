@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 10m
   chartRef:
-    kind: HelmChart
+    kind: OCIRepository
     name: rancher
     namespace: cattle-system
   values:

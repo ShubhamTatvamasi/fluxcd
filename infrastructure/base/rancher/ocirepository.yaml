@@ -1,0 +1,16 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: rancher
+  namespace: cattle-system
+spec:
+  interval: 10m
+  # Patched chart: upstream rancher 2.14.2 with kubeVersion loosened to
+  # < 1.37.0-0 so it installs on RKE2 v1.36.1 (upstream caps at < 1.36.0-0).
+  url: oci://harbor.k8s.shubhamtatvamasi.com/charts/rancher
+  layerSelector:
+    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
+    operation: copy
+  ref:
+    tag: "2.14.2"
