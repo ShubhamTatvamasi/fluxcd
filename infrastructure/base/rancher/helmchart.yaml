@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: rancher
+  namespace: cattle-system
+spec:
+  interval: 10m
+  chart: rancher
+  version: "2.14.2"
+  sourceRef:
+    name: rancher
+    kind: HelmRepository

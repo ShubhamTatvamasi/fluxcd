@@ -118,6 +118,13 @@ spec:
       dependsOn:
         - "traefik"
         - "sealed-secrets"
+
+    # Rancher — cluster management UI
+    - service: "rancher"
+      path: "./infrastructure/base/rancher"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
