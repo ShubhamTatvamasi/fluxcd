@@ -6,4 +6,5 @@ metadata:
   namespace: cattle-system
 spec:
   interval: 10m
+  # url: https://releases.rancher.com/server-charts/stable
   url: https://shubhamtatvamasi.com/rancher
