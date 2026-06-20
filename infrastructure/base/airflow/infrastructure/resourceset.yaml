@@ -10,6 +10,12 @@ spec:
     - service: "opensearch"
       path: "./infrastructure/base/opensearch"
 
+    # web UI for opensearch
+    - service: "opensearch-dashboards"
+      path: "./infrastructure/base/opensearch-dashboards"
+      dependsOn:
+        - "opensearch"
+
     # grafana dashboard for airflow (ConfigMap picked up by kube-prometheus-stack)
     - service: "airflow-dashboard"
       path: "./infrastructure/base/airflow/airflow-dashboard"

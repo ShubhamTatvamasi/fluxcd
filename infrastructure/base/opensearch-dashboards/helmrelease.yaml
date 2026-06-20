@@ -1,0 +1,38 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: opensearch-dashboards
+  namespace: opensearch-dashboards
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: opensearch-dashboards
+    namespace: opensearch-dashboards
+  values:
+    # OpenSearch runs in the `opensearch` namespace with the security plugin
+    # disabled and plain http (see infrastructure/base/opensearch), so point
+    # the dashboards at the cross-namespace service over http and skip the
+    # security-related config the chart would otherwise inject.
+    opensearchHosts: "http://opensearch-cluster-master.opensearch:9200"
+    config:
+      opensearch_dashboards.yml:
+        server:
+          host: "0.0.0.0"
+        opensearch.hosts: ["http://opensearch-cluster-master.opensearch:9200"]
+        opensearch_security.multitenancy.enabled: false
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      hosts:
+        - host: opensearch.k8s.shubhamtatvamasi.com
+          paths:
+            # serviceName/servicePort default to the chart's own service+port;
+            # the chart's ingress template requires the backend key to be present.
+            - path: /
+              backend: {}
+      tls:
+        - secretName: opensearch-dashboards-tls
+          hosts:
+            - opensearch.k8s.shubhamtatvamasi.com

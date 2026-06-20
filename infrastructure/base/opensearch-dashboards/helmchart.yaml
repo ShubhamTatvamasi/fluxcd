@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: opensearch-dashboards
+  namespace: opensearch-dashboards
+spec:
+  interval: 10m
+  chart: opensearch-dashboards
+  version: "3.7.0"
+  sourceRef:
+    name: opensearch
+    kind: HelmRepository
