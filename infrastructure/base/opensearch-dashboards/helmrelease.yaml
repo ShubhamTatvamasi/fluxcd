@@ -13,15 +13,20 @@ spec:
   values:
     # OpenSearch runs in the `opensearch` namespace with the security plugin
     # disabled and plain http (see infrastructure/base/opensearch), so point
-    # the dashboards at the cross-namespace service over http and skip the
-    # security-related config the chart would otherwise inject.
+    # the dashboards at the cross-namespace service over http.
     opensearchHosts: "http://opensearch-cluster-master.opensearch:9200"
+    # The backend has no security plugin, so Dashboards' own security plugin has
+    # nothing to authenticate against and renders a login page that nobody can
+    # pass. Remove the plugin at startup so the UI loads with no auth.
+    plugins:
+      enabled: true
+      removeList:
+        - securityDashboards
     config:
       opensearch_dashboards.yml:
         server:
           host: "0.0.0.0"
         opensearch.hosts: ["http://opensearch-cluster-master.opensearch:9200"]
-        opensearch_security.multitenancy.enabled: false
     ingress:
       enabled: true
       ingressClassName: traefik
