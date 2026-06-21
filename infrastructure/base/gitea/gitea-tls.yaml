@@ -10,7 +10,7 @@ spec:
     namespace: flux-system
   force: false
   interval: 10m0s
-  path: ./secrets/base/shubhamtatvamasi-tls
+  path: ./secrets/tls/k8s-shubhamtatvamasi-tls
   postBuild:
     substitute:
       tls_secret_name: gitea-tls
