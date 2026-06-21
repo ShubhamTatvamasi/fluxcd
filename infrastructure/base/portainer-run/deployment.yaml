@@ -19,10 +19,10 @@ spec:
       dnsConfig:
         options:
           - name: ndots
-            value: "3"
+            value: "1"
       containers:
         - name: portainer-run
-          image: portainerci/portainer-run:pr-25
+          image: portainerci/portainer-run:develop
           imagePullPolicy: Always
           ports:
             - name: https
