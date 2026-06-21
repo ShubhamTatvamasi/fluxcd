@@ -23,7 +23,7 @@ spec:
 
     # flux web UI TLS (sealed secret decrypted by sealed-secrets)
     - service: "flux-tls"
-      path: "./secrets/tls/k8s-shubhamtatvamasi-tls"
+      path: "./secrets/tls/shubhamtatvamasi-tls"
       tls_secret_name: "flux-tls"
       namespace: "flux-system"
       dependsOn:
