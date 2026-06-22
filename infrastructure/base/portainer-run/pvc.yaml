@@ -1,6 +1,4 @@
 ---
-# PersistentVolumeClaim — session cache storage.
-# Keeps the deployment cache across pod restarts.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
