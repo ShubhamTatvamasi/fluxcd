@@ -6,4 +6,3 @@ metadata:
   namespace: portainer-run
 data:
   PORTAINER_URL: "https://portainer.portainer.svc.cluster.local:9443"
-  # PORTAINER_URL: "https://portainer.portainer:9443"
