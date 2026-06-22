@@ -1,5 +1,4 @@
 ---
-# Service — exposes Portainer Run within the cluster (fronted by Traefik).
 apiVersion: v1
 kind: Service
 metadata:
