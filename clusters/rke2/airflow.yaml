@@ -18,6 +18,7 @@ spec:
     substitute:
       cluster: rke2
       namespace: airflow
+      domain: k8s.shubhamtatvamasi.com
       dags_git_sync_enabled: "true"
       dags_git_repo: "https://github.com/ShubhamTatvamasi/airflow.git"
       dags_git_branch: "main"

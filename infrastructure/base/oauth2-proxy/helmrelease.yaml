@@ -17,8 +17,8 @@ spec:
       cookieSecret: fc3276bd001f7b4f31dcc9bbcbca9031
     extraArgs:
       provider: oidc
-      oidc-issuer-url: https://dex.k8s.shubhamtatvamasi.com
-      redirect-url: https://traefik.k8s.shubhamtatvamasi.com/oauth2/callback
+      oidc-issuer-url: https://dex.${domain}
+      redirect-url: https://traefik.${domain}/oauth2/callback
       scope: openid email profile
       email-domain: "*"
       upstream: static://200
@@ -30,5 +30,5 @@ spec:
       cookie-secure: "true"
       cookie-csrf-per-request: "true"
       cookie-csrf-expire: "5m"
-      whitelist-domain: .k8s.shubhamtatvamasi.com
-      cookie-domain: .k8s.shubhamtatvamasi.com
+      whitelist-domain: .${domain}
+      cookie-domain: .${domain}

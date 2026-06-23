@@ -119,7 +119,7 @@ spec:
         enabled: true
         ingressClassName: traefik
         hosts:
-          - name: airflow.k8s.shubhamtatvamasi.com
+          - name: airflow.${domain}
             tls:
               enabled: true
               secretName: airflow-tls

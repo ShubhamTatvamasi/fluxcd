@@ -11,15 +11,12 @@ spec:
       path: "./infrastructure/base/metallb"
 
     # storage controllers
-    - service: "openebs"
-      path: "./infrastructure/base/openebs"
-    # - service: "longhorn"
-    #   path: "./infrastructure/base/longhorn"
+    - service: "longhorn"
+      path: "./infrastructure/base/longhorn"
 
+    # Sealed Secrets controller (needs to be installed before any sealed secrets can be decrypted)
     - service: "sealed-secrets"
       path: "./infrastructure/base/sealed-secrets"
-    - service: "reloader"
-      path: "./infrastructure/base/reloader"
 
     # flux web UI TLS (sealed secret decrypted by sealed-secrets)
     - service: "flux-tls"
@@ -31,13 +28,15 @@ spec:
 
     # metallb config (needs the metallb controller CRDs first)
     - service: "metallb-config"
-      path: "./infrastructure/rke2/metallb-system"
+      path: "./infrastructure/rke2-multi-node/metallb-system"
       dependsOn:
         - "metallb"
 
-    # network and ingress
+    # Gateway API (needs traefik to be installed first)
     - service: "gateway-api"
       path: "./infrastructure/base/gateway-api"
+
+    # Traefik — ingress controller (needs metallb and sealed-secrets to be installed first)
     - service: "traefik"
       path: "./infrastructure/base/traefik"
       dependsOn:
@@ -45,78 +44,21 @@ spec:
         - "sealed-secrets"
         - "gateway-api"
 
-    # applications
-    - service: "harbor"
-      path: "./infrastructure/base/harbor"
-      dependsOn:
-        - "traefik"
-        - "openebs"
-        - "sealed-secrets"
-    - service: "dex"
-      path: "./infrastructure/base/dex"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
-    - service: "oauth2-proxy"
-      path: "./infrastructure/base/oauth2-proxy"
-      dependsOn:
-        - "dex"
-
-    # portainer and portainer-run
+    # Portainer — container management UI (needs traefik and openebs to be installed first)
     - service: "portainer"
       path: "./infrastructure/base/portainer"
       dependsOn:
         - "traefik"
         - "openebs"
         - "sealed-secrets"
+
+    # portainer-run (needs portainer to be installed first)
     - service: "portainer-run"
       path: "./infrastructure/base/portainer-run"
       dependsOn:
+        - "portainer"
         - "traefik"
         - "openebs"
-        - "sealed-secrets"
-
-    - service: "kube-prometheus-stack"
-      path: "./infrastructure/base/kube-prometheus-stack"
-      dependsOn:
-        - "traefik"
-        - "openebs"
-        - "sealed-secrets"
-
-    # metrics long-term storage — Mimir stores metrics that Prometheus
-    # remote_writes into it, and the Grafana sidecar auto-registers the
-    # datasource.
-    - service: "mimir"
-      path: "./infrastructure/base/mimir"
-      dependsOn:
-        - "kube-prometheus-stack"
-        - "openebs"
-
-    # logging — Loki stores logs, Alloy ships pod logs into it, and the
-    # Grafana sidecar (kube-prometheus-stack) auto-registers the datasource.
-    - service: "loki"
-      path: "./infrastructure/base/loki"
-      dependsOn:
-        - "kube-prometheus-stack"
-        - "openebs"
-    - service: "alloy"
-      path: "./infrastructure/base/alloy"
-      dependsOn:
-        - "loki"
-
-    # Gitea
-    # - service: "gitea"
-    #   path: "./infrastructure/base/gitea"
-    #   dependsOn:
-    #     - "traefik"
-    #     - "openebs"
-    #     - "sealed-secrets"
-
-    # Research
-    - service: "keycloak"
-      path: "./infrastructure/base/keycloak"
-      dependsOn:
-        - "traefik"
         - "sealed-secrets"
 
     # Rancher — cluster management UI

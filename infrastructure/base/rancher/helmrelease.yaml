@@ -11,7 +11,7 @@ spec:
     name: rancher
     namespace: cattle-system
   values:
-    hostname: rancher.k8s.shubhamtatvamasi.com
+    hostname: rancher.${domain}
     bootstrapPassword: admin
     ingress:
       ingressClassName: traefik

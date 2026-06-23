@@ -8,7 +8,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`portainer-run.k8s.shubhamtatvamasi.com`)
+    - match: Host(`portainer-run.${domain}`)
       kind: Rule
       services:
         - name: portainer-run

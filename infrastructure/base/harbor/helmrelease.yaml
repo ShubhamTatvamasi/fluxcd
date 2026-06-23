@@ -21,10 +21,10 @@ spec:
       ingress:
         className: traefik
         hosts:
-          core: harbor.k8s.shubhamtatvamasi.com
+          core: harbor.${domain}
     harborAdminPassword: admin
     persistence:
       persistentVolumeClaim:
         registry:
           size: 20Gi
-    externalURL: https://harbor.k8s.shubhamtatvamasi.com
+    externalURL: https://harbor.${domain}

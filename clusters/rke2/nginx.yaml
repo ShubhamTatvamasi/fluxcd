@@ -14,3 +14,6 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  postBuild:
+    substitute:
+      domain: k8s.shubhamtatvamasi.com

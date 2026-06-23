@@ -12,7 +12,7 @@ spec:
     namespace: dex
   values:
     config:
-      issuer: https://dex.k8s.shubhamtatvamasi.com
+      issuer: https://dex.${domain}
       storage:
         type: memory
       web:
@@ -28,23 +28,23 @@ spec:
       staticClients:
         - id: flux-web-ui
           redirectURIs:
-            - "https://flux.k8s.shubhamtatvamasi.com/oauth2/callback"
+            - "https://flux.${domain}/oauth2/callback"
           name: Flux Web UI
           secret: "flux-dex-client-secret"
         - id: traefik-dashboard
           redirectURIs:
-            - "https://traefik.k8s.shubhamtatvamasi.com/oauth2/callback"
+            - "https://traefik.${domain}/oauth2/callback"
           name: Traefik Dashboard
           secret: "traefik-dex-client-secret"
     ingress:
       enabled: true
       className: traefik
       hosts:
-        - host: dex.k8s.shubhamtatvamasi.com
+        - host: dex.${domain}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - secretName: dex-tls
           hosts:
-            - dex.k8s.shubhamtatvamasi.com
+            - dex.${domain}

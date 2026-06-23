@@ -62,3 +62,7 @@ spec:
           namespace: flux-system
         <<- end >>
       <<- end >>
+
+      postBuild:
+        substitute:
+          domain: ${domain}

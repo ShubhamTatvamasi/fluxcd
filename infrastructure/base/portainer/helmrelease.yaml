@@ -14,24 +14,24 @@ spec:
     enterpriseEdition:
       enabled: true
       image:
-        repository: harbor.k8s.shubhamtatvamasi.com/portainer/portainer-ee
+        repository: harbor.${domain}/portainer/portainer-ee
         tag: node-shell
     trusted_origins:
       enabled: true
-      domains: https://portainer.k8s.shubhamtatvamasi.com
+      domains: https://portainer.${domain}
     service:
       type: ClusterIP
     ingress:
       enabled: true
       ingressClassName: traefik
       hosts:
-        - host: portainer.k8s.shubhamtatvamasi.com
+        - host: portainer.${domain}
           paths:
             - path: /
       tls:
         - secretName: portainer-tls
           hosts:
-            - portainer.k8s.shubhamtatvamasi.com
+            - portainer.${domain}
     tls:
       existingSecret: portainer-tls
     persistence:

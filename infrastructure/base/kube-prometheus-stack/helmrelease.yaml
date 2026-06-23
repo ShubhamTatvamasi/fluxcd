@@ -28,11 +28,11 @@ spec:
         enabled: true
         ingressClassName: traefik
         hosts:
-          - prometheus.k8s.shubhamtatvamasi.com
+          - prometheus.${domain}
         tls:
           - secretName: kube-prometheus-stack-tls
             hosts:
-              - prometheus.k8s.shubhamtatvamasi.com
+              - prometheus.${domain}
     grafana:
       # service:
       #   type: LoadBalancer
@@ -45,8 +45,8 @@ spec:
         enabled: true
         ingressClassName: traefik
         hosts:
-          - grafana.k8s.shubhamtatvamasi.com
+          - grafana.${domain}
         tls:
           - secretName: kube-prometheus-stack-tls
             hosts:
-              - grafana.k8s.shubhamtatvamasi.com
+              - grafana.${domain}

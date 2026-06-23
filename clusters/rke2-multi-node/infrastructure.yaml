@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./infrastructure/rke2/resourceset
+  path: ./infrastructure/rke2-multi-node/resourceset
   prune: true
   wait: true
   timeout: 10m
@@ -15,4 +15,4 @@ spec:
     name: flux-system
   postBuild:
     substitute:
-      domain: k8s.shubhamtatvamasi.com
+      domain: k7s.shubhamtatvamasi.com

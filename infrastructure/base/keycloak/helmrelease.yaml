@@ -13,17 +13,17 @@ spec:
   values:
     keycloak:
       adminPassword: admin
-      hostname: https://keycloak.k8s.shubhamtatvamasi.com
+      hostname: https://keycloak.${domain}
       proxyHeaders: xforwarded
     ingress:
       enabled: true
       className: traefik
       hosts:
-        - host: keycloak.k8s.shubhamtatvamasi.com
+        - host: keycloak.${domain}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - secretName: keycloak-tls
           hosts:
-            - keycloak.k8s.shubhamtatvamasi.com
+            - keycloak.${domain}

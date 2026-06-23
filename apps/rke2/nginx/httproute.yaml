@@ -10,7 +10,7 @@ spec:
     namespace: traefik
     sectionName: websecure
   hostnames:
-  - nginx.k8s.shubhamtatvamasi.com
+  - nginx.${domain}
   rules:
   - matches:
     - path:

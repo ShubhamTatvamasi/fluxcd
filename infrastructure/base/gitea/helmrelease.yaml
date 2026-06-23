@@ -27,11 +27,11 @@ spec:
       enabled: true
       className: traefik
       hosts:
-        - host: gitea.k8s.shubhamtatvamasi.com
+        - host: gitea.${domain}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - secretName: gitea-tls
           hosts:
-            - gitea.k8s.shubhamtatvamasi.com
+            - gitea.${domain}

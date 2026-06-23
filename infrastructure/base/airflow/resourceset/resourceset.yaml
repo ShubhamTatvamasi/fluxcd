@@ -58,6 +58,7 @@ spec:
       postBuild:
         substitute:
           namespace: ${namespace}
+          domain: ${domain}
 
           <<- if index inputs "tls_secret_name" >>
           tls_secret_name: "<< index inputs "tls_secret_name" >>"
