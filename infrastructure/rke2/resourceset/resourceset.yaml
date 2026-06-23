@@ -6,18 +6,19 @@ metadata:
   namespace: flux-system
 spec:
   inputs:
-    # infrastructure
+    # metallb provides load balancer services for the cluster
     - service: "metallb"
       path: "./infrastructure/base/metallb"
 
-    # storage controllers
+    # OpenEBS provides persistent storage for the cluster
     - service: "openebs"
       path: "./infrastructure/base/openebs"
-    # - service: "longhorn"
-    #   path: "./infrastructure/base/longhorn"
 
+    # sealed-secrets encrypts secrets so they can be stored in Git safely
     - service: "sealed-secrets"
       path: "./infrastructure/base/sealed-secrets"
+
+    # reloader watches for changes in ConfigMaps and Secrets and reloads the pods that use them
     - service: "reloader"
       path: "./infrastructure/base/reloader"
 
@@ -35,9 +36,11 @@ spec:
       dependsOn:
         - "metallb"
 
-    # network and ingress
+    # gateway-api CRDs (needs the metallb config first)
     - service: "gateway-api"
       path: "./infrastructure/base/gateway-api"
+
+    # traefik ingress controller (needs the metallb config first)
     - service: "traefik"
       path: "./infrastructure/base/traefik"
       dependsOn:
@@ -45,30 +48,36 @@ spec:
         - "sealed-secrets"
         - "gateway-api"
 
-    # applications
+    # harbor container registry (needs traefik, openebs, and sealed-secrets)
     - service: "harbor"
       path: "./infrastructure/base/harbor"
       dependsOn:
         - "traefik"
         - "openebs"
         - "sealed-secrets"
+
+    # dex OIDC provider (needs traefik and sealed-secrets)
     - service: "dex"
       path: "./infrastructure/base/dex"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
+
+    # oauth2-proxy needs dex to be up first, so it can configure the OIDC provider
     - service: "oauth2-proxy"
       path: "./infrastructure/base/oauth2-proxy"
       dependsOn:
         - "dex"
 
-    # portainer and portainer-run
+    # portainer is a web UI for managing containers and Kubernetes clusters (needs traefik, openebs, and sealed-secrets)
     - service: "portainer"
       path: "./infrastructure/base/portainer"
       dependsOn:
         - "traefik"
         - "openebs"
         - "sealed-secrets"
+
+    # portainer-run is a companion to portainer that runs the portainer agent on each node, so that portainer can manage the nodes and containers.
     - service: "portainer-run"
       path: "./infrastructure/base/portainer-run"
       dependsOn:
@@ -76,6 +85,7 @@ spec:
         - "openebs"
         - "sealed-secrets"
 
+    # kube-prometheus-stack provides monitoring and alerting for the cluster (needs traefik, openebs, and sealed-secrets)
     - service: "kube-prometheus-stack"
       path: "./infrastructure/base/kube-prometheus-stack"
       dependsOn:
@@ -83,28 +93,27 @@ spec:
         - "openebs"
         - "sealed-secrets"
 
-    # metrics long-term storage — Mimir stores metrics that Prometheus
-    # remote_writes into it, and the Grafana sidecar auto-registers the
-    # datasource.
+    # mimir is a time series database that stores metrics from the cluster and makes them available in Grafana (needs traefik, openebs, and sealed-secrets)
     - service: "mimir"
       path: "./infrastructure/base/mimir"
       dependsOn:
         - "kube-prometheus-stack"
         - "openebs"
 
-    # logging — Loki stores logs, Alloy ships pod logs into it, and the
-    # Grafana sidecar (kube-prometheus-stack) auto-registers the datasource.
+    # Loki is a log aggregation system that stores logs from the cluster and makes them available in Grafana (needs traefik, openebs, and sealed-secrets)
     - service: "loki"
       path: "./infrastructure/base/loki"
       dependsOn:
         - "kube-prometheus-stack"
         - "openebs"
+
+    # alloy ships pod logs into Loki (needs traefik, openebs, and sealed-secrets)
     - service: "alloy"
       path: "./infrastructure/base/alloy"
       dependsOn:
         - "loki"
 
-    # Gitea
+    # gitea is a self-hosted Git service (needs traefik, openebs, and sealed-secrets)
     # - service: "gitea"
     #   path: "./infrastructure/base/gitea"
     #   dependsOn:
@@ -112,7 +121,7 @@ spec:
     #     - "openebs"
     #     - "sealed-secrets"
 
-    # Research
+    # Keycloak is an identity and access management solution (needs traefik and sealed-secrets)
     - service: "keycloak"
       path: "./infrastructure/base/keycloak"
       dependsOn:
