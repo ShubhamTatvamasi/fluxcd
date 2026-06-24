@@ -26,5 +26,4 @@ spec:
             - portainer-run.${domain}
     service:
       annotations:
-        traefik.ingress.kubernetes.io/service.serversscheme: "https"
         traefik.ingress.kubernetes.io/service.serverstransport: "portainer-run-portainer-run@kubernetescrd"
