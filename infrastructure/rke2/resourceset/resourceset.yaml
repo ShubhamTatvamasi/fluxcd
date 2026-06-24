@@ -78,12 +78,12 @@ spec:
         - "sealed-secrets"
 
     # portainer-run is a companion to portainer that runs the portainer agent on each node, so that portainer can manage the nodes and containers.
-    # - service: "portainer-run"
-    #   path: "./infrastructure/base/portainer-run"
-    #   dependsOn:
-    #     - "traefik"
-    #     - "openebs"
-    #     - "sealed-secrets"
+    - service: "portainer-run"
+      path: "./infrastructure/base/portainer-run"
+      dependsOn:
+        - "traefik"
+        - "openebs"
+        - "sealed-secrets"
 
     # kube-prometheus-stack provides monitoring and alerting for the cluster (needs traefik, openebs, and sealed-secrets)
     - service: "kube-prometheus-stack"
