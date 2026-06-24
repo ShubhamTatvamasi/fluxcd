@@ -14,9 +14,6 @@ spec:
     ingress:
       enabled: true
       ingressClassName: traefik
-      annotations:
-        traefik.ingress.kubernetes.io/service.serversscheme: "https"
-        traefik.ingress.kubernetes.io/service.serverstransport: "portainer-run-portainer-run@kubernetescrd"
       hosts:
         - host: portainer-run.${domain}
           paths:
@@ -25,3 +22,7 @@ spec:
         - secretName: portainer-run-tls
           hosts:
             - portainer-run.${domain}
+    service:
+      annotations:
+        traefik.ingress.kubernetes.io/service.serversscheme: "https"
+        traefik.ingress.kubernetes.io/service.serverstransport: "portainer-run-portainer-run@kubernetescrd"
