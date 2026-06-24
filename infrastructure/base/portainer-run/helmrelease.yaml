@@ -11,6 +11,8 @@ spec:
     name: portainer-run
     namespace: portainer-run
   values:
+    dnsConfig:
+      enabled: true
     ingress:
       enabled: true
       ingressClassName: traefik
