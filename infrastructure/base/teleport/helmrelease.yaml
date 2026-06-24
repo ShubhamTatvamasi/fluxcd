@@ -22,3 +22,7 @@ spec:
       existingSecretName: teleport-tls
     service:
       type: LoadBalancer
+    auth:
+      teleportConfig:
+        auth_service:
+          session_recording: proxy
