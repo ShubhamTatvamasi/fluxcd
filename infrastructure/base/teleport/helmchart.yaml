@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: teleport
+  namespace: teleport
+spec:
+  interval: 10m
+  chart: teleport-cluster
+  version: "18.9.1"
+  sourceRef:
+    name: teleport
+    kind: HelmRepository

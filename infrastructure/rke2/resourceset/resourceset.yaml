@@ -134,6 +134,13 @@ spec:
       dependsOn:
         - "traefik"
         - "sealed-secrets"
+
+    # Teleport — zero-trust access proxy for SSH, Kubernetes, and web apps
+    - service: "teleport"
+      path: "./infrastructure/base/teleport"
+      dependsOn:
+        - "metallb-config"
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
