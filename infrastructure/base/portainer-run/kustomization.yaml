@@ -7,3 +7,4 @@ resources:
 - helmchart.yaml
 - helmrelease.yaml
 - portainer-run-tls.yaml
+- serverstransport.yaml
