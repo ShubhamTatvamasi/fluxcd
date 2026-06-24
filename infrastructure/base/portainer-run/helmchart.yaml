@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 10m
   chart: portainer-run
-  version: "0.2.3"
+  version: "0.2.4"
   sourceRef:
     name: portainer-run
     kind: HelmRepository

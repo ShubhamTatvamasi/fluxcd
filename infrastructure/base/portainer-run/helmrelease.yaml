@@ -22,3 +22,5 @@ spec:
         - secretName: portainer-run-tls
           hosts:
             - portainer-run.${domain}
+    tls:
+      existingSecret: portainer-run-tls
