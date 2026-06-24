@@ -11,8 +11,6 @@ spec:
     name: portainer-run
     namespace: portainer-run
   values:
-    config:
-      PORTAINER_URL: "https://portainer.portainer.svc.cluster.local:9443"
     ingress:
       enabled: true
       ingressClassName: traefik
