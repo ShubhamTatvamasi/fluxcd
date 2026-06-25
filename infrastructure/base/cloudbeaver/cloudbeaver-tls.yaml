@@ -13,7 +13,7 @@ spec:
   path: ./secrets/tls/shubhamtatvamasi-tls
   postBuild:
     substitute:
-      tls_secret_name: cloudbeaver-tls
+      tls_secret_name: cloudbeaver.${domain}-tls
       namespace: cloudbeaver
   prune: true
   sourceRef:

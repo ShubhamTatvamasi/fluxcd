@@ -13,13 +13,6 @@ spec:
   values:
     ingress:
       enabled: true
-      className: traefik
-      hosts:
-        - host: cloudbeaver.${domain}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - secretName: cloudbeaver-tls
-          hosts:
-            - cloudbeaver.${domain}
+      ingressClassName: traefik
+      hostname: cloudbeaver.${domain}
+      tls: true
