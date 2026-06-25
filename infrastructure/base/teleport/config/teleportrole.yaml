@@ -1,0 +1,19 @@
+apiVersion: resources.teleport.dev/v6
+kind: TeleportRole
+metadata:
+  name: kube-admin
+  namespace: teleport
+spec:
+  allow:
+    kubernetes_groups:
+    - system:masters
+    kubernetes_labels:
+      '*': '*'
+    kubernetes_users:
+    - admin
+    kubernetes_resources:
+    - kind: pod
+      name: '*'
+      namespace: '*'
+      verbs:
+      - '*'

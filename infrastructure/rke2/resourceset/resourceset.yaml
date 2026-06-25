@@ -136,11 +136,17 @@ spec:
         - "sealed-secrets"
 
     # Teleport — zero-trust access proxy for SSH, Kubernetes, and web apps
-    - service: "teleport"
-      path: "./infrastructure/base/teleport"
+    - service: "teleport-cluster"
+      path: "./infrastructure/base/teleport/cluster"
       dependsOn:
         - "metallb-config"
         - "sealed-secrets"
+
+    # Teleport config — custom resources (TeleportRole etc.) that require the operator CRDs to exist first
+    - service: "teleport-config"
+      path: "./infrastructure/base/teleport/config"
+      dependsOn:
+        - "teleport-cluster"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
