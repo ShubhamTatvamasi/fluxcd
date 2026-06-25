@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: avisto
+  namespace: cloudbeaver
+spec:
+  interval: 10m
+  url: https://avistotelecom.github.io/charts/

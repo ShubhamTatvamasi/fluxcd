@@ -154,6 +154,13 @@ spec:
       path: "./infrastructure/base/teleport/config"
       dependsOn:
         - "teleport-cluster"
+
+    # CloudBeaver — web-based database management UI (needs traefik and sealed-secrets)
+    - service: "cloudbeaver"
+      path: "./infrastructure/base/cloudbeaver"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
