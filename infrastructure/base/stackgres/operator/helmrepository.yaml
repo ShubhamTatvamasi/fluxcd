@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: stackgres
+  namespace: stackgres
+spec:
+  interval: 10m
+  url: https://stackgres.io/downloads/stackgres-k8s/stackgres/helm/

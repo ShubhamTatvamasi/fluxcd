@@ -1,0 +1,23 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: stackgres
+  namespace: stackgres
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: stackgres.${domain}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: stackgres-restapi
+                port:
+                  number: 443
+  tls:
+    - secretName: stackgres-tls
+      hosts:
+        - stackgres.${domain}

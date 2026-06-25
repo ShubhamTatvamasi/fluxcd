@@ -135,6 +135,13 @@ spec:
         - "traefik"
         - "sealed-secrets"
 
+    # StackGres — Postgres operator with web console (needs traefik and sealed-secrets)
+    - service: "stackgres-operator"
+      path: "./infrastructure/base/stackgres/operator"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+
     # Teleport — zero-trust access proxy for SSH, Kubernetes, and web apps
     - service: "teleport-cluster"
       path: "./infrastructure/base/teleport/cluster"

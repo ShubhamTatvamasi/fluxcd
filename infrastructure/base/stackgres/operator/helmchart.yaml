@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: stackgres
+  namespace: stackgres
+spec:
+  interval: 10m
+  chart: stackgres-operator
+  version: "1.18.8"
+  sourceRef:
+    name: stackgres
+    kind: HelmRepository
