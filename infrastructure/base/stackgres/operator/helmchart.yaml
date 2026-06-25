@@ -11,3 +11,4 @@ spec:
   sourceRef:
     name: stackgres
     kind: HelmRepository
+  kubeVersionOverride: "1.35.0"
