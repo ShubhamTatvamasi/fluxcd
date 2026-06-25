@@ -10,3 +10,8 @@ spec:
     kind: HelmChart
     name: stackgres
     namespace: stackgres
+  values:
+    restapi:
+      service:
+        annotations:
+          traefik.ingress.kubernetes.io/service.serverstransport: "stackgres-stackgres@kubernetescrd"

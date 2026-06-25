@@ -7,4 +7,5 @@ resources:
 - helmchart.yaml
 - helmrelease.yaml
 - ingress.yaml
+- serverstransport.yaml
 - stackgres-tls.yaml
