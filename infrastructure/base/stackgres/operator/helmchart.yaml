@@ -7,8 +7,7 @@ metadata:
 spec:
   interval: 10m
   chart: stackgres-operator
-  version: "1.18.8"
+  version: "1.19.0-rc1"
   sourceRef:
     name: stackgres
     kind: HelmRepository
-  kubeVersionOverride: "1.35.0"
