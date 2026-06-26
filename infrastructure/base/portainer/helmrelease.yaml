@@ -15,7 +15,8 @@ spec:
       enabled: true
       image:
         repository: harbor.${domain}/portainer/portainer-ee
-        tag: node-shell
+        # tag: node-shell
+        tag: new-custom-resources
     trusted_origins:
       enabled: true
       domains: https://portainer.${domain}
