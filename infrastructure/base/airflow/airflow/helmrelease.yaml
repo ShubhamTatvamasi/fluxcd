@@ -26,6 +26,15 @@ spec:
     defaultAirflowTag: "3.2.2-1"
     defaultAirflowRepository: "shubhamtatvamasi/airflow"
     executor: "KubernetesExecutor"
+    workers:
+      kubernetes:
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "2Gi"
     postgresql:
       enabled: false
     opensearch:
