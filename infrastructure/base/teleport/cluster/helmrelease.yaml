@@ -22,6 +22,8 @@ spec:
       existingSecretName: teleport-tls
     service:
       type: LoadBalancer
+    proxy:
+      replicaCount: 1
     auth:
       teleportConfig:
         auth_service:
