@@ -130,3 +130,8 @@ Check all Resource Sets:
 ```bash
 kubectl get resourcesets -A
 ```
+
+Restart flux controller if you have made any changes to the `kustomization.yaml` or `gitrepository.yaml`:
+```bash
+kubectl rollout restart deployment kustomize-controller -n flux-system
+```
