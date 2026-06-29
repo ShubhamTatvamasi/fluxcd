@@ -11,14 +11,13 @@ spec:
     name: traefik
     namespace: traefik
   values:
-    logs:
-      access:
-        enabled: true
-        # JSON format so Loki/Alloy can parse fields (status, path, duration).
-        format: json
-        fields:
-          headers:
-            defaultmode: keep
+    accessLog:
+      enabled: true
+      # JSON format so Loki/Alloy can parse fields (status, path, duration).
+      format: json
+      fields:
+        headers:
+          defaultMode: keep
     metrics:
       prometheus:
         service:
