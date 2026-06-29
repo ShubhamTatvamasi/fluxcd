@@ -23,7 +23,8 @@ spec:
     service:
       type: LoadBalancer
     proxy:
-      replicaCount: 1
+      highAvailability:
+        replicaCount: 1
     auth:
       teleportConfig:
         auth_service:
