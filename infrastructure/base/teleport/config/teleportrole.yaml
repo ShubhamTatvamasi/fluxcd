@@ -1,5 +1,5 @@
-apiVersion: resources.teleport.dev/v6
-kind: TeleportRole
+apiVersion: resources.teleport.dev/v1
+kind: TeleportRoleV8
 metadata:
   name: kube-admin
   namespace: teleport
