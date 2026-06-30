@@ -7,3 +7,4 @@ resources:
 - helmchart.yaml
 - helmrelease.yaml
 - portainer-tls.yaml
+- helmrelease-ce.yaml
