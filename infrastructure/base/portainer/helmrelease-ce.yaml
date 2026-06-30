@@ -11,6 +11,8 @@ spec:
     name: portainer
     namespace: portainer
   values:
+    image:
+      tag: 2.43.0
     service:
       type: ClusterIP
     ingress:
