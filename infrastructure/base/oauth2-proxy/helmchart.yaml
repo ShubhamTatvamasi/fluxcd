@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 10m
   chart: oauth2-proxy
-  version: "10.6.0"
+  version: "10.7.0"
   sourceRef:
     name: oauth2-proxy
     kind: HelmRepository
