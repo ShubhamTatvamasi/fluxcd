@@ -45,13 +45,13 @@ spec:
   # part of the value and Portainer rejects it as an invalid origin URL.
   # Strip the quotes from the rendered arg, and append --kubectl-shell-image
   # (the chart has no value for it) so the node-shell EE image is used.
-  postRenderers:
-  - kustomize:
-      patches:
-      - target:
-          kind: Deployment
-          name: portainer
-        patch: |
-          - op: add
-            path: /spec/template/spec/containers/0/args/-
-            value: "--kubectl-shell-image=portainer/kubectl-shell:2.39.3"
+  # postRenderers:
+  # - kustomize:
+  #     patches:
+  #     - target:
+  #         kind: Deployment
+  #         name: portainer
+  #       patch: |
+  #         - op: add
+  #           path: /spec/template/spec/containers/0/args/-
+  #           value: "--kubectl-shell-image=portainer/kubectl-shell:2.39.3"
