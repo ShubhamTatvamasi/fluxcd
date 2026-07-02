@@ -12,6 +12,7 @@ spec:
     namespace: portainer
   values:
     image:
+      repository: portainer/portainer-ce
       tag: 2.43.0
     service:
       type: ClusterIP
