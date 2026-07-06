@@ -14,10 +14,10 @@ spec:
     enterpriseEdition:
       enabled: true
       image:
-        # repository: portainerci/portainer-ee
-        repository: harbor.${domain}/portainer/portainer-ee
-        # tag: develop
-        tag: node-shell
+        repository: portainerci/portainer-ee
+        tag: develop
+        # repository: harbor.${domain}/portainer/portainer-ee
+        # tag: node-shell
         # tag: new-custom-resources
     trusted_origins:
       enabled: true
