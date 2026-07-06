@@ -15,7 +15,6 @@ spec:
   postBuild:
     substitute:
       namespace: airflow-one
-      workers_replicas: "1"
       dags_git_sync_enabled: "true"
       dags_git_repo: "https://github.com/ShubhamTatvamasi/airflow.git"
       dags_git_branch: "main"

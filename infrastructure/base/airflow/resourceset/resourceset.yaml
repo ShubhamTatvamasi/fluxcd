@@ -22,7 +22,6 @@ spec:
         - "git-credentials"
         - "airflow-config"
         - "airflow-metadata-connection"
-      workers_replicas: "${workers_replicas}"
       dags_git_sync_enabled: "${dags_git_sync_enabled}"
       dags_git_repo: "${dags_git_repo}"
       dags_git_branch: "${dags_git_branch}"
@@ -62,10 +61,6 @@ spec:
 
           <<- if index inputs "tls_secret_name" >>
           tls_secret_name: "<< index inputs "tls_secret_name" >>"
-          <<- end >>
-
-          <<- if index inputs "workers_replicas" >>
-          workers_replicas: "<< index inputs "workers_replicas" >>"
           <<- end >>
 
           <<- if eq inputs.service "airflow" >>
