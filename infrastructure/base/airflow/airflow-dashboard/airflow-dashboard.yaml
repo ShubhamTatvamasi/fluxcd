@@ -36,7 +36,7 @@ data:
           "type": "row"
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "thresholds" },
@@ -65,14 +65,14 @@ data:
           "type": "stat",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "sum(airflow_dag_processing_import_errors{namespace=~\"$namespace\"})",
               "legendFormat": "Import Errors"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "thresholds" },
@@ -99,14 +99,14 @@ data:
           "type": "stat",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "sum(airflow_dagbag_size{namespace=~\"$namespace\"})",
               "legendFormat": "DAGs"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "thresholds" },
@@ -134,14 +134,14 @@ data:
           "type": "stat",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "sum(airflow_scheduler_dagruns_running{namespace=~\"$namespace\"})",
               "legendFormat": "Running"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "thresholds" },
@@ -169,14 +169,14 @@ data:
           "type": "stat",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "sum(airflow_executor_running_tasks{namespace=~\"$namespace\"})",
               "legendFormat": "Running Tasks"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "thresholds" },
@@ -205,14 +205,14 @@ data:
           "type": "stat",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "sum(airflow_executor_queued_tasks{namespace=~\"$namespace\"})",
               "legendFormat": "Queued Tasks"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "thresholds" },
@@ -239,7 +239,7 @@ data:
           "type": "stat",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "sum(airflow_executor_open_slots{namespace=~\"$namespace\"})",
               "legendFormat": "Open Slots"
             }
@@ -253,7 +253,7 @@ data:
           "type": "row"
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -276,24 +276,24 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_scheduler_loop_duration{quantile=\"0.5\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p50"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_scheduler_loop_duration{quantile=\"0.9\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p90"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_scheduler_loop_duration{quantile=\"0.99\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p99"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -314,24 +314,24 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_critical_section_duration{quantile=\"0.5\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p50"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_critical_section_duration{quantile=\"0.9\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p90"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_critical_section_duration{quantile=\"0.99\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p99"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -352,14 +352,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "rate(airflow_scheduler_heartbeat{namespace=~\"$namespace\"}[5m])",
               "legendFormat": "{{namespace}}"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -380,17 +380,17 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_critical_section_query_duration{quantile=\"0.5\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p50"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_critical_section_query_duration{quantile=\"0.9\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p90"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_critical_section_query_duration{quantile=\"0.99\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p99"
             }
@@ -404,7 +404,7 @@ data:
           "type": "row"
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -425,24 +425,24 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_dag_processing_last_duration{quantile=\"0.5\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p50"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_dag_processing_last_duration{quantile=\"0.9\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p90"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_dag_processing_last_duration{quantile=\"0.99\",namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} p99"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -463,14 +463,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_dag_processing_last_run_seconds_ago{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} / {{dag_file}}"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -491,14 +491,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_dag_processing_total_parse_time{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}}"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -519,7 +519,7 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_dag_processing_import_errors{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}}"
             }
@@ -533,7 +533,7 @@ data:
           "type": "row"
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -554,14 +554,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_dagrun_duration_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"} / airflow_dagrun_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}",
               "legendFormat": "{{namespace}} / {{dag_id}} avg"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -582,14 +582,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_dagrun_schedule_delay_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"} / airflow_dagrun_schedule_delay_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}",
               "legendFormat": "{{namespace}} / {{dag_id}} avg delay"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -610,14 +610,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_dagrun_first_task_scheduling_delay_sum{namespace=~\"$namespace\"} / airflow_dagrun_first_task_scheduling_delay_count{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} avg"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -638,7 +638,7 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "rate(airflow_dagrun_dependency_check_count{namespace=~\"$namespace\"}[5m])",
               "legendFormat": "{{namespace}}"
             }
@@ -652,7 +652,7 @@ data:
           "type": "row"
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -673,14 +673,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_task_duration_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"} / airflow_task_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}",
               "legendFormat": "{{namespace}} / {{dag_id}} / {{task_id}}"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -701,14 +701,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_task_scheduled_duration_sum{namespace=~\"$namespace\"} / airflow_task_scheduled_duration_count{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} avg scheduled duration"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -729,14 +729,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "rate(airflow_ti_start{namespace=~\"$namespace\"}[5m])",
               "legendFormat": "{{namespace}}"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -757,14 +757,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "rate(airflow_ti_finish{namespace=~\"$namespace\"}[5m])",
               "legendFormat": "{{namespace}}"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -785,14 +785,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "rate(airflow_operator_successes{namespace=~\"$namespace\"}[5m])",
               "legendFormat": "{{namespace}} / {{operator}}"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -813,14 +813,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "rate(airflow_task_instance_created{namespace=~\"$namespace\"}[5m])",
               "legendFormat": "{{namespace}}"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -841,7 +841,7 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_ti_successes{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}}"
             }
@@ -855,7 +855,7 @@ data:
           "type": "row"
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -876,24 +876,24 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_executor_open_slots{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} open"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_executor_queued_tasks{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} queued"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_executor_running_tasks{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} running"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -914,29 +914,29 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_pool_open_slots{namespace=~\"$namespace\",pool=~\".+\"}",
               "legendFormat": "{{namespace}} / {{pool}} open"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_pool_running_slots{namespace=~\"$namespace\",pool=~\".+\"}",
               "legendFormat": "{{namespace}} / {{pool}} running"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_pool_queued_slots{namespace=~\"$namespace\",pool=~\".+\"}",
               "legendFormat": "{{namespace}} / {{pool}} queued"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_pool_deferred_slots{namespace=~\"$namespace\",pool=~\".+\"}",
               "legendFormat": "{{namespace}} / {{pool}} deferred"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -957,24 +957,24 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_pool_starving_tasks{namespace=~\"$namespace\",pool=~\".+\"}",
               "legendFormat": "{{namespace}} / {{pool}} starving"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_tasks_starving{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} scheduler starving"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_tasks_executable{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} executable"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -995,12 +995,12 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_orphaned_tasks_adopted{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} adopted"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_scheduler_orphaned_tasks_cleared{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}} cleared"
             }
@@ -1014,7 +1014,7 @@ data:
           "type": "row"
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -1035,14 +1035,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_triggers_running{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}}"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -1063,7 +1063,7 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "airflow_triggerer_capacity_left{namespace=~\"$namespace\"}",
               "legendFormat": "{{namespace}}"
             }
@@ -1077,7 +1077,7 @@ data:
           "type": "row"
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -1098,14 +1098,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "rate(statsd_exporter_events_total{namespace=~\"$namespace\"}[5m])",
               "legendFormat": "{{namespace}} {{type}}"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -1126,19 +1126,19 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "rate(statsd_exporter_lines_total{namespace=~\"$namespace\"}[5m])",
               "legendFormat": "{{namespace}} lines"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "rate(statsd_exporter_udp_packets_total{namespace=~\"$namespace\"}[5m])",
               "legendFormat": "{{namespace}} UDP packets"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -1159,14 +1159,14 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "rate(statsd_metric_mapper_cache_hits_total{namespace=~\"$namespace\"}[5m]) / rate(statsd_metric_mapper_cache_gets_total{namespace=~\"$namespace\"}[5m])",
               "legendFormat": "{{namespace}} hit rate"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -1187,7 +1187,7 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "rate(statsd_exporter_events_unmapped_total{namespace=~\"$namespace\"}[5m])",
               "legendFormat": "{{namespace}} unmapped"
             }
@@ -1201,7 +1201,7 @@ data:
           "type": "row"
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -1232,19 +1232,19 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "increase(airflow_dagrun_duration_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) / increase(airflow_dagrun_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) > 0",
               "legendFormat": "{{dag_id}} (now)"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "increase(airflow_dagrun_duration_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) / increase(airflow_dagrun_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) > 0",
               "legendFormat": "{{dag_id}} (prev)"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -1275,19 +1275,19 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "increase(airflow_task_duration_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) / increase(airflow_task_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) > 0",
               "legendFormat": "{{dag_id}} / {{task_id}} (now)"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "increase(airflow_task_duration_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) / increase(airflow_task_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) > 0",
               "legendFormat": "{{dag_id}} / {{task_id}} (prev)"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -1318,19 +1318,19 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "increase(airflow_dagrun_schedule_delay_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) / increase(airflow_dagrun_schedule_delay_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) > 0",
               "legendFormat": "{{dag_id}} delay (now)"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "increase(airflow_dagrun_schedule_delay_sum{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) / increase(airflow_dagrun_schedule_delay_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) > 0",
               "legendFormat": "{{dag_id}} delay (prev)"
             }
           ]
         },
         {
-          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "datasource": { "type": "prometheus", "uid": "$${datasource}" },
           "fieldConfig": {
             "defaults": {
               "color": { "mode": "palette-classic" },
@@ -1352,12 +1352,12 @@ data:
           "type": "timeseries",
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "increase(airflow_dagrun_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval]) > 0",
               "legendFormat": "{{dag_id}} runs (now)"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${datasource}" },
+              "datasource": { "type": "prometheus", "uid": "$${datasource}" },
               "expr": "increase(airflow_dagrun_duration_count{namespace=~\"$namespace\",dag_id=~\"$dag_id\"}[$__rate_interval] offset $comparison_offset) > 0",
               "legendFormat": "{{dag_id}} runs (prev)"
             }
@@ -1382,7 +1382,7 @@ data:
           },
           {
             "current": {},
-            "datasource": { "type": "prometheus", "uid": "${datasource}" },
+            "datasource": { "type": "prometheus", "uid": "$${datasource}" },
             "definition": "label_values(airflow_dagbag_size, namespace)",
             "hide": 0,
             "includeAll": true,
@@ -1400,7 +1400,7 @@ data:
           },
           {
             "current": {},
-            "datasource": { "type": "prometheus", "uid": "${datasource}" },
+            "datasource": { "type": "prometheus", "uid": "$${datasource}" },
             "definition": "label_values(airflow_dagrun_duration_sum{namespace=~\"$namespace\"}, dag_id)",
             "hide": 0,
             "includeAll": true,
