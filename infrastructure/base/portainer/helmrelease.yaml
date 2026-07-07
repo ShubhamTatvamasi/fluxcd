@@ -23,7 +23,7 @@ spec:
         # tag: new-custom-resources
     trusted_origins:
       enabled: true
-      domains: https://portainer.${domain}
+      domains: https://portainer.${domain},https://edge-portainer.${domain}
     service:
       type: ClusterIP
     ingress:
@@ -33,10 +33,15 @@ spec:
         - host: portainer.${domain}
           paths:
             - path: /
+        - host: edge-portainer.${domain}
+          paths:
+            - path: /
+              port: 8000
       tls:
         - secretName: portainer-tls
           hosts:
             - portainer.${domain}
+            - edge-portainer.${domain}
     tls:
       existingSecret: portainer-tls
     persistence:
