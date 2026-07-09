@@ -21,9 +21,9 @@ spec:
       retries: 3
     disableWait: false
   values:
-    airflowVersion: "3.2.2"
-    # defaultAirflowTag: "3.2.2"
-    defaultAirflowTag: "3.2.2-1"
+    airflowVersion: "3.3.0"
+    # defaultAirflowTag: "3.3.0"
+    defaultAirflowTag: "3.3.0-1"
     defaultAirflowRepository: "shubhamtatvamasi/airflow"
     executor: "KubernetesExecutor"
     workers:
