@@ -5,6 +5,6 @@ metadata:
   name: ip-pool-dynamic
   namespace: metallb-system
 spec:
+  autoAssign: true
   addresses:
   - 10.10.10.24-10.10.10.31
-  autoAssign: true
