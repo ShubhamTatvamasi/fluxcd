@@ -22,7 +22,8 @@ spec:
       existingSecretName: teleport-tls
     service:
       type: LoadBalancer
-      annotations:
+    annotations:
+      service:
         metallb.io/loadBalancerIPs: 10.10.10.17
     proxy:
       highAvailability:
