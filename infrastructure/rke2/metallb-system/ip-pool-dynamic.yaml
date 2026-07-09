@@ -2,8 +2,9 @@
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: ip-pool
+  name: ip-pool-dynamic
   namespace: metallb-system
 spec:
   addresses:
-  - 10.10.10.16/28
+  - 10.10.10.24-10.10.10.31
+  autoAssign: true
