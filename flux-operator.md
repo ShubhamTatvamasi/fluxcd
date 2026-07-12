@@ -114,8 +114,7 @@ helm upgrade -i flux-operator \
   --set web.config.authentication.oauth2.provider=OIDC \
   --set web.config.authentication.oauth2.clientID=flux-web-ui \
   --set web.config.authentication.oauth2.clientSecret=flux-dex-client-secret \
-  --set web.config.authentication.oauth2.issuerURL=https://dex.k8s.shubhamtatvamasi.com \
-  --wait
+  --set web.config.authentication.oauth2.issuerURL=https://dex.k8s.shubhamtatvamasi.com
 ```
 
 ---
