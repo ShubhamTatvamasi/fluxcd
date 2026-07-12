@@ -18,6 +18,16 @@ spec:
     - service: "sealed-secrets"
       path: "./infrastructure/base/sealed-secrets"
 
+    # cert-manager issues and renews TLS certs (installs its own CRDs)
+    - service: "cert-manager"
+      path: "./infrastructure/base/cert-manager/controller"
+
+    # self-signed internal CA + ClusterIssuer, built from cert-manager's CRDs
+    - service: "cert-manager-config"
+      path: "./infrastructure/base/cert-manager/config"
+      dependsOn:
+        - "cert-manager"
+
     # reloader watches for changes in ConfigMaps and Secrets and reloads the pods that use them
     - service: "reloader"
       path: "./infrastructure/base/reloader"

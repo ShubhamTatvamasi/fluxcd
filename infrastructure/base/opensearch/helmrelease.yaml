@@ -12,11 +12,58 @@ spec:
     namespace: opensearch
   values:
     singleNode: true
-    protocol: http
+    protocol: https
+    # Mount the cert-manager-issued node cert (used for both transport and
+    # REST TLS) and the admin identity cert (used as the security plugin's
+    # super-admin DN) as files inside the pod.
+    secretMounts:
+      - name: opensearch-node-cert
+        secretName: opensearch-node-cert
+        path: /usr/share/opensearch/config/node-cert
+      - name: opensearch-admin-cert
+        secretName: opensearch-admin-cert
+        path: /usr/share/opensearch/config/admin-cert
     config:
       opensearch.yml: |
         cluster.name: opensearch-cluster
         network.host: 0.0.0.0
         plugins:
           security:
-            disabled: true
+            ssl:
+              transport:
+                pemcert_filepath: node-cert/tls.crt
+                pemkey_filepath: node-cert/tls.key
+                pemtrustedcas_filepath: node-cert/ca.crt
+                enforce_hostname_verification: false
+              http:
+                enabled: true
+                pemcert_filepath: node-cert/tls.crt
+                pemkey_filepath: node-cert/tls.key
+                pemtrustedcas_filepath: node-cert/ca.crt
+            allow_unsafe_democertificates: false
+            allow_default_init_securityindex: true
+            authcz:
+              admin_dn:
+                - "CN=opensearch-admin,O=opensearch"
+            audit.type: internal_opensearch
+            enable_snapshot_restore_privilege: true
+            check_snapshot_restore_write_privileges: true
+            restapi:
+              roles_enabled: ["all_access", "security_rest_api_access"]
+    # internal_users.yml's admin hash is a placeholder — see
+    # infrastructure/base/opensearch/README-security.md for how to generate
+    # it, then replace REPLACE_WITH_BCRYPT_HASH below.
+    securityConfig:
+      enabled: true
+      config:
+        data:
+          internal_users.yml: |
+            _meta:
+              type: "internalusers"
+              config_version: 2
+            admin:
+              hash: "REPLACE_WITH_BCRYPT_HASH"
+              reserved: true
+              backend_roles:
+                - "admin"
+              description: "Admin user"

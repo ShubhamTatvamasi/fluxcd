@@ -6,15 +6,18 @@ metadata:
   namespace: flux-system
 spec:
   inputs:
-    # log/search store
+    # log/search store (its Certificates need cert-manager's ClusterIssuer)
     - service: "opensearch"
       path: "./infrastructure/base/opensearch"
+      dependsOn:
+        - "cert-manager-config"
 
     # web UI for opensearch
     - service: "opensearch-dashboards"
       path: "./infrastructure/base/opensearch-dashboards"
       dependsOn:
         - "opensearch"
+        - "sealed-secrets"
 
     # grafana dashboard for airflow (ConfigMap picked up by kube-prometheus-stack)
     - service: "airflow-dashboard"

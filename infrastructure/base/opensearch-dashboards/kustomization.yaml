@@ -7,3 +7,5 @@ resources:
 - helmchart.yaml
 - helmrelease.yaml
 - opensearch-dashboards-tls.yaml
+- opensearch-ca-cert.yaml
+- opensearch-admin-credentials.yaml

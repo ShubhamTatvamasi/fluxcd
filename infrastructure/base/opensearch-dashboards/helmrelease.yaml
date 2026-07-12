@@ -11,22 +11,23 @@ spec:
     name: opensearch-dashboards
     namespace: opensearch-dashboards
   values:
-    # OpenSearch runs in the `opensearch` namespace with the security plugin
-    # disabled and plain http (see infrastructure/base/opensearch), so point
-    # the dashboards at the cross-namespace service over http.
-    opensearchHosts: "http://opensearch-cluster-master.opensearch:9200"
-    # The backend has no security plugin, so Dashboards' own security plugin has
-    # nothing to authenticate against and renders a login page that nobody can
-    # pass. Remove the plugin at startup so the UI loads with no auth.
-    plugins:
-      enabled: true
-      removeList:
-        - securityDashboards
+    # OpenSearch runs in the `opensearch` namespace with its security plugin
+    # enabled over TLS (see infrastructure/base/opensearch), so Dashboards
+    # talks to it over https and authenticates as the admin user.
+    opensearchHosts: "https://opensearch-cluster-master.opensearch:9200"
+    opensearchAccount:
+      secret: opensearch-admin-credentials
+    secretMounts:
+      - name: opensearch-ca-cert
+        secretName: opensearch-node-cert
+        path: /usr/share/opensearch-dashboards/config/ca-cert
     config:
       opensearch_dashboards.yml:
         server:
           host: "0.0.0.0"
-        opensearch.hosts: ["http://opensearch-cluster-master.opensearch:9200"]
+        opensearch.hosts: ["https://opensearch-cluster-master.opensearch:9200"]
+        opensearch.ssl.certificateAuthorities:
+          - /usr/share/opensearch-dashboards/config/ca-cert/ca.crt
     ingress:
       enabled: true
       ingressClassName: traefik
