@@ -6,7 +6,11 @@ metadata:
   namespace: flux-system
 spec:
   inputs:
-    # log/search store (its Certificates need cert-manager's ClusterIssuer)
+    # log/search store (its Certificates need cert-manager's ClusterIssuer).
+    # opensearch-admin-credentials-opensearch (the sealed secret rendered
+    # into this namespace) is bundled inside infrastructure/base/opensearch
+    # itself, so it's applied together with this Kustomization, not as a
+    # separate dependsOn here.
     - service: "opensearch"
       path: "./infrastructure/base/opensearch"
       dependsOn:

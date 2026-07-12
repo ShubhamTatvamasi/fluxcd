@@ -13,12 +13,16 @@ spec:
   values:
     singleNode: true
     protocol: https
-    # We ship our own securityConfig below, so skip the image's built-in demo
-    # installer — otherwise it blocks the entrypoint waiting on
-    # OPENSEARCH_INITIAL_ADMIN_PASSWORD and never applies our internal_users.yml.
+    # Let the image's built-in demo installer run: it seeds the stock
+    # roles/roles_mapping/action_groups/tenants (which already map the
+    # "admin" backend role to all_access) and sets the admin user's password
+    # from this env var instead of us shipping a custom internal_users.yml.
     extraEnvs:
-      - name: DISABLE_INSTALL_DEMO_CONFIG
-        value: "true"
+      - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: opensearch-admin-credentials
+            key: password
     # Mount the cert-manager-issued node cert (used for both transport and
     # REST TLS) and the admin identity cert (used as the security plugin's
     # super-admin DN) as files inside the pod.
@@ -56,9 +60,3 @@ spec:
             check_snapshot_restore_write_privileges: true
             restapi:
               roles_enabled: ["all_access", "security_rest_api_access"]
-    # Full security config (internal_users.yml, config.yml, roles.yml, etc.) lives
-    # in the opensearch-security-config Secret — see opensearch-security-config-secret.yaml.
-    securityConfig:
-      enabled: true
-      config:
-        securityConfigSecret: opensearch-security-config
