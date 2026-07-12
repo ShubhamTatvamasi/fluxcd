@@ -13,26 +13,12 @@ spec:
   values:
     singleNode: true
     protocol: https
-    # Let the image's built-in demo installer run: it seeds the stock
-    # roles/roles_mapping/action_groups/tenants (which already map the
-    # "admin" backend role to all_access) and sets the admin user's password
-    # from this env var instead of us shipping a custom internal_users.yml.
     extraEnvs:
       - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
         valueFrom:
           secretKeyRef:
             name: opensearch-admin-credentials
             key: password
-    # Mount the cert-manager-issued node cert (used for both transport and
-    # REST TLS) and the admin identity cert (used as the security plugin's
-    # super-admin DN) as files inside the pod.
-    #
-    # NOTE: disabling ssl.http (REST TLS) was considered so clients could use
-    # plain HTTP + basic auth, but plugins.security.ssl.http.enabled: false has
-    # been an unsupported config since OpenSearch 2.12 (breaks securityadmin.sh
-    # / demo security bootstrap) and we're on 3.7.0 — so REST stays on HTTPS;
-    # basic auth (id/password from opensearch-admin-credentials) still works
-    # the same way over HTTPS.
     secretMounts:
       - name: opensearch-node-cert
         secretName: opensearch-node-cert

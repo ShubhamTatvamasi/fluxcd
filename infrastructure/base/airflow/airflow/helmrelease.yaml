@@ -29,12 +29,12 @@ spec:
       enabled: false
     opensearch:
       enabled: true
-      connection:
-        scheme: https
-        host: "opensearch-cluster-master.opensearch"
-        port: 9200
-        user: "admin"
-        pass: "admin"
+      # Connection URI (scheme://user:pass@host:port) comes from the
+      # airflow-opensearch-connection sealed secret instead of being
+      # hardcoded here — it must match the real admin password from
+      # opensearch-admin-credentials (see infrastructure/base/opensearch),
+      # not a placeholder.
+      secretName: "airflow-opensearch-connection"
     config:
       core:
         test_connection: 'Enabled'
