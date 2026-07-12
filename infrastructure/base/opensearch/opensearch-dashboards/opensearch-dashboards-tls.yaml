@@ -2,18 +2,19 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: opensearch-admin-credentials
-  namespace: opensearch-dashboards
+  name: opensearch-dashboards-tls
+  namespace: flux-system
 spec:
   dependsOn:
   - name: sealed-secrets
     namespace: flux-system
   force: false
   interval: 10m0s
-  path: ./secrets/opensearch
+  path: ./secrets/tls/shubhamtatvamasi-tls
   postBuild:
     substitute:
-      namespace: opensearch-dashboards
+      tls_secret_name: opensearch-dashboards-tls
+      namespace: opensearch
   prune: true
   sourceRef:
     kind: GitRepository

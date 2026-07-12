@@ -6,21 +6,13 @@ metadata:
   namespace: flux-system
 spec:
   inputs:
-    # log/search store (its Certificates need cert-manager's ClusterIssuer).
-    # opensearch-admin-credentials-opensearch (the sealed secret rendered
-    # into this namespace) is bundled inside infrastructure/base/opensearch
-    # itself, so it's applied together with this Kustomization, not as a
-    # separate dependsOn here.
+    # log/search store + its web UI, both in the opensearch namespace (its
+    # Certificates need cert-manager's ClusterIssuer; the admin-credentials
+    # secret needs sealed-secrets to decrypt).
     - service: "opensearch"
       path: "./infrastructure/base/opensearch"
       dependsOn:
         - "cert-manager-config"
-
-    # web UI for opensearch
-    - service: "opensearch-dashboards"
-      path: "./infrastructure/base/opensearch-dashboards"
-      dependsOn:
-        - "opensearch"
         - "sealed-secrets"
 
     # grafana dashboard for airflow (ConfigMap picked up by kube-prometheus-stack)

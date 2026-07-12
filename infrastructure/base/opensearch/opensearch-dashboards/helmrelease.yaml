@@ -3,18 +3,19 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: opensearch-dashboards
-  namespace: opensearch-dashboards
+  namespace: opensearch
 spec:
   interval: 10m
   chartRef:
     kind: HelmChart
     name: opensearch-dashboards
-    namespace: opensearch-dashboards
+    namespace: opensearch
   values:
-    # OpenSearch runs in the `opensearch` namespace with its security plugin
-    # enabled over TLS (see infrastructure/base/opensearch), so Dashboards
-    # talks to it over https and authenticates as the admin user.
-    opensearchHosts: "https://opensearch-cluster-master.opensearch:9200"
+    # OpenSearch runs in this same namespace with its security plugin enabled
+    # over TLS (see ../opensearch), so Dashboards talks to it over https and
+    # authenticates as the admin user, mounting OpenSearch's own node cert
+    # secret directly since they're now in the same namespace.
+    opensearchHosts: "https://opensearch-cluster-master:9200"
     opensearchAccount:
       secret: opensearch-admin-credentials
     secretMounts:
@@ -25,7 +26,7 @@ spec:
       opensearch_dashboards.yml:
         server:
           host: "0.0.0.0"
-        opensearch.hosts: ["https://opensearch-cluster-master.opensearch:9200"]
+        opensearch.hosts: ["https://opensearch-cluster-master:9200"]
         opensearch.ssl.certificateAuthorities:
           - /usr/share/opensearch-dashboards/config/ca-cert/ca.crt
     ingress:
