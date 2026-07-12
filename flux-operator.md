@@ -12,7 +12,7 @@ helm upgrade -i flux-operator \
   --create-namespace
 ```
 
-Create a FluxInstance resource:
+Create a FluxInstance components:
 ```yaml
 kubectl apply -f - << EOF
 apiVersion: fluxcd.controlplane.io/v1
