@@ -17,7 +17,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: import
-          image: shubhamtatvamasi/airflow:3.3.0-1
+          image: apache/airflow:3.3.0
           command:
             - /bin/bash
             - -c
