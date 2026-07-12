@@ -151,7 +151,7 @@ spec:
 
     # StackGres — Postgres operator with web console (needs traefik and sealed-secrets)
     - service: "stackgres-operator"
-      path: "./infrastructure/base/stackgres/operator"
+      path: "./infrastructure/base/stackgres"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
