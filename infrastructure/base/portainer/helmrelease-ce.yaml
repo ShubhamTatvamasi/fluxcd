@@ -12,8 +12,12 @@ spec:
     namespace: portainer
   values:
     image:
-      repository: portainer/portainer-ce
-      tag: 2.43.0
+      # Stable
+      # repository: portainer/portainer-ce
+      # tag: 2.43.0
+      # Development
+      repository: portainerci/portainer-ce
+      tag: develop
     trusted_origins:
       enabled: true
       domains: https://portainer-ce.${domain},https://edge-portainer-ce.${domain}
