@@ -99,6 +99,14 @@ spec:
         - "openebs"
         - "sealed-secrets"
 
+    # traefik's ServiceMonitor (needs the monitoring.coreos.com CRDs from kube-prometheus-stack,
+    # which itself depends on traefik — so this can't live in the traefik HelmRelease values)
+    - service: "traefik-monitoring"
+      path: "./infrastructure/base/traefik/monitoring"
+      dependsOn:
+        - "traefik"
+        - "kube-prometheus-stack"
+
     # mimir is a time series database that stores metrics from the cluster and makes them available in Grafana (needs traefik, openebs, and sealed-secrets)
     - service: "mimir"
       path: "./infrastructure/base/mimir"

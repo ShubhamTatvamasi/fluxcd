@@ -25,11 +25,10 @@ spec:
       prometheus:
         service:
           enabled: true
+        # ServiceMonitor is created separately (see ../monitoring), since its CRD
+        # comes from kube-prometheus-stack, which itself depends on traefik.
         serviceMonitor:
-          enabled: true
-          namespace: traefik
-          labels:
-            release: kube-prometheus-stack
+          enabled: false
         addEntryPointsLabels: true
         addRoutersLabels: true
         addServicesLabels: true
