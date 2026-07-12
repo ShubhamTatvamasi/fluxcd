@@ -36,6 +36,8 @@ spec:
         # user: "admin"
         # pass: "StrongPassword123!"
     config:
+      core:
+        test_connection: 'Enabled'
       webserver:
         expose_config: 'True'
         update_fab_perms: 'True'
