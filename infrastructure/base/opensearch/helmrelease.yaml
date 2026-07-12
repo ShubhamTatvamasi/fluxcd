@@ -13,6 +13,12 @@ spec:
   values:
     singleNode: true
     protocol: https
+    # We ship our own securityConfig below, so skip the image's built-in demo
+    # installer — otherwise it blocks the entrypoint waiting on
+    # OPENSEARCH_INITIAL_ADMIN_PASSWORD and never applies our internal_users.yml.
+    extraEnvs:
+      - name: DISABLE_INSTALL_DEMO_CONFIG
+        value: "true"
     # Mount the cert-manager-issued node cert (used for both transport and
     # REST TLS) and the admin identity cert (used as the security plugin's
     # super-admin DN) as files inside the pod.
@@ -50,9 +56,6 @@ spec:
             check_snapshot_restore_write_privileges: true
             restapi:
               roles_enabled: ["all_access", "security_rest_api_access"]
-    # internal_users.yml's admin hash is a placeholder — see
-    # infrastructure/base/opensearch/README-security.md for how to generate
-    # it, then replace REPLACE_WITH_BCRYPT_HASH below.
     securityConfig:
       enabled: true
       config:
@@ -62,7 +65,7 @@ spec:
               type: "internalusers"
               config_version: 2
             admin:
-              hash: "REPLACE_WITH_BCRYPT_HASH"
+              hash: "$2y$12$ij5EShlz94ZOG21BqVdw.uzTEINAbxM9AB6w4OrORNZ64wsooOlRS"
               reserved: true
               backend_roles:
                 - "admin"
