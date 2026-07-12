@@ -62,7 +62,7 @@ spec:
 EOF
 ```
 
-Create a GitRepository resource:
+Setup your git repo:
 ```yaml
 kubectl apply -f - << EOF
 apiVersion: source.toolkit.fluxcd.io/v1
