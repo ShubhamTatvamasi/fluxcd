@@ -1,0 +1,15 @@
+---
+# Bump the `name` suffix (v1 -> v2 -> ...) whenever variables.json changes below.
+# The import Job references this name directly, so a new name = a new Job = a
+# fresh import run. Leaving the name unchanged means the Job never re-runs.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: airflow-variables-import-v1
+  namespace: ${namespace}
+data:
+  variables.json: |
+    {
+      "MY_ENVIRONMENT": "airflow-one",
+      "MY_NEW_ENV": "airflow-two"
+    }

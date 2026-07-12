@@ -56,17 +56,9 @@ spec:
             check_snapshot_restore_write_privileges: true
             restapi:
               roles_enabled: ["all_access", "security_rest_api_access"]
+    # Full security config (internal_users.yml, config.yml, roles.yml, etc.) lives
+    # in the opensearch-security-config Secret — see opensearch-security-config-secret.yaml.
     securityConfig:
       enabled: true
       config:
-        data:
-          internal_users.yml: |
-            _meta:
-              type: "internalusers"
-              config_version: 2
-            admin:
-              hash: "$2y$12$ij5EShlz94ZOG21BqVdw.uzTEINAbxM9AB6w4OrORNZ64wsooOlRS"
-              reserved: true
-              backend_roles:
-                - "admin"
-              description: "Admin user"
+        securityConfigSecret: opensearch-security-config

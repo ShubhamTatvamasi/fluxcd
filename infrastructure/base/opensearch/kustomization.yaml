@@ -8,3 +8,4 @@ resources:
 - helmrelease.yaml
 - opensearch-node-cert.yaml
 - opensearch-admin-cert.yaml
+- opensearch-security-config-secret.yaml
