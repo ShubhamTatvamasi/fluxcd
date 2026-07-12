@@ -160,7 +160,7 @@ spec:
         - "sealed-secrets"
 
     # StackGres — Postgres operator with web console (needs traefik and sealed-secrets)
-    - service: "stackgres-operator"
+    - service: "stackgres"
       path: "./infrastructure/base/stackgres"
       dependsOn:
         - "traefik"
