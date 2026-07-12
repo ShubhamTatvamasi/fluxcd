@@ -38,11 +38,17 @@ spec:
 
     # Traefik — ingress controller (needs metallb and sealed-secrets to be installed first)
     - service: "traefik"
-      path: "./infrastructure/base/traefik"
+      path: "./infrastructure/base/traefik/controller"
       dependsOn:
         - "metallb-config"
         - "sealed-secrets"
         - "gateway-api"
+
+    # traefik IngressRoute/Middleware CRs (need the traefik.io CRDs installed by the HelmRelease first)
+    - service: "traefik-routes"
+      path: "./infrastructure/base/traefik/routes"
+      dependsOn:
+        - "traefik"
 
     # Portainer — container management UI (needs traefik and openebs to be installed first)
     - service: "portainer"

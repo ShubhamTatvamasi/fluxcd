@@ -42,11 +42,17 @@ spec:
 
     # traefik ingress controller (needs the metallb config first)
     - service: "traefik"
-      path: "./infrastructure/base/traefik"
+      path: "./infrastructure/base/traefik/controller"
       dependsOn:
         - "metallb-config"
         - "sealed-secrets"
         - "gateway-api"
+
+    # traefik IngressRoute/Middleware CRs (need the traefik.io CRDs installed by the HelmRelease first)
+    - service: "traefik-routes"
+      path: "./infrastructure/base/traefik/routes"
+      dependsOn:
+        - "traefik"
 
     # harbor container registry (needs traefik, openebs, and sealed-secrets)
     - service: "harbor"

@@ -1,0 +1,7 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ingressroute.yaml
+- oauth2-proxy-auth.yaml
+- oauth2-proxy-errors.yaml
