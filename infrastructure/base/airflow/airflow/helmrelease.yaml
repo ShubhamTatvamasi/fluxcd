@@ -30,11 +30,11 @@ spec:
     opensearch:
       enabled: true
       connection:
-        scheme: http
+        scheme: https
         host: "opensearch-cluster-master.opensearch"
         port: 9200
-        # user: "admin"
-        # pass: "StrongPassword123!"
+        user: "admin"
+        pass: "admin"
     config:
       core:
         test_connection: 'Enabled'
@@ -44,7 +44,7 @@ spec:
       logging:
         delete_local_logs: 'False'
       opensearch:
-        host: "http://opensearch-cluster-master.opensearch"
+        host: "https://opensearch-cluster-master.opensearch"
         port: 9200
         write_to_os: 'True'
         json_format: 'True'
