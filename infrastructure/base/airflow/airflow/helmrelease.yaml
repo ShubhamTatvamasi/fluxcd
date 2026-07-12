@@ -63,9 +63,24 @@ spec:
       # elasticsearch_configs:
       #   use_ssl: 'False'
       #   verify_certs: 'False'
-    # extraEnv: |
-    #   - name: AIRFLOW__OPENSEARCH__PORT
-    #     value: '9200'
+    # The opensearch.secretName/config.opensearch.host above only ever wire up
+    # AIRFLOW__OPENSEARCH__HOST (with user:pass embedded in the URL for
+    # display/URL-building purposes only) — the actual OpenSearch client
+    # built by the log handler authenticates using separate discrete
+    # AIRFLOW__OPENSEARCH__USERNAME/PASSWORD env vars, which the chart never
+    # sets on its own. Without these, the client connects with empty
+    # credentials and every log read/write 401s.
+    extraEnv: |
+      - name: AIRFLOW__OPENSEARCH__USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: airflow-opensearch-connection
+            key: username
+      - name: AIRFLOW__OPENSEARCH__PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: airflow-opensearch-connection
+            key: password
     # ports:
     #   apiServer: 80
     #   airflowUI: 80
