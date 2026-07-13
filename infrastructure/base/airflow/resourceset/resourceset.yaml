@@ -17,6 +17,8 @@ spec:
       path: "./secrets/airflow/airflow-metadata-connection"
     - service: "airflow-opensearch-connection"
       path: "./secrets/airflow/airflow-opensearch-connection"
+    - service: "airflow-fernet-key"
+      path: "./secrets/airflow/airflow-fernet-key"
     - service: "airflow"
       path: "./infrastructure/base/airflow/airflow"
       dependsOn:
@@ -25,6 +27,7 @@ spec:
         - "airflow-config"
         - "airflow-metadata-connection"
         - "airflow-opensearch-connection"
+        - "airflow-fernet-key"
       dags_git_sync_enabled: "${dags_git_sync_enabled}"
       dags_git_repo: "${dags_git_repo}"
       dags_git_branch: "${dags_git_branch}"

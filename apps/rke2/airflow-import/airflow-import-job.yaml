@@ -32,6 +32,11 @@ spec:
                 secretKeyRef:
                   name: airflow-metadata-connection
                   key: connection
+            - name: AIRFLOW__CORE__FERNET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: airflow-fernet-key
+                  key: fernet-key
           volumeMounts:
             - name: variables
               mountPath: /opt/airflow/import/variables.json
