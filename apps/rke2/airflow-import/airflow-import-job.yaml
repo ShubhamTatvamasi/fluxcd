@@ -1,15 +1,17 @@
 ---
-# Name must change whenever airflow-variables-import-* or
-# airflow-connections-import-* is bumped, since Job specs are immutable and
-# Kubernetes refuses to update a completed Job in place.
+# Job specs are immutable, so Kubernetes/Flux can't update this Job in place
+# when airflow-variables-import-* or airflow-connections-import-* changes.
+# After editing that import data, manually run:
+#   kubectl delete job airflow-import -n <namespace>
+# so Flux can recreate it and re-run the import against the new data.
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: airflow-import-v1
+  name: airflow-import
   namespace: ${namespace}
 spec:
   backoffLimit: 3
-  ttlSecondsAfterFinished: 86400
+  ttlSecondsAfterFinished: 60
   template:
     metadata:
       name: airflow-import
@@ -49,7 +51,7 @@ spec:
       volumes:
         - name: variables
           configMap:
-            name: airflow-variables-import-v1
+            name: airflow-variables-import
         - name: connections
           secret:
-            secretName: airflow-connections-import-v1
+            secretName: airflow-connections-import
