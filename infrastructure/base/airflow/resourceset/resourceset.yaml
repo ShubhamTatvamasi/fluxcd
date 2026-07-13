@@ -29,10 +29,11 @@ spec:
       dags_git_repo: "${dags_git_repo}"
       dags_git_branch: "${dags_git_branch}"
       dags_git_subpath: "${dags_git_subpath}"
-    # - service: "airflow-import"
-    #   path: "./apps/${cluster}/airflow-import"
-    #   dependsOn:
-    #     - "airflow"
+
+    - service: "airflow-import"
+      path: "./apps/${cluster}/airflow-import"
+      dependsOn:
+        - "airflow"
 
     - service: "airflow-monitoring"
       path: "./infrastructure/base/airflow/airflow-monitoring"

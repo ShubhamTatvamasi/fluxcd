@@ -10,6 +10,6 @@ metadata:
 data:
   variables.json: |
     {
-      "MY_ENVIRONMENT": "airflow-one",
-      "MY_NEW_ENV": "airflow-two"
+      "MY_RKE_AIRFLOW": "airflow-rke2-one",
+      "MY_NEW_RKE_AIRFLOW": "airflow-rke2-two"
     }
