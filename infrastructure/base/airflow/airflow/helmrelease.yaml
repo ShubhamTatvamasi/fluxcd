@@ -70,10 +70,6 @@ spec:
     # AIRFLOW__OPENSEARCH__USERNAME/PASSWORD env vars, which the chart never
     # sets on its own. Without these, the client connects with empty
     # credentials and every log read/write 401s.
-    # Pinned so Fernet-encrypted Connections/Variables in the metadata DB stay
-    # decryptable across chart upgrades/reinstalls — without this the chart
-    # auto-generates a random key per release, and any rotation makes existing
-    # encrypted rows permanently undecryptable (InvalidToken).
     extraEnv: |
       - name: AIRFLOW__OPENSEARCH__USERNAME
         valueFrom:
@@ -85,11 +81,13 @@ spec:
           secretKeyRef:
             name: airflow-opensearch-connection
             key: password
-      - name: AIRFLOW__CORE__FERNET_KEY
-        valueFrom:
-          secretKeyRef:
-            name: airflow-fernet-key
-            key: fernet-key
+    # Pinned so Fernet-encrypted Connections/Variables in the metadata DB stay
+    # decryptable across chart upgrades/reinstalls — without this the chart
+    # auto-generates a random key per release, and any rotation makes existing
+    # encrypted rows permanently undecryptable (InvalidToken). The chart
+    # already injects AIRFLOW__CORE__FERNET_KEY on every pod via this secret
+    # name, so it must not also be set through extraEnv (duplicate env key).
+    fernetKeySecretName: "airflow-fernet-key"
     # ports:
     #   apiServer: 80
     #   airflowUI: 80
