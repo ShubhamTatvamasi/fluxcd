@@ -27,7 +27,7 @@ spec:
               set -euo pipefail
               airflow db check
               airflow variables import /opt/airflow/import/variables.json
-              airflow connections import /opt/airflow/import/connections.json
+              airflow connections import --overwrite /opt/airflow/import/connections.json
           env:
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
               valueFrom:
