@@ -12,5 +12,5 @@ data:
   variables.json: |
     {
       "MY_RKE_AIRFLOW": "airflow-rke2-one",
-      "MY_NEW_RKE_AIRFLOW": "airflow-rke2-two"
+      "MY_NEW_RKE_AIRFLOW": "airflow-rke2-two-again"
     }
