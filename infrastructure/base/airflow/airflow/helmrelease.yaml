@@ -38,6 +38,8 @@ spec:
     config:
       core:
         test_connection: 'Enabled'
+      kubernetes_executor:
+        delete_worker_pods_on_failure: 'True'
       webserver:
         expose_config: 'True'
         update_fab_perms: 'True'
