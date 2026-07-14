@@ -26,8 +26,8 @@ spec:
             - |
               set -euo pipefail
               airflow db check
-              airflow variables import /opt/airflow/import/variables.json
-              airflow connections import --overwrite /opt/airflow/import/connections.json
+              airflow variables import /opt/airflow/import/variables.yaml
+              airflow connections import --overwrite /opt/airflow/import/connections.yaml
           env:
             - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
               valueFrom:
@@ -41,12 +41,12 @@ spec:
                   key: fernet-key
           volumeMounts:
             - name: variables
-              mountPath: /opt/airflow/import/variables.json
-              subPath: variables.json
+              mountPath: /opt/airflow/import/variables.yaml
+              subPath: variables.yaml
               readOnly: true
             - name: connections
-              mountPath: /opt/airflow/import/connections.json
-              subPath: connections.json
+              mountPath: /opt/airflow/import/connections.yaml
+              subPath: connections.yaml
               readOnly: true
       volumes:
         - name: variables

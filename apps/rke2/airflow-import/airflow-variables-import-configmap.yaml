@@ -9,8 +9,10 @@ metadata:
   name: airflow-variables-import
   namespace: ${namespace}
 data:
-  variables.json: |
-    {
-      "MY_RKE_AIRFLOW": "airflow-rke2-one",
-      "MY_NEW_RKE_AIRFLOW": "airflow-rke2-two-again"
-    }
+  variables.yaml: |
+    MY_RKE_AIRFLOW:
+      description: My RKE Airflow
+      value: airflow-rke2-one
+    MY_NEW_RKE_AIRFLOW:
+      description: My New RKE Airflow
+      value: airflow-rke2-two
