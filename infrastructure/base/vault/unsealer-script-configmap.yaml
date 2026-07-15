@@ -10,96 +10,33 @@ data:
     set -eu
 
     export VAULT_ADDR="http://127.0.0.1:8200"
+    TOKEN="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"
+    NS="$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)"
+    SECRET_URL="https://kubernetes.default.svc/api/v1/namespaces/$NS/secrets/vault-init-keys"
 
-    SA_DIR="/var/run/secrets/kubernetes.io/serviceaccount"
-    TOKEN="$(cat "$SA_DIR/token")"
-    NAMESPACE="$(cat "$SA_DIR/namespace")"
-    SECRET_NAME="vault-init-keys"
-    K8S_API="https://kubernetes.default.svc"
-    SECRET_URL="$K8S_API/api/v1/namespaces/$NAMESPACE/secrets/$SECRET_NAME"
-    LOG_FILE="/tmp/vault-unsealer.log"
+    wget_k8s() { wget -qO- --no-check-certificate --header "Authorization: Bearer $TOKEN" "$@"; }
+    # scalar field, e.g. "key": "value" or "key": true - one line, Vault/k8s json is pretty-printed
+    json_scalar() { grep "\"$1\":" | sed -E 's/.*"'"$1"'":[[:space:]]*"?([^",}]*)"?.*/\1/' | head -n1; }
+    # array of strings, e.g. "key": [ "a", "b" ] spanning multiple lines
+    json_array() { sed -n "/\"$1\":/,/]/p" | grep -o '"[^"]*"' | sed '1d'; }
 
-    log() { echo "[vault-unsealer] $(date +%Y-%m-%dT%H:%M:%S 2>/dev/null || true) $*" >>"$LOG_FILE"; }
+    STATUS=""
+    until [ -n "$STATUS" ]; do
+      STATUS="$(vault status -format=json 2>/dev/null || true)"
+      [ -z "$STATUS" ] && sleep 5
+    done
 
-    # extracts the scalar (string/bool/number) value of a top-level JSON key
-    # from Vault's -format=json output (read from stdin), which prints one key per line
-    json_field() {
-      grep "\"$1\"" | sed -E 's/.*"'"$1"'"[[:space:]]*:[[:space:]]*"?([^",}]*)"?.*/\1/' | head -n1
-    }
-
-    # extracts the quoted string values of a JSON array field (read from stdin), one per line,
-    # given the array spans from "key": [ down to the closing ]
-    json_array_values() {
-      sed -n "/\"$1\"/,/]/p" | grep -o '"[^"]*"' | sed '1d;s/^"//;s/"$//'
-    }
-
-    k8s_get() {
-      wget -qO- --no-check-certificate \
-        --header "Authorization: Bearer $TOKEN" \
-        "$1"
-    }
-
-    k8s_post() {
-      wget -qO- --no-check-certificate \
-        --header "Authorization: Bearer $TOKEN" \
-        --header "Content-Type: application/json" \
-        --post-data "$2" \
-        "$1"
-    }
-
-    # postStart races Vault's own startup - poll until the API responds at all.
-    # vault status exits non-zero when sealed/uninitialized, that's not a failure,
-    # it still prints valid JSON; only retry if the API produced no output.
-    wait_for_vault_api() {
-      STATUS_JSON="$(vault status -format=json 2>/dev/null || true)"
-      tries=0
-      while [ -z "$STATUS_JSON" ]; do
-        tries=$((tries + 1))
-        [ "$tries" -gt 60 ] && { log "gave up waiting for vault api after 5m"; exit 0; }
-        sleep 5
-        STATUS_JSON="$(vault status -format=json 2>/dev/null || true)"
-      done
-    }
-
-    log "postStart hook running"
-    wait_for_vault_api
-    INITIALIZED="$(printf '%s\n' "$STATUS_JSON" | json_field initialized)"
-
-    if [ "$INITIALIZED" != "true" ]; then
-      if k8s_get "$SECRET_URL" >/tmp/existing.json 2>/dev/null && grep -q '"root_token"' /tmp/existing.json; then
-        log "vault reports uninitialized but secret/$SECRET_NAME already exists - refusing to re-init"
-        exit 0
-      fi
-
-      log "initializing vault"
-      vault operator init -key-shares=5 -key-threshold=3 -format=json >/tmp/init.json
-      ROOT_TOKEN="$(json_field root_token </tmp/init.json)"
-      UNSEAL_KEYS="$(json_array_values unseal_keys_b64 </tmp/init.json)"
-
-      ROOT_TOKEN_B64="$(printf '%s' "$ROOT_TOKEN" | base64 | tr -d '\n')"
-      UNSEAL_KEYS_B64="$(printf '%s\n' "$UNSEAL_KEYS" | base64 | tr -d '\n')"
-
-      SECRET_BODY='{"apiVersion":"v1","kind":"Secret","metadata":{"name":"'"$SECRET_NAME"'","namespace":"'"$NAMESPACE"'"},"type":"Opaque","data":{"root_token":"'"$ROOT_TOKEN_B64"'","unseal_keys_b64":"'"$UNSEAL_KEYS_B64"'"}}'
-
-      k8s_post "$K8S_API/api/v1/namespaces/$NAMESPACE/secrets" "$SECRET_BODY" >/tmp/create.json
-      log "vault initialized, keys stored in secret/$SECRET_NAME"
-      STATUS_JSON="$(vault status -format=json 2>/dev/null || true)"
+    if [ "$(echo "$STATUS" | json_scalar initialized)" != "true" ]; then
+      INIT="$(vault operator init -key-shares=5 -key-threshold=3 -format=json)"
+      TOKEN_B64="$(echo "$INIT" | json_scalar root_token | base64 | tr -d '\n')"
+      KEYS_B64="$(echo "$INIT" | json_array unseal_keys_b64 | base64 | tr -d '\n')"
+      wget_k8s --header "Content-Type: application/json" \
+        --post-data '{"apiVersion":"v1","kind":"Secret","metadata":{"name":"vault-init-keys"},"data":{"root_token":"'"$TOKEN_B64"'","unseal_keys_b64":"'"$KEYS_B64"'"}}' \
+        "https://kubernetes.default.svc/api/v1/namespaces/$NS/secrets" >/dev/null
+      STATUS="$(vault status -format=json 2>/dev/null || true)"
     fi
 
-    SEALED="$(printf '%s\n' "$STATUS_JSON" | json_field sealed)"
-    if [ "$SEALED" = "true" ]; then
-      log "vault sealed, fetching keys from secret/$SECRET_NAME"
-      k8s_get "$SECRET_URL" >/tmp/secret.json
-      ENC_KEYS="$(json_field unseal_keys_b64 </tmp/secret.json)"
-      printf '%s' "$ENC_KEYS" | base64 -d >/tmp/keys.txt
-      n=0
-      while IFS= read -r key; do
-        [ -z "$key" ] && continue
-        n=$((n + 1))
-        [ "$n" -gt 3 ] && break
-        vault operator unseal "$key" >/dev/null
-      done </tmp/keys.txt
-      log "vault unsealed"
+    if [ "$(echo "$STATUS" | json_scalar sealed)" = "true" ]; then
+      wget_k8s "$SECRET_URL" | json_scalar unseal_keys_b64 | base64 -d | tr -d '"' |
+        head -n3 | while IFS= read -r key; do vault operator unseal "$key" >/dev/null; done
     fi
-
-    log "postStart hook done"
