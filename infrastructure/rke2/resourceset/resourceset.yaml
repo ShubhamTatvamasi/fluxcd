@@ -185,6 +185,13 @@ spec:
       dependsOn:
         - "traefik"
         - "sealed-secrets"
+
+    # Vault — secrets management (needs traefik and sealed-secrets)
+    - service: "vault"
+      path: "./infrastructure/base/vault"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
