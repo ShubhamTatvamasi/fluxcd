@@ -32,12 +32,11 @@ spec:
           configMap:
             name: vault-unsealer-script
             defaultMode: 0755
-      extraContainers:
-        - name: unsealer
-          image: hashicorp/vault:2.0.3
-          command: ["/bin/sh", "/scripts/unseal.sh"]
-          volumeMounts:
-            - name: unsealer-script
-              mountPath: /scripts
+      volumeMounts:
+        - name: unsealer-script
+          mountPath: /vault-unsealer
+      postStart:
+        - /bin/sh
+        - /vault-unsealer/unseal.sh
     ui:
       enabled: true
