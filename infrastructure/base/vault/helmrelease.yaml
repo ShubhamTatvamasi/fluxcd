@@ -27,5 +27,17 @@ spec:
           - secretName: vault-tls
             hosts:
               - vault.${domain}
+      volumes:
+        - name: unsealer-script
+          configMap:
+            name: vault-unsealer-script
+            defaultMode: 0755
+      extraContainers:
+        - name: unsealer
+          image: hashicorp/vault:2.0.3
+          command: ["/bin/sh", "/scripts/unseal.sh"]
+          volumeMounts:
+            - name: unsealer-script
+              mountPath: /scripts
     ui:
       enabled: true

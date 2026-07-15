@@ -1,0 +1,28 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: vault-init-unseal
+  namespace: vault
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["vault-init-keys"]
+  verbs: ["get", "update", "patch"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: vault-init-unseal
+  namespace: vault
+subjects:
+- kind: ServiceAccount
+  name: vault
+  namespace: vault
+roleRef:
+  kind: Role
+  name: vault-init-unseal
+  apiGroup: rbac.authorization.k8s.io

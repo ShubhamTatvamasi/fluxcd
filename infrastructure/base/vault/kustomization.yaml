@@ -5,5 +5,7 @@ resources:
 - namespace.yaml
 - helmrepository.yaml
 - helmchart.yaml
+- rbac.yaml
+- unsealer-script-configmap.yaml
 - helmrelease.yaml
 - vault-tls.yaml

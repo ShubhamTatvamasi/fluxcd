@@ -1,0 +1,81 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-unsealer-script
+  namespace: vault
+data:
+  unseal.sh: |
+    #!/bin/sh
+    set -eu
+
+    apk add --no-cache curl jq >/tmp/apk.log 2>&1
+
+    export VAULT_ADDR="http://127.0.0.1:8200"
+
+    SA_DIR="/var/run/secrets/kubernetes.io/serviceaccount"
+    TOKEN="$(cat "$SA_DIR/token")"
+    NAMESPACE="$(cat "$SA_DIR/namespace")"
+    SECRET_NAME="vault-init-keys"
+    K8S_API="https://kubernetes.default.svc"
+    SECRET_URL="$K8S_API/api/v1/namespaces/$NAMESPACE/secrets/$SECRET_NAME"
+
+    k8s_curl() {
+      curl -sS --cacert "$SA_DIR/ca.crt" -H "Authorization: Bearer $TOKEN" "$@"
+    }
+
+    log() { echo "[vault-unsealer] $*"; }
+
+    wait_for_vault_api() {
+      until vault status -format=json >/tmp/status.json 2>/dev/null; do
+        log "waiting for vault api..."
+        sleep 5
+      done
+    }
+
+    while true; do
+      wait_for_vault_api
+      STATUS_JSON="$(cat /tmp/status.json)"
+      INITIALIZED="$(printf '%s' "$STATUS_JSON" | jq -r '.initialized')"
+
+      if [ "$INITIALIZED" != "true" ]; then
+        EXISTING_CODE="$(k8s_curl -o /tmp/existing.json -w '%{http_code}' "$SECRET_URL")"
+        if [ "$EXISTING_CODE" = "200" ]; then
+          log "vault reports uninitialized but secret/$SECRET_NAME already exists - refusing to re-init"
+          sleep 15
+          continue
+        fi
+
+        log "initializing vault"
+        INIT_JSON="$(vault operator init -key-shares=5 -key-threshold=3 -format=json)"
+        ROOT_TOKEN="$(printf '%s' "$INIT_JSON" | jq -r '.root_token')"
+        UNSEAL_KEYS="$(printf '%s' "$INIT_JSON" | jq -c '.unseal_keys_b64')"
+
+        SECRET_BODY="$(jq -n \
+          --arg name "$SECRET_NAME" \
+          --arg namespace "$NAMESPACE" \
+          --arg root_token "$ROOT_TOKEN" \
+          --arg unseal_keys "$UNSEAL_KEYS" \
+          '{apiVersion:"v1",kind:"Secret",metadata:{name:$name,namespace:$namespace},type:"Opaque",
+            stringData:{root_token:$root_token, unseal_keys_b64:$unseal_keys}}')"
+
+        k8s_curl -X POST -H "Content-Type: application/json" -d "$SECRET_BODY" \
+          "$K8S_API/api/v1/namespaces/$NAMESPACE/secrets" >/tmp/create.json
+        log "vault initialized, keys stored in secret/$SECRET_NAME"
+      fi
+
+      wait_for_vault_api
+      SEALED="$(jq -r '.sealed' /tmp/status.json)"
+      if [ "$SEALED" = "true" ]; then
+        log "vault sealed, fetching keys from secret/$SECRET_NAME"
+        k8s_curl -o /tmp/secret.json "$SECRET_URL"
+        KEYS="$(jq -r '.data.unseal_keys_b64' /tmp/secret.json | base64 -d | jq -r '.[]')"
+        printf '%s\n' "$KEYS" | while IFS= read -r key; do
+          [ -z "$key" ] && continue
+          vault operator unseal "$key" >/dev/null
+        done
+        log "vault unsealed"
+      fi
+
+      sleep 15
+    done
