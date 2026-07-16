@@ -1,0 +1,14 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: vault-secrets-webhook
+  namespace: vault-infra
+spec:
+  interval: 10m
+  url: oci://ghcr.io/bank-vaults/helm-charts/vault-secrets-webhook
+  layerSelector:
+    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
+    operation: copy
+  ref:
+    tag: "1.23.1"
