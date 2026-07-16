@@ -30,10 +30,15 @@ spec:
           hosts:
             - vault.${domain}
 
-  volumes:
-    - name: vault-file
-      persistentVolumeClaim:
-        claimName: vault-file
+  volumeClaimTemplates:
+    - metadata:
+        name: vault-file
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
   volumeMounts:
     - name: vault-file
       mountPath: /vault/file
