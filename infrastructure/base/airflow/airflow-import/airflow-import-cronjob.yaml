@@ -1,0 +1,58 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: airflow-import
+  namespace: ${namespace}
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      ttlSecondsAfterFinished: 60
+      template:
+        metadata:
+          name: airflow-import
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: import
+              image: apache/airflow:3.3.0
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+                  airflow db check
+                  airflow variables import /opt/airflow/import/variables.yaml
+                  airflow connections import --overwrite /opt/airflow/import/connections.yaml
+              env:
+                - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+                  valueFrom:
+                    secretKeyRef:
+                      name: airflow-metadata-connection
+                      key: connection
+                - name: AIRFLOW__CORE__FERNET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: airflow-fernet-key
+                      key: fernet-key
+              volumeMounts:
+                - name: variables
+                  mountPath: /opt/airflow/import/variables.yaml
+                  subPath: variables.yaml
+                  readOnly: true
+                - name: connections
+                  mountPath: /opt/airflow/import/connections.yaml
+                  subPath: connections.yaml
+                  readOnly: true
+          volumes:
+            - name: variables
+              configMap:
+                name: airflow-variables-import
+            - name: connections
+              secret:
+                secretName: airflow-connections-import

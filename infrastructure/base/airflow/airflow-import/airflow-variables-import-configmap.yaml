@@ -1,8 +1,4 @@
 ---
-# The airflow-import Job doesn't re-run automatically when this data changes
-# (Job specs are immutable). After editing variables.json, manually run:
-#   kubectl delete job airflow-import -n <namespace>
-# so Flux can recreate the Job and re-import against the updated data.
 apiVersion: v1
 kind: ConfigMap
 metadata:

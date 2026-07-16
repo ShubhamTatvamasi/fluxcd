@@ -34,7 +34,7 @@ spec:
       dags_git_subpath: "${dags_git_subpath}"
 
     - service: "airflow-import"
-      path: "./apps/${cluster}/airflow-import"
+      path: "./infrastructure/base/airflow/airflow-import"
       dependsOn:
         - "airflow"
 

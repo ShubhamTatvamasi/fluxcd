@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
 - airflow-variables-import-configmap.yaml
 - airflow-connections-import-sealedsecret.yaml
-- airflow-import-job.yaml
+- airflow-import-cronjob.yaml
