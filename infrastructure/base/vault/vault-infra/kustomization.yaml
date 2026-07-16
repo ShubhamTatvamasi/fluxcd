@@ -3,9 +3,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - namespace.yaml
-- helmrepository.yaml
-- helmchart.yaml
 - rbac.yaml
-- unsealer-script-configmap.yaml
-- helmrelease.yaml
+- pvc.yaml
 - vault-tls.yaml

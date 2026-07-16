@@ -1,0 +1,59 @@
+---
+apiVersion: vault.banzaicloud.com/v1alpha1
+kind: Vault
+metadata:
+  name: vault
+  namespace: vault
+spec:
+  size: 1
+  image: hashicorp/vault:2.0.3
+  serviceAccount: vault
+  serviceType: ClusterIP
+
+  ingress:
+    annotations: {}
+    spec:
+      ingressClassName: traefik
+      rules:
+        - host: vault.${domain}
+          http:
+            paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: vault
+                    port:
+                      number: 8200
+      tls:
+        - secretName: vault-tls
+          hosts:
+            - vault.${domain}
+
+  volumes:
+    - name: vault-file
+      persistentVolumeClaim:
+        claimName: vault-file
+  volumeMounts:
+    - name: vault-file
+      mountPath: /vault/file
+
+  unsealConfig:
+    options:
+      preFlightChecks: true
+      storeRootToken: true
+      secretShares: 5
+      secretThreshold: 3
+    kubernetes:
+      secretNamespace: vault
+
+  config:
+    disable_mlock: true
+    storage:
+      file:
+        path: /vault/file
+    listener:
+      tcp:
+        address: "0.0.0.0:8200"
+        tls_disable: true
+    ui: true

@@ -186,12 +186,23 @@ spec:
         - "traefik"
         - "sealed-secrets"
 
-    # Vault — secrets management (needs traefik and sealed-secrets)
+    # Vault Operator — Bank-Vaults CRD controller for managing Vault instances
+    - service: "vault-operator"
+      path: "./infrastructure/base/vault/vault-operator"
+
+    # Vault infra — namespace, RBAC, PVC, and TLS secret the Vault CR depends on
+    - service: "vault-infra"
+      path: "./infrastructure/base/vault/vault-infra"
+      dependsOn:
+        - "sealed-secrets"
+
+    # Vault — secrets management, managed by vault-operator (needs traefik, the operator's CRD, and vault-infra)
     - service: "vault"
-      path: "./infrastructure/base/vault"
+      path: "./infrastructure/base/vault/vault"
       dependsOn:
         - "traefik"
-        - "sealed-secrets"
+        - "vault-operator"
+        - "vault-infra"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
