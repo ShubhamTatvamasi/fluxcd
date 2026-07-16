@@ -10,3 +10,5 @@ spec:
     kind: OCIRepository
     name: vault-secrets-webhook
     namespace: vault-infra
+  values:
+    replicaCount: 1
