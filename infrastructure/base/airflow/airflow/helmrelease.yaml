@@ -139,6 +139,7 @@ spec:
         branch: ${dags_git_branch}
         ref: ${dags_git_branch}
         subPath: ${dags_git_subpath}
+        maxFailures: 5
     ingress:
       apiServer:
         enabled: true
