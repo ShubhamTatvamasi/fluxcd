@@ -12,9 +12,9 @@ spec:
     namespace: ${namespace}
   values:
     airflowVersion: "3.3.0"
-    # defaultAirflowTag: "3.3.0"
-    defaultAirflowTag: "3.3.0-1"
-    defaultAirflowRepository: "shubhamtatvamasi/airflow"
+    defaultAirflowTag: "3.3.0"
+    # defaultAirflowTag: "3.3.0-1"
+    # defaultAirflowRepository: "shubhamtatvamasi/airflow"
     executor: "KubernetesExecutor"
     workers:
       kubernetes:
