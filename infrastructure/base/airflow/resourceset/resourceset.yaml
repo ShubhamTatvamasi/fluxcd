@@ -32,6 +32,8 @@ spec:
       dags_git_repo: "${dags_git_repo}"
       dags_git_branch: "${dags_git_branch}"
       dags_git_subpath: "${dags_git_subpath}"
+      worker_min_replicas: "${worker_min_replicas}"
+      worker_max_replicas: "${worker_max_replicas}"
 
     - service: "airflow-import"
       path: "./infrastructure/base/airflow/airflow-import"
@@ -93,4 +95,12 @@ spec:
 
           <<- if index inputs "dags_git_subpath" >>
           dags_git_subpath: "<< index inputs "dags_git_subpath" >>"
+          <<- end >>
+
+          <<- if index inputs "worker_min_replicas" >>
+          worker_min_replicas: "<< index inputs "worker_min_replicas" >>"
+          <<- end >>
+
+          <<- if index inputs "worker_max_replicas" >>
+          worker_max_replicas: "<< index inputs "worker_max_replicas" >>"
           <<- end >>

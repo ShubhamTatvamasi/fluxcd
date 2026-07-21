@@ -23,3 +23,5 @@ spec:
       dags_git_repo: "https://github.com/ShubhamTatvamasi/airflow.git"
       dags_git_branch: "main"
       dags_git_subpath: "dags"
+      worker_min_replicas: "1"
+      worker_max_replicas: "5"

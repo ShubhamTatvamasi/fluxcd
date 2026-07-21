@@ -15,16 +15,23 @@ spec:
     defaultAirflowTag: "3.3.0"
     # defaultAirflowTag: "3.3.0-1"
     # defaultAirflowRepository: "shubhamtatvamasi/airflow"
-    executor: "KubernetesExecutor"
+    executor: "CeleryExecutor"
     workers:
-      kubernetes:
-        resources:
-          requests:
-            cpu: "250m"
-            memory: "512Mi"
-          limits:
-            cpu: "1"
-            memory: "2Gi"
+      celery:
+        keda:
+          enabled: true
+          minReplicaCount: ${worker_min_replicas}
+          maxReplicaCount: ${worker_max_replicas}
+      # resources:
+      #   requests:
+      #     cpu: "250m"
+      #     memory: "512Mi"
+      #   limits:
+      #     cpu: "1"
+      #     memory: "2Gi"
+      podAnnotations:
+        secret.reloader.stakater.com/reload: "airflow-connections"
+        configmap.reloader.stakater.com/reload: "airflow-variables"
     postgresql:
       enabled: false
     opensearch:
