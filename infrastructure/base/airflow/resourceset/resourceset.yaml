@@ -28,6 +28,7 @@ spec:
         - "airflow-metadata-connection"
         - "airflow-opensearch-connection"
         - "airflow-fernet-key"
+        - "keda"
       dags_git_sync_enabled: "${dags_git_sync_enabled}"
       dags_git_repo: "${dags_git_repo}"
       dags_git_branch: "${dags_git_branch}"

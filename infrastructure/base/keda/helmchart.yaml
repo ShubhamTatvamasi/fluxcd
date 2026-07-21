@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: keda
+  namespace: keda
+spec:
+  interval: 10m
+  chart: keda
+  version: "2.20.1"
+  sourceRef:
+    name: keda
+    kind: HelmRepository

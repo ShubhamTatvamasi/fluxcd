@@ -37,6 +37,11 @@ spec:
       dependsOn:
         - "cnpg-operator"
         - "airflow-basic-auth"
+
+    # KEDA provides event-driven autoscaling (installs the keda.sh CRDs), used by
+    # Airflow's Celery worker ScaledObject to scale workers on queued task count
+    - service: "keda"
+      path: "./infrastructure/base/keda"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
