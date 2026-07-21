@@ -10,6 +10,16 @@ spec:
     kind: HelmChart
     name: airflow
     namespace: ${namespace}
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: ScaledObject
+              name: airflow-worker
+            patch: |
+              - op: replace
+                path: /spec/triggers/0/metadata/connectionFromEnv
+                value: KEDA_DB_CONN
   values:
     airflowVersion: "3.3.0"
     defaultAirflowTag: "3.3.0"
@@ -90,6 +100,11 @@ spec:
           secretKeyRef:
             name: airflow-opensearch-connection
             key: password
+      - name: KEDA_DB_CONN
+        valueFrom:
+          secretKeyRef:
+            name: airflow-metadata-connection
+            key: kedaConnection
     # Pinned so Fernet-encrypted Connections/Variables in the metadata DB stay
     # decryptable across chart upgrades/reinstalls — without this the chart
     # auto-generates a random key per release, and any rotation makes existing
