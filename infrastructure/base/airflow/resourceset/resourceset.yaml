@@ -66,6 +66,9 @@ spec:
       dependsOn:
         <<- range index inputs "dependsOn" >>
         - name: << . >>
+          <<- if eq . "keda" >>
+          namespace: flux-system
+          <<- end >>
         <<- end >>
       <<- end >>
 
