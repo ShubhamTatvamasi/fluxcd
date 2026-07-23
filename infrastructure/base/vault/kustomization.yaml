@@ -5,4 +5,4 @@ resources:
 - namespace.yaml
 - rbac.yaml
 - vault-tls.yaml
-- vault-cr.yaml
+- vault.yaml
