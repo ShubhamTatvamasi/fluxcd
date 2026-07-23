@@ -1,0 +1,64 @@
+---
+apiVersion: vault.banzaicloud.com/v1alpha1
+kind: Vault
+metadata:
+  name: openbao
+  namespace: openbao
+spec:
+  size: 1
+  image: quay.io/openbao/openbao:2.6.1
+  serviceAccount: openbao
+  serviceType: ClusterIP
+
+  ingress:
+    annotations: {}
+    spec:
+      ingressClassName: traefik
+      rules:
+        - host: openbao.${domain}
+          http:
+            paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: openbao
+                    port:
+                      number: 8200
+      tls:
+        - secretName: openbao-tls
+          hosts:
+            - openbao.${domain}
+
+  volumeClaimTemplates:
+    - metadata:
+        name: openbao-file
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+  volumeMounts:
+    - name: openbao-file
+      mountPath: /openbao/file
+
+  unsealConfig:
+    options:
+      preFlightChecks: true
+      storeRootToken: true
+      secretShares: 5
+      secretThreshold: 3
+    kubernetes:
+      secretNamespace: openbao
+
+  config:
+    disable_mlock: true
+    storage:
+      file:
+        path: /openbao/file
+    listener:
+      tcp:
+        address: "0.0.0.0:8200"
+        tls_disable: true
+    ui: true

@@ -188,11 +188,11 @@ spec:
 
     # Vault Operator — Bank-Vaults CRD controller for managing Vault instances
     - service: "vault-operator"
-      path: "./infrastructure/base/vault/vault-operator"
+      path: "./infrastructure/base/bank-vaults/vault-operator"
 
     # Vault — namespace, RBAC, PVC, TLS secret, and the Vault CR itself
     - service: "vault"
-      path: "./infrastructure/base/vault/vault"
+      path: "./infrastructure/base/vault"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -200,16 +200,17 @@ spec:
 
     # Vault infra — vault-secrets-webhook for injecting Vault secrets into other pods (needs the vault namespace + Vault instance)
     - service: "vault-infra"
-      path: "./infrastructure/base/vault/vault-infra"
+      path: "./infrastructure/base/bank-vaults/vault-infra"
       dependsOn:
         - "vault"
 
-    # OpenBao — open-source secrets management (Vault fork), needs traefik and sealed-secrets
+    # OpenBao — Vault-API-compatible secrets management, run as a second Vault CR under the same Bank-Vaults operator
     - service: "openbao"
       path: "./infrastructure/base/openbao"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
+        - "vault-operator"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
