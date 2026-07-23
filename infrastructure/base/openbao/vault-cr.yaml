@@ -10,10 +10,18 @@ spec:
   serviceAccount: openbao
   serviceType: ClusterIP
 
+  # OpenBao's entrypoint always reads config from /openbao/config (BAO_CONFIG_DIR),
+  # unlike HashiCorp Vault's /vault/config default the operator normally mounts.
+  configPath: /openbao/config
+
   securityContext:
     runAsUser: 100
     runAsGroup: 1000
     fsGroup: 1000
+
+  vaultEnvsConfig:
+    - name: SKIP_CHOWN
+      value: "1"
 
   ingress:
     annotations: {}
