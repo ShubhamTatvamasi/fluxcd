@@ -1,0 +1,26 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: openbao
+  namespace: openbao
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: openbao
+    namespace: openbao
+  values:
+    server:
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        hosts:
+          - host: openbao.${domain}
+            paths: []
+        tls:
+          - secretName: openbao-tls
+            hosts:
+              - openbao.${domain}
+    ui:
+      enabled: true

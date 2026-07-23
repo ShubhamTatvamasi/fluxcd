@@ -203,6 +203,13 @@ spec:
       path: "./infrastructure/base/vault/vault-infra"
       dependsOn:
         - "vault"
+
+    # OpenBao — open-source secrets management (Vault fork), needs traefik and sealed-secrets
+    - service: "openbao"
+      path: "./infrastructure/base/openbao"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization

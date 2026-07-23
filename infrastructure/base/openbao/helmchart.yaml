@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: openbao
+  namespace: openbao
+spec:
+  interval: 10m
+  chart: openbao
+  version: "0.28.6"
+  sourceRef:
+    name: openbao
+    kind: HelmRepository
