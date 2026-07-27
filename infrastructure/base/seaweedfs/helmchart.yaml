@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: seaweedfs
+  namespace: seaweedfs
+spec:
+  interval: 10m
+  chart: seaweedfs
+  version: "4.40.0"
+  sourceRef:
+    name: seaweedfs
+    kind: HelmRepository

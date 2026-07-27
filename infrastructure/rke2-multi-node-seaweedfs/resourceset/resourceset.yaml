@@ -1,0 +1,42 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: infrastructure
+  namespace: flux-system
+spec:
+  inputs:
+    # SeaweedFS — distributed object store (S3-compatible), all-in-one mode for testing
+    - service: "seaweedfs"
+      path: "./infrastructure/base/seaweedfs"
+  resourcesTemplate: |
+    apiVersion: kustomize.toolkit.fluxcd.io/v1
+    kind: Kustomization
+    metadata:
+      name: << inputs.service >>
+      namespace: flux-system
+    spec:
+      interval: 10m0s
+      path: << inputs.path >>
+      prune: true
+      wait: true
+      timeout: 10m
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+
+      <<- if index inputs "dependsOn" >>
+      dependsOn:
+        <<- range index inputs "dependsOn" >>
+        - name: << . >>
+        <<- end >>
+      <<- end >>
+
+      postBuild:
+        substitute:
+          domain: "${domain}"
+          <<- if index inputs "tls_secret_name" >>
+          tls_secret_name: "<< index inputs "tls_secret_name" >>"
+          namespace: "<< index inputs "namespace" >>"
+          <<- end >>
