@@ -4,8 +4,9 @@ kind: ResourceSet
 metadata:
   name: airflow-infrastructure
   namespace: flux-system
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: "10m"
 spec:
-  interval: 10m
   inputs:
     # log/search store + its web UI, both in the opensearch namespace (its
     # Certificates need cert-manager's ClusterIssuer; the admin-credentials

@@ -4,8 +4,9 @@ kind: ResourceSet
 metadata:
   name: airflow
   namespace: ${namespace}
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: "10m"
 spec:
-  interval: 10m
   inputs:
     - service: "airflow-tls"
       path: "./secrets/tls/shubhamtatvamasi-tls"

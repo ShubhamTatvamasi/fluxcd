@@ -4,8 +4,9 @@ kind: ResourceSet
 metadata:
   name: infrastructure
   namespace: flux-system
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: "10m"
 spec:
-  interval: 10m
   inputs:
     # SeaweedFS — distributed object store (S3-compatible), all-in-one mode for testing
     - service: "seaweedfs"
