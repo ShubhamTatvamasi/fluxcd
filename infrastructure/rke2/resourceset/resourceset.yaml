@@ -186,6 +186,13 @@ spec:
         - "traefik"
         - "sealed-secrets"
 
+    # Infisical — secrets management platform (needs traefik and sealed-secrets)
+    - service: "infisical"
+      path: "./infrastructure/base/infisical"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+
     # Vault Operator — Bank-Vaults CRD controller for managing Vault instances
     - service: "vault-operator"
       path: "./infrastructure/base/bank-vaults/vault-operator"

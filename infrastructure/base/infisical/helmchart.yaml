@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: infisical
+  namespace: infisical
+spec:
+  interval: 10m
+  chart: infisical-standalone
+  version: "1.10.0"
+  sourceRef:
+    name: infisical
+    kind: HelmRepository

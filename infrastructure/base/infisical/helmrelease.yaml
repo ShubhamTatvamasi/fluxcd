@@ -1,0 +1,44 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: infisical
+  namespace: infisical
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: infisical
+    namespace: infisical
+  values:
+    infisical:
+      replicaCount: 1
+      kubeSecretRef: infisical-secrets
+
+    ingress:
+      enabled: true
+      hostName: infisical.${domain}
+      ingressClassName: traefik
+      nginx:
+        enabled: false
+      tls:
+        - secretName: infisical-tls
+          hosts:
+            - infisical.${domain}
+
+    ingress-nginx:
+      controller:
+        enabled: false
+
+    postgresql:
+      enabled: true
+      auth:
+        username: infisical
+        database: infisicalDB
+        existingSecret: infisical-postgresql-auth
+
+    redis:
+      enabled: true
+      auth:
+        existingSecret: infisical-redis-auth
+        existingSecretPasswordKey: redis-password
