@@ -35,10 +35,9 @@ spec:
       auth:
         username: infisical
         database: infisicalDB
-        existingSecret: infisical-postgresql-auth
+        password: LQMm1lYwEE0lpVJYFhNbmboWUbLRMwS
 
     redis:
       enabled: true
       auth:
-        existingSecret: infisical-redis-auth
-        existingSecretPasswordKey: redis-password
+        password: WnnzJMTfeiBGBji8SYS3jPWK6ZrRql

@@ -5,8 +5,6 @@ resources:
 - namespace.yaml
 - helmrepository.yaml
 - helmchart.yaml
-- infisical-postgresql-auth-sealedsecret.yaml
-- infisical-redis-auth-sealedsecret.yaml
 - infisical-secrets-sealedsecret.yaml
 - helmrelease.yaml
 - infisical-tls.yaml
