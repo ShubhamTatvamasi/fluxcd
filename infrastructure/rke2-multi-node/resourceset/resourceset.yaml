@@ -5,6 +5,7 @@ metadata:
   name: infrastructure
   namespace: flux-system
 spec:
+  interval: 10m
   inputs:
     # infrastructure
     - service: "metallb"

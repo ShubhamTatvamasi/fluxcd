@@ -5,6 +5,7 @@ metadata:
   name: infrastructure
   namespace: flux-system
 spec:
+  interval: 10m
   inputs:
     # SeaweedFS — distributed object store (S3-compatible), all-in-one mode for testing
     - service: "seaweedfs"
