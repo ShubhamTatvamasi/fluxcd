@@ -3,6 +3,12 @@
 https://github.com/controlplaneio-fluxcd/flux-operator \
 https://artifacthub.io/packages/helm/flux-operator/flux-operator
 
+Install `flux-operator` cli tool:
+```bash
+brew install controlplaneio-fluxcd/tap/flux-operator
+```
+
+---
 
 Install Flux Operator:
 ```bash
@@ -115,6 +121,18 @@ helm upgrade -i flux-operator \
   --set web.config.authentication.oauth2.clientID=flux-web-ui \
   --set web.config.authentication.oauth2.clientSecret=flux-dex-client-secret \
   --set web.config.authentication.oauth2.issuerURL=https://dex.k8s.shubhamtatvamasi.com
+```
+
+---
+
+Reconcile infrastructure resourceset:
+```bash
+flux-operator reconcile rset infrastructure -n flux-system
+```
+
+Reconcile airflow resourceset:
+```bash
+flux-operator reconcile rset airflow
 ```
 
 ---
