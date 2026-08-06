@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 10m
   chart: harbor
-  version: "1.19.1"
+  version: "1.19.2"
   sourceRef:
     name: harbor
     kind: HelmRepository
