@@ -14,7 +14,7 @@ spec:
     config:
       clientID: traefik-dashboard
       clientSecret: traefik-dex-client-secret
-      cookieSecret: fc3276bd001f7b4f31dcc9bbcbca9031
+      cookieSecret: 4d2b217692db07eb34271c8f3e86509c
     extraArgs:
       provider: oidc
       oidc-issuer-url: https://dex.${domain}
