@@ -36,8 +36,8 @@ spec:
     registry: "ghcr.io/fluxcd"
   components:
     - source-watcher
-    - source-controller
     - helm-controller
+    - source-controller
     - kustomize-controller
     - notification-controller
     - image-reflector-controller
