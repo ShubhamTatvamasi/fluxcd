@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: seaweedfs-csi-driver
+  namespace: seaweedfs-csi-driver
+spec:
+  interval: 10m
+  chart: seaweedfs-csi-driver
+  version: "0.2.33"
+  sourceRef:
+    name: seaweedfs-csi-driver
+    kind: HelmRepository

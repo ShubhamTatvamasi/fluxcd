@@ -1,0 +1,15 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: seaweedfs-csi-driver
+  namespace: seaweedfs-csi-driver
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: seaweedfs-csi-driver
+    namespace: seaweedfs-csi-driver
+  values:
+    seaweedfsFiler: "seaweedfs-all-in-one.seaweedfs.svc.cluster.local:8888"
+    isDefaultStorageClass: true
