@@ -52,12 +52,12 @@ spec:
       dependsOn:
         - "traefik"
 
-    # Portainer — container management UI (needs traefik and openebs to be installed first)
+    # Portainer — container management UI (needs traefik and longhorn to be installed first)
     - service: "portainer"
       path: "./infrastructure/base/portainer"
       dependsOn:
         - "traefik"
-        - "openebs"
+        - "longhorn"
         - "sealed-secrets"
 
     # portainer-run (needs portainer to be installed first)
@@ -66,7 +66,7 @@ spec:
       dependsOn:
         - "portainer"
         - "traefik"
-        - "openebs"
+        - "longhorn"
         - "sealed-secrets"
 
     # Rancher — cluster management UI
