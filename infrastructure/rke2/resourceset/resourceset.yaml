@@ -70,12 +70,12 @@ spec:
       dependsOn:
         - "traefik"
 
-    # harbor container registry (needs traefik, openebs, and sealed-secrets)
+    # harbor container registry (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "harbor"
       path: "./infrastructure/base/harbor"
       dependsOn:
         - "traefik"
-        - "openebs"
+        - "local-path-provisioner"
         - "sealed-secrets"
 
     # dex OIDC provider (needs traefik and sealed-secrets)
@@ -91,12 +91,12 @@ spec:
       dependsOn:
         - "dex"
 
-    # portainer is a web UI for managing containers and Kubernetes clusters (needs traefik, openebs, and sealed-secrets)
+    # portainer is a web UI for managing containers and Kubernetes clusters (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "portainer"
       path: "./infrastructure/base/portainer"
       dependsOn:
         - "traefik"
-        - "openebs"
+        - "local-path-provisioner"
         - "sealed-secrets"
 
     # portainer-run is a companion to portainer that runs the portainer agent on each node, so that portainer can manage the nodes and containers.
@@ -104,15 +104,15 @@ spec:
       path: "./infrastructure/base/portainer-run"
       dependsOn:
         - "traefik"
-        - "openebs"
+        - "local-path-provisioner"
         - "sealed-secrets"
 
-    # kube-prometheus-stack provides monitoring and alerting for the cluster (needs traefik, openebs, and sealed-secrets)
+    # kube-prometheus-stack provides monitoring and alerting for the cluster (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "kube-prometheus-stack"
       path: "./infrastructure/base/kube-prometheus-stack"
       dependsOn:
         - "traefik"
-        - "openebs"
+        - "local-path-provisioner"
         - "sealed-secrets"
 
     # traefik's ServiceMonitor (needs the monitoring.coreos.com CRDs from kube-prometheus-stack,
@@ -123,32 +123,32 @@ spec:
         - "traefik"
         - "kube-prometheus-stack"
 
-    # mimir is a time series database that stores metrics from the cluster and makes them available in Grafana (needs traefik, openebs, and sealed-secrets)
+    # mimir is a time series database that stores metrics from the cluster and makes them available in Grafana (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "mimir"
       path: "./infrastructure/base/mimir"
       dependsOn:
         - "kube-prometheus-stack"
-        - "openebs"
+        - "local-path-provisioner"
 
-    # Loki is a log aggregation system that stores logs from the cluster and makes them available in Grafana (needs traefik, openebs, and sealed-secrets)
+    # Loki is a log aggregation system that stores logs from the cluster and makes them available in Grafana (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "loki"
       path: "./infrastructure/base/loki"
       dependsOn:
         - "kube-prometheus-stack"
-        - "openebs"
+        - "local-path-provisioner"
 
-    # alloy ships pod logs into Loki (needs traefik, openebs, and sealed-secrets)
+    # alloy ships pod logs into Loki (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "alloy"
       path: "./infrastructure/base/alloy"
       dependsOn:
         - "loki"
 
-    # gitea is a self-hosted Git service (needs traefik, openebs, and sealed-secrets)
+    # gitea is a self-hosted Git service (needs traefik, local-path-provisioner, and sealed-secrets)
     # - service: "gitea"
     #   path: "./infrastructure/base/gitea"
     #   dependsOn:
     #     - "traefik"
-    #     - "openebs"
+    #     - "local-path-provisioner"
     #     - "sealed-secrets"
 
     # Keycloak is an identity and access management solution (needs traefik and sealed-secrets)
