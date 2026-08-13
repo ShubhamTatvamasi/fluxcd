@@ -1,0 +1,14 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: local-path-provisioner
+  namespace: local-path-storage
+spec:
+  interval: 10m
+  url: oci://ghcr.io/rancher/local-path-provisioner/charts/local-path-provisioner
+  layerSelector:
+    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
+    operation: copy
+  ref:
+    tag: "0.0.37"

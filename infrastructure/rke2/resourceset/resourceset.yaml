@@ -13,8 +13,12 @@ spec:
       path: "./infrastructure/base/metallb"
 
     # OpenEBS provides persistent storage for the cluster
-    - service: "openebs"
-      path: "./infrastructure/base/openebs"
+    # - service: "openebs"
+    #   path: "./infrastructure/base/openebs"
+
+    # local-path-provisioner provides a default storage class for the cluster
+    - service: "local-path-provisioner"
+      path: "./infrastructure/base/local-path-provisioner"
 
     # sealed-secrets encrypts secrets so they can be stored in Git safely
     - service: "sealed-secrets"
