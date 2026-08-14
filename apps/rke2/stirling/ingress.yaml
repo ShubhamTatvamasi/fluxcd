@@ -1,0 +1,23 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: stirling
+  namespace: stirling
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: stirling.${domain}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: stirling
+                port:
+                  number: 8080
+  tls:
+    - secretName: stirling-tls
+      hosts:
+        - stirling.${domain}
