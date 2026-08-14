@@ -7,4 +7,3 @@ resources:
 - airflow.yaml
 - nginx.yaml
 # - doom.yaml
-- stirling.yaml

@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: stirling-pdf
+  namespace: stirling-pdf
+spec:
+  interval: 10m
+  chart: stirling-pdf-chart
+  version: "3.1.0"
+  sourceRef:
+    name: stirling-pdf
+    kind: HelmRepository

@@ -199,6 +199,13 @@ spec:
         - "traefik"
         - "sealed-secrets"
 
+    # Stirling PDF — locally hosted PDF manipulation web app (needs traefik and sealed-secrets)
+    - service: "stirling-pdf"
+      path: "./infrastructure/base/stirling-pdf"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+
     # Vault Operator — Bank-Vaults CRD controller for managing Vault instances
     - service: "vault-operator"
       path: "./infrastructure/base/bank-vaults/vault-operator"

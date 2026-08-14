@@ -2,8 +2,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: stirling-tls
-  namespace: stirling
+  name: stirling-pdf-tls
+  namespace: stirling-pdf
 spec:
   dependsOn:
   - name: sealed-secrets
@@ -13,8 +13,8 @@ spec:
   path: ./secrets/tls/shubhamtatvamasi-tls
   postBuild:
     substitute:
-      tls_secret_name: stirling-tls
-      namespace: stirling
+      tls_secret_name: stirling-pdf-tls
+      namespace: stirling-pdf
   prune: true
   sourceRef:
     kind: GitRepository
