@@ -11,6 +11,8 @@ spec:
     name: stirling-pdf
     namespace: stirling-pdf
   values:
+    image:
+      tag: "2.14.3"
     ingress:
       enabled: true
       ingressClassName: traefik
