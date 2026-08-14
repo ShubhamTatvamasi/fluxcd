@@ -6,4 +6,4 @@ resources:
 - airflow-infrastructure.yaml
 - airflow.yaml
 - nginx.yaml
-- doom.yaml
+# - doom.yaml
