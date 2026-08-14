@@ -1,0 +1,35 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doom
+  namespace: doom
+  labels:
+    app: doom
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: doom
+  template:
+    metadata:
+      labels:
+        app: doom
+    spec:
+      containers:
+      - name: doom
+        image: kasmweb/doom:1.19.0
+        env:
+        - name: VNC_PW
+          value: password
+        ports:
+        - name: vnc
+          containerPort: 6901
+        volumeMounts:
+        - name: dshm
+          mountPath: /dev/shm
+      volumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 512Mi

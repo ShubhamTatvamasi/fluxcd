@@ -1,0 +1,23 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: doom
+  namespace: doom
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: doom.${domain}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: doom
+                port:
+                  number: 6901
+  tls:
+    - secretName: doom-tls
+      hosts:
+        - doom.${domain}
