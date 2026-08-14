@@ -6,4 +6,5 @@ resources:
 - airflow-infrastructure.yaml
 - airflow.yaml
 - nginx.yaml
+# - factorio.yaml
 # - doom.yaml
