@@ -4,6 +4,9 @@ kind: Service
 metadata:
   name: doom
   namespace: doom
+  annotations:
+    traefik.ingress.kubernetes.io/service.serversscheme: https
+    traefik.ingress.kubernetes.io/service.serverstransport: doom-doom@kubernetescrd
 spec:
   selector:
     app: doom
