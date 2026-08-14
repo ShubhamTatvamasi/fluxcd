@@ -15,6 +15,11 @@ spec:
       tag: "2.14.3"
     persistence:
       enabled: true
+      path: /configs
+    deployment:
+      extraVolumeMounts:
+        - name: storage-volume
+          mountPath: /configs
     ingress:
       enabled: true
       ingressClassName: traefik
