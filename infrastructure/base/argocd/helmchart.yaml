@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: argo-cd
+  namespace: argocd
+spec:
+  interval: 10m
+  chart: argo-cd
+  version: "10.3.3"
+  sourceRef:
+    name: argo-cd
+    kind: HelmRepository

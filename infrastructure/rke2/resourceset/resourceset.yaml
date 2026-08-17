@@ -206,6 +206,13 @@ spec:
         - "traefik"
         - "sealed-secrets"
 
+    # Argo CD — GitOps continuous delivery tool (needs traefik and sealed-secrets)
+    - service: "argocd"
+      path: "./infrastructure/base/argocd"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+
     # Vault Operator — Bank-Vaults CRD controller for managing Vault instances
     - service: "vault-operator"
       path: "./infrastructure/base/bank-vaults/vault-operator"
