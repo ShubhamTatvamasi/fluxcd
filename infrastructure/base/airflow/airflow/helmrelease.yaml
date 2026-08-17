@@ -21,8 +21,8 @@ spec:
                 path: /spec/triggers/0/metadata/connectionFromEnv
                 value: KEDA_DB_CONN
   values:
-    airflowVersion: "3.3.0"
-    defaultAirflowTag: "3.3.0"
+    airflowVersion: "3.3.1"
+    defaultAirflowTag: "3.3.1"
     # defaultAirflowTag: "3.3.0-1"
     # defaultAirflowRepository: "shubhamtatvamasi/airflow"
     executor: "CeleryExecutor"
