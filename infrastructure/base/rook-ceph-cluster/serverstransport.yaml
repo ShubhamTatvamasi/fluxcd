@@ -6,3 +6,8 @@ metadata:
   namespace: rook-ceph
 spec:
   insecureSkipVerify: true
+  # Ceph's dashboard dropped TLSv1.2 support (ceph/ceph#50494) and only
+  # speaks TLSv1.3 now. Without pinning this, some requests intermittently
+  # fail the handshake and surface as a 502 (see rook/rook#13449).
+  minVersion: VersionTLS13
+  maxVersion: VersionTLS13
