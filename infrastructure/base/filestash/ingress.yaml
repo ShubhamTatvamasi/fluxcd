@@ -1,0 +1,23 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: filestash
+  namespace: filestash
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: filestash.${domain}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: filestash-main
+                port:
+                  number: 8334
+  tls:
+    - secretName: filestash-tls
+      hosts:
+        - filestash.${domain}

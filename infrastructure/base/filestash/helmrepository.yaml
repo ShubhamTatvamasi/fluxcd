@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: filestash
+  namespace: filestash
+spec:
+  interval: 10m
+  url: https://mt190502.github.io/helm-charts/

@@ -94,6 +94,16 @@ spec:
         - "traefik"
         - "sealed-secrets"
         - "rook-ceph-cluster"
+
+    # Filestash — S3 file browser, pointed at RGW/ceph-bucket by hand once
+    # deployed (needs traefik and sealed-secrets; ceph-filesystem from
+    # rook-ceph-cluster is this cluster's default StorageClass for its PVC)
+    - service: "filestash"
+      path: "./infrastructure/base/filestash"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+        - "rook-ceph-cluster"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
