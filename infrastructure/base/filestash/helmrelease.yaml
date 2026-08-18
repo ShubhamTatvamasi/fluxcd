@@ -16,7 +16,7 @@ spec:
         tag: "latest"
     main:
       options:
-        application_url: "https://filestash.${domain}"
+        application_url: "filestash.${domain}"
     resources:
       requests:
         main:
