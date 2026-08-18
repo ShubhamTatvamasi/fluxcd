@@ -5,14 +5,10 @@ metadata:
   name: ceph-dashboard
   namespace: rook-ceph
 spec:
-  insecureSkipVerify: true
-  # Ceph's dashboard dropped TLSv1.2 support (ceph/ceph#50494) and only
-  # speaks TLSv1.3 now. Without pinning this, some requests intermittently
-  # fail the handshake and surface as a 502 (see rook/rook#13449).
+  # Traefik rejects minVersion == maxVersion as invalid and silently falls
+  # back to its own default transport when that happens (visible as
+  # "Falling back to default MaxVersion and MinVersion" in its logs) —
+  # so only set a floor here, not an exact pin. Ceph's dashboard dropped
+  # TLSv1.2 support (ceph/ceph#50494) and only speaks TLSv1.3.
   minVersion: VersionTLS13
-  maxVersion: VersionTLS13
-  # Ceph's dashboard requires client certs (mgr/dashboard/ssl: true) and
-  # pooled/reused connections intermittently fail the TLS handshake with
-  # SSLV3_ALERT_BAD_CERTIFICATE, surfacing to the browser as a 500/502.
-  # Disabling idle connection reuse forces a fresh handshake per request.
-  maxIdleConnsPerHost: 0
+  insecureSkipVerify: true
