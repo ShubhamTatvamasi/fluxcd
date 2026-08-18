@@ -8,6 +8,46 @@ metadata:
     fluxcd.controlplane.io/reconcileEvery: "10m"
 spec:
   inputs:
+    # metallb provides load balancer services for the cluster
+    - service: "metallb"
+      path: "./infrastructure/base/metallb"
+
+    # Sealed Secrets controller (needs to be installed before any sealed secrets can be decrypted)
+    - service: "sealed-secrets"
+      path: "./infrastructure/base/sealed-secrets"
+
+    # flux web UI TLS (sealed secret decrypted by sealed-secrets)
+    - service: "flux-tls"
+      path: "./secrets/tls/shubhamtatvamasi-tls"
+      tls_secret_name: "flux-tls"
+      namespace: "flux-system"
+      dependsOn:
+        - "sealed-secrets"
+
+    # metallb config (needs the metallb controller CRDs first)
+    - service: "metallb-config"
+      path: "./infrastructure/rke2-multi-node-rook-ceph/metallb-system"
+      dependsOn:
+        - "metallb"
+
+    # Gateway API CRDs (needs the metallb config first)
+    - service: "gateway-api"
+      path: "./infrastructure/base/gateway-api"
+
+    # Traefik — ingress controller (needs metallb and sealed-secrets to be installed first)
+    - service: "traefik"
+      path: "./infrastructure/base/traefik/controller"
+      dependsOn:
+        - "metallb-config"
+        - "sealed-secrets"
+        - "gateway-api"
+
+    # traefik IngressRoute/Middleware CRs (need the traefik.io CRDs installed by the HelmRelease first)
+    - service: "traefik-routes"
+      path: "./infrastructure/base/traefik/routes"
+      dependsOn:
+        - "traefik"
+
     # Rook — Ceph storage operator
     - service: "rook-ceph"
       path: "./infrastructure/base/rook-ceph"
