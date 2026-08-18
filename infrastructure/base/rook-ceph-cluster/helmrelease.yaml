@@ -15,43 +15,8 @@ spec:
       enabled: true
     monitoring:
       enabled: true
-    cephObjectStores:
-      - name: ceph-objectstore
-        spec:
-          metadataPool:
-            failureDomain: host
-            replicated:
-              size: 3
-          dataPool:
-            failureDomain: host
-            erasureCoded:
-              dataChunks: 2
-              codingChunks: 1
-            parameters:
-              # chart default is "true", which pins this pool's PG count high
-              # regardless of actual usage — triggers TOO_MANY_PGS on small
-              # clusters (3 OSDs) where every other pool's minimum PGs already
-              # add up. Rook recreates this pool's spec on every reconcile, so
-              # `ceph osd pool set ... bulk false` at runtime doesn't stick —
-              # has to be set here instead.
-              bulk: "false"
-          preservePoolsOnDelete: true
-          gateway:
-            port: 80
-            resources:
-              limits:
-                memory: "2Gi"
-              requests:
-                cpu: "1000m"
-                memory: "1Gi"
-            instances: 1
-            priorityClassName: system-cluster-critical
-        storageClass:
-          enabled: true
-          name: ceph-bucket
-          reclaimPolicy: Delete
-          volumeBindingMode: "Immediate"
-          annotations: {}
-          labels: {}
-          parameters:
-            region: us-east-1
+    # Object storage (S3/RGW) isn't needed on this cluster — disabling it
+    # removes the RGW pools/gateway entirely, which was also the source of
+    # the TOO_MANY_PGS warning (its bucket-data pool's chart-default
+    # bulk: "true" kept its PG count pinned high).
+    cephObjectStores: []
