@@ -65,11 +65,15 @@ spec:
     - service: "rook-ceph"
       path: "./infrastructure/base/rook-ceph"
 
-    # Rook — Ceph cluster (needs the rook-ceph operator and CRDs installed first)
+    # Rook — Ceph cluster (needs the rook-ceph operator and CRDs installed first; also
+    # exposes the ceph dashboard via a Traefik IngressRoute, so traefik and sealed-secrets
+    # must be up too)
     - service: "rook-ceph-cluster"
       path: "./infrastructure/base/rook-ceph-cluster"
       dependsOn:
         - "rook-ceph"
+        - "traefik"
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization

@@ -4,3 +4,6 @@ kind: Kustomization
 resources:
 - helmchart.yaml
 - helmrelease.yaml
+- serverstransport.yaml
+- ingressroute.yaml
+- ceph-dashboard-tls.yaml
