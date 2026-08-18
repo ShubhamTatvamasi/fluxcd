@@ -18,7 +18,14 @@ spec:
     # RGW (S3/ceph-bucket) re-enabled, but with the data pool's bulk flag
     # forced off — the chart default (bulk: "true") pins its PG count high
     # regardless of actual usage, which is what caused TOO_MANY_PGS on this
-    # small (3-OSD) cluster before.
+    # small (3-OSD) cluster before. cephObjectStores/cephBlockPools/
+    # cephFileSystems are Helm lists (no deep-merge), so each entry below is
+    # the chart's default `spec` untouched plus only the field we're
+    # actually changing — reclaimPolicy/volumeBindingMode/allowVolumeExpansion
+    # etc. all have `| default ...` fallbacks in the chart's templates, so
+    # they're left out here. storageClass.parameters (CSI provisioner/node
+    # secret names) has no template fallback, so it's kept in full —
+    # without it the CSI driver can't find its auth secrets.
     cephObjectStores:
       - name: ceph-objectstore
         spec:
@@ -47,16 +54,8 @@ spec:
         storageClass:
           enabled: true
           name: ceph-bucket
-          reclaimPolicy: Delete
-          volumeBindingMode: "Immediate"
-          annotations: {}
-          labels: {}
           parameters:
             region: us-east-1
-    # Make ceph-filesystem (CephFS) the default StorageClass instead of
-    # ceph-block. Both lists are full overrides (Helm doesn't deep-merge
-    # list items), so each carries the chart's other defaults unchanged —
-    # only storageClass.isDefault is flipped on each.
     cephBlockPools:
       - name: ceph-blockpool
         spec:
@@ -66,14 +65,7 @@ spec:
         storageClass:
           enabled: true
           name: ceph-block
-          annotations: {}
-          labels: {}
           isDefault: false
-          reclaimPolicy: Delete
-          allowVolumeExpansion: true
-          volumeBindingMode: "Immediate"
-          mountOptions: []
-          allowedTopologies: []
           parameters:
             imageFormat: "2"
             imageFeatures: layering
@@ -112,12 +104,6 @@ spec:
           isDefault: true
           name: ceph-filesystem
           pool: data0
-          reclaimPolicy: Delete
-          allowVolumeExpansion: true
-          volumeBindingMode: "Immediate"
-          annotations: {}
-          labels: {}
-          mountOptions: []
           parameters:
             csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
             csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
