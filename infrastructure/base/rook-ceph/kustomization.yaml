@@ -6,3 +6,5 @@ resources:
 - helmrepository.yaml
 - helmchart.yaml
 - helmrelease.yaml
+- csi-driver-rbac.yaml
+- csi-drivers.yaml
