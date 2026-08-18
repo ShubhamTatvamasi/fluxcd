@@ -84,6 +84,16 @@ spec:
         - "traefik"
         - "sealed-secrets"
         - "rook-ceph-cluster"
+
+    # Portainer — container/Kubernetes management UI (needs traefik and
+    # sealed-secrets; ceph-block from rook-ceph-cluster is this cluster's
+    # default StorageClass for its PVC)
+    - service: "portainer"
+      path: "./infrastructure/base/portainer"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+        - "rook-ceph-cluster"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
