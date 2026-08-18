@@ -48,6 +48,19 @@ spec:
       dependsOn:
         - "traefik"
 
+    # dex OIDC provider (needs traefik and sealed-secrets)
+    - service: "dex"
+      path: "./infrastructure/base/dex"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+
+    # oauth2-proxy needs dex to be up first, so it can configure the OIDC provider
+    - service: "oauth2-proxy"
+      path: "./infrastructure/base/oauth2-proxy"
+      dependsOn:
+        - "dex"
+
     # Rook — Ceph storage operator
     - service: "rook-ceph"
       path: "./infrastructure/base/rook-ceph"
