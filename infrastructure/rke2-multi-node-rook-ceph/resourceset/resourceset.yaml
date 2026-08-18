@@ -74,6 +74,16 @@ spec:
         - "rook-ceph"
         - "traefik"
         - "sealed-secrets"
+
+    # kube-prometheus-stack provides monitoring, and backs the ceph dashboard's
+    # metrics/graphs tab (needs traefik and sealed-secrets; ceph-block from
+    # rook-ceph-cluster is this cluster's default StorageClass for its PVCs)
+    - service: "kube-prometheus-stack"
+      path: "./infrastructure/base/kube-prometheus-stack"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+        - "rook-ceph-cluster"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
