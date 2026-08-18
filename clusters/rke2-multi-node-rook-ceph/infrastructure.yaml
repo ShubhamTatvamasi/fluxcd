@@ -15,4 +15,4 @@ spec:
     name: flux-system
   postBuild:
     substitute:
-      domain: k9s.shubhamtatvamasi.com
+      domain: k8s.shubhamtatvamasi.com
