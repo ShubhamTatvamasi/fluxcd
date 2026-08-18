@@ -6,3 +6,8 @@ metadata:
   namespace: rook-ceph
 spec:
   insecureSkipVerify: true
+  # The dashboard fires ~20 requests concurrently on page load. Traefik's
+  # default per-host idle connection pool is small enough that some of
+  # that burst gets a 502 while the rest succeed. A larger pool lets the
+  # whole burst through without queuing/dropping connections.
+  maxIdleConnsPerHost: 50
