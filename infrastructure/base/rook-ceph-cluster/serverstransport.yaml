@@ -11,3 +11,11 @@ spec:
   # that burst gets a 502 while the rest succeed. A larger pool lets the
   # whole burst through without queuing/dropping connections.
   maxIdleConnsPerHost: 50
+  # 502s on burst were logged with OriginStatus 502 but never show up as a
+  # normal request/response pair in the mgr's own access log — meaning the
+  # connection itself (dial/TLS handshake) failed rather than the mgr app
+  # actually responding 502. Give new connections more time to complete
+  # the handshake under load instead of timing out.
+  forwardingTimeouts:
+    dialTimeout: 30s
+    responseHeaderTimeout: 30s
