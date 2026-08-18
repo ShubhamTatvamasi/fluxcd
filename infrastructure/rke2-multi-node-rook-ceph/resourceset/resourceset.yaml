@@ -1,0 +1,50 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: infrastructure
+  namespace: flux-system
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: "10m"
+spec:
+  inputs:
+    # Rook — Ceph storage operator
+    - service: "rook-ceph"
+      path: "./infrastructure/base/rook-ceph"
+
+    # Rook — Ceph cluster (needs the rook-ceph operator and CRDs installed first)
+    - service: "rook-ceph-cluster"
+      path: "./infrastructure/base/rook-ceph-cluster"
+      dependsOn:
+        - "rook-ceph"
+  resourcesTemplate: |
+    apiVersion: kustomize.toolkit.fluxcd.io/v1
+    kind: Kustomization
+    metadata:
+      name: << inputs.service >>
+      namespace: flux-system
+    spec:
+      interval: 10m0s
+      path: << inputs.path >>
+      prune: true
+      wait: true
+      timeout: 10m
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+
+      <<- if index inputs "dependsOn" >>
+      dependsOn:
+        <<- range index inputs "dependsOn" >>
+        - name: << . >>
+        <<- end >>
+      <<- end >>
+
+      postBuild:
+        substitute:
+          domain: "${domain}"
+          <<- if index inputs "tls_secret_name" >>
+          tls_secret_name: "<< index inputs "tls_secret_name" >>"
+          namespace: "<< index inputs "namespace" >>"
+          <<- end >>
