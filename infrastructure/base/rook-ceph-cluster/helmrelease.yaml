@@ -10,5 +10,3 @@ spec:
     kind: HelmChart
     name: rook-ceph-cluster
     namespace: rook-ceph
-  values:
-    operatorNamespace: rook-ceph
