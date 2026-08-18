@@ -15,11 +15,44 @@ spec:
       enabled: true
     monitoring:
       enabled: true
-    # Object storage (S3/RGW) isn't needed on this cluster — disabling it
-    # removes the RGW pools/gateway entirely, which was also the source of
-    # the TOO_MANY_PGS warning (its bucket-data pool's chart-default
-    # bulk: "true" kept its PG count pinned high).
-    cephObjectStores: []
+    # RGW (S3/ceph-bucket) re-enabled, but with the data pool's bulk flag
+    # forced off — the chart default (bulk: "true") pins its PG count high
+    # regardless of actual usage, which is what caused TOO_MANY_PGS on this
+    # small (3-OSD) cluster before.
+    cephObjectStores:
+      - name: ceph-objectstore
+        spec:
+          metadataPool:
+            failureDomain: host
+            replicated:
+              size: 3
+          dataPool:
+            failureDomain: host
+            erasureCoded:
+              dataChunks: 2
+              codingChunks: 1
+            parameters:
+              bulk: "false"
+          preservePoolsOnDelete: true
+          gateway:
+            port: 80
+            resources:
+              limits:
+                memory: "2Gi"
+              requests:
+                cpu: "1000m"
+                memory: "1Gi"
+            instances: 1
+            priorityClassName: system-cluster-critical
+        storageClass:
+          enabled: true
+          name: ceph-bucket
+          reclaimPolicy: Delete
+          volumeBindingMode: "Immediate"
+          annotations: {}
+          labels: {}
+          parameters:
+            region: us-east-1
     # Make ceph-filesystem (CephFS) the default StorageClass instead of
     # ceph-block. Both lists are full overrides (Helm doesn't deep-merge
     # list items), so each carries the chart's other defaults unchanged —
