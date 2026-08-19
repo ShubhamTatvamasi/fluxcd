@@ -11,6 +11,12 @@ spec:
     name: rustfs
     namespace: rustfs
   values:
+    # This cluster has 3 worker nodes; the chart's podAntiAffinity default
+    # (one pod per node) means replicaCount can't exceed node count.
+    # drivesPerNode is set explicitly since the chart only auto-infers 4
+    # for the legacy replicaCount=4 case (anything else infers 1).
+    replicaCount: 3
+    drivesPerNode: 4
     secret:
       existingSecret: rustfs-credentials
     storageclass:
