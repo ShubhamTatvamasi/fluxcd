@@ -1,0 +1,12 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: minio-operator
+  namespace: minio-tenant
+spec:
+  interval: 10m
+  # Upstream operator.min.io archived March 2026; this endpoint still
+  # serves the frozen v7.1.1 tenant chart as a compatibility baseline
+  # (Silo: https://silo.pgsty.com/operations/deployments/k8s-deploy-minio-tenant-helm-on-kubernetes/).
+  url: https://operator.min.io

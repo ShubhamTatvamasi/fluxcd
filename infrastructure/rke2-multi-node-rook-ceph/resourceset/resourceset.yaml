@@ -94,6 +94,33 @@ spec:
         - "traefik"
         - "sealed-secrets"
         - "rook-ceph-cluster"
+
+    # MinIO Operator — manages MinIO Tenant custom resources (Silo:
+    # https://silo.pgsty.com/operations/deployments/k8s-deploy-minio-tenant-helm-on-kubernetes/)
+    # - service: "minio-operator"
+    #   path: "./infrastructure/base/minio-operator"
+
+    # MinIO Tenant — S3-compatible object store deployed via the Operator's
+    # Tenant chart; needs the operator's CRDs/controller, ceph-block from
+    # rook-ceph-cluster for its PVCs, and traefik/sealed-secrets for the
+    # console's TLS ingress
+    # - service: "minio-tenant"
+    #   path: "./infrastructure/base/minio-tenant"
+    #   dependsOn:
+    #     - "minio-operator"
+    #     - "rook-ceph-cluster"
+    #     - "traefik"
+    #     - "sealed-secrets"
+
+    # RustFS — standalone S3-compatible object store (Rust-based, unrelated
+    # to MinIO/Silo): https://artifacthub.io/packages/helm/rustfs/rustfs
+    # (uses the chart's default local-path StorageClass for its PVCs;
+    # needs traefik/sealed-secrets for its ingress TLS)
+    - service: "rustfs"
+      path: "./infrastructure/base/rustfs"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization

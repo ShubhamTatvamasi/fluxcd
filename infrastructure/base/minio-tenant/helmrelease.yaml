@@ -1,0 +1,38 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: minio-tenant
+  namespace: minio-tenant
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: minio-tenant
+    namespace: minio-tenant
+  values:
+    tenant:
+      name: minio
+      # Silo pins the archived upstream operator repo's final compatibility
+      # chart (v7.1.1) but swaps the server image for pgsty's maintained
+      # fork, since upstream minio/minio stopped publishing after the
+      # archive. MINIO_UPDATE=off disables the in-place updater the doc
+      # says is inherited from upstream and shouldn't run against a
+      # third-party image.
+      image:
+        repository: pgsty/minio
+        tag: RELEASE.2026-08-04T00-00-00Z
+        pullPolicy: IfNotPresent
+      env:
+        - name: MINIO_UPDATE
+          value: "off"
+      configSecret:
+        name: minio-root-credentials
+        existingSecret: true
+      pools:
+        - servers: 4
+          name: pool-0
+          volumesPerServer: 1
+          size: 10Gi
+          storageClassName: ceph-block
+      buckets: []

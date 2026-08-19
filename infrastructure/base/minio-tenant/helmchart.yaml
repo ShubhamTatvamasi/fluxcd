@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: minio-tenant
+  namespace: minio-tenant
+spec:
+  interval: 10m
+  chart: tenant
+  version: "7.1.1"
+  sourceRef:
+    name: minio-operator
+    kind: HelmRepository

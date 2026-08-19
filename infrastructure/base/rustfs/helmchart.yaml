@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: rustfs
+  namespace: rustfs
+spec:
+  interval: 10m
+  chart: rustfs
+  version: "1.0.0-rc.2"
+  sourceRef:
+    name: rustfs
+    kind: HelmRepository
