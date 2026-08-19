@@ -13,6 +13,10 @@ spec:
   values:
     secret:
       existingSecret: rustfs-credentials
+    storageclass:
+      name: ceph-filesystem
+      dataStorageSize: 10Gi
+      logStorageSize: 1Gi
     ingress:
       enabled: true
       className: traefik

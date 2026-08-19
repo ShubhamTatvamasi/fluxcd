@@ -114,11 +114,12 @@ spec:
 
     # RustFS — standalone S3-compatible object store (Rust-based, unrelated
     # to MinIO/Silo): https://artifacthub.io/packages/helm/rustfs/rustfs
-    # (uses the chart's default local-path StorageClass for its PVCs;
-    # needs traefik/sealed-secrets for its ingress TLS)
+    # (needs ceph-filesystem from rook-ceph-cluster for its PVCs, and
+    # traefik/sealed-secrets for its ingress TLS)
     - service: "rustfs"
       path: "./infrastructure/base/rustfs"
       dependsOn:
+        - "rook-ceph-cluster"
         - "traefik"
         - "sealed-secrets"
   resourcesTemplate: |
