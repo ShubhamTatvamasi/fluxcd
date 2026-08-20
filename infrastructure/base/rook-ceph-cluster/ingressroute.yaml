@@ -16,4 +16,21 @@ spec:
           scheme: https
           serversTransport: ceph-dashboard
   tls:
-    secretName: ceph-dashboard-tls
+    secretName: ceph-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ceph-s3
+  namespace: rook-ceph
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`ceph-s3.${domain}`)
+      kind: Rule
+      services:
+        - name: rook-ceph-rgw-ceph-objectstore
+          port: 80
+  tls:
+    secretName: ceph-tls

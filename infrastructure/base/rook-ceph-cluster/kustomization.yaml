@@ -6,4 +6,4 @@ resources:
 - helmrelease.yaml
 - serverstransport.yaml
 - ingressroute.yaml
-- ceph-dashboard-tls.yaml
+- ceph-tls.yaml
