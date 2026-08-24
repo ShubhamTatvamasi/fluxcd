@@ -23,6 +23,10 @@ spec:
       # rotation on a pre-existing cluster like this one.
       security:
         cephx:
+          # All entities have rotated to aes256k; disallow the legacy aes
+          # cipher entirely so mons stop accepting/offering it.
+          allowedCiphers:
+            - aes256k
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
