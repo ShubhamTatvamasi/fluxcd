@@ -15,6 +15,22 @@ spec:
       enabled: true
     monitoring:
       enabled: true
+    cephClusterSpec:
+      security:
+        cephx:
+          daemon:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 1
+          csi:
+            keyType: aes256k
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 1
+          rbdMirrorPeer:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 1
+    # cephObjectStores is a list, so Helm replaces it wholesale rather than
+    # deep-merging with the chart default — the full spec must stay here even
+    # though only dataPool.parameters.bulk differs from the chart default.
     cephObjectStores:
       - name: ceph-objectstore
         spec:
@@ -45,60 +61,3 @@ spec:
           name: ceph-bucket
           parameters:
             region: us-east-1
-    cephBlockPools:
-      - name: ceph-blockpool
-        spec:
-          failureDomain: host
-          replicated:
-            size: 3
-        storageClass:
-          enabled: true
-          name: ceph-block
-          isDefault: true
-          parameters:
-            imageFormat: "2"
-            imageFeatures: layering
-            csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
-            csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
-            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/controller-publish-secret-name: rook-csi-rbd-provisioner
-            csi.storage.k8s.io/controller-publish-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
-            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/fstype: ext4
-    cephFileSystems:
-      - name: ceph-filesystem
-        spec:
-          metadataPool:
-            replicated:
-              size: 3
-          dataPools:
-            - failureDomain: host
-              replicated:
-                size: 3
-              name: data0
-          metadataServer:
-            activeCount: 1
-            activeStandby: true
-            resources:
-              limits:
-                memory: "4Gi"
-              requests:
-                cpu: "1000m"
-                memory: "4Gi"
-            priorityClassName: system-cluster-critical
-        storageClass:
-          enabled: true
-          name: ceph-filesystem
-          pool: data0
-          parameters:
-            csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/controller-publish-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/controller-publish-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
-            csi.storage.k8s.io/fstype: ext4
