@@ -16,18 +16,23 @@ spec:
     monitoring:
       enabled: true
     cephClusterSpec:
+      # Existing clusters are auto-promoted to keyGeneration 1 the moment any
+      # key is first created, regardless of this feature ever being used —
+      # so keyGeneration must be set strictly greater than 1 (the CRD only
+      # rotates on keyGeneration > status.keyGeneration) to actually trigger
+      # rotation on a pre-existing cluster like this one.
       security:
         cephx:
           daemon:
             keyRotationPolicy: KeyGeneration
-            keyGeneration: 1
+            keyGeneration: 2
           csi:
             keyType: aes256k
             keyRotationPolicy: KeyGeneration
-            keyGeneration: 1
+            keyGeneration: 2
           rbdMirrorPeer:
             keyRotationPolicy: KeyGeneration
-            keyGeneration: 1
+            keyGeneration: 2
     # cephObjectStores is a list, so Helm replaces it wholesale rather than
     # deep-merging with the chart default — the full spec must stay here even
     # though only dataPool.parameters.bulk differs from the chart default.
