@@ -15,17 +15,6 @@ spec:
       enabled: true
     monitoring:
       enabled: true
-    # RGW (S3/ceph-bucket) re-enabled, but with the data pool's bulk flag
-    # forced off — the chart default (bulk: "true") pins its PG count high
-    # regardless of actual usage, which is what caused TOO_MANY_PGS on this
-    # small (3-OSD) cluster before. cephObjectStores/cephBlockPools/
-    # cephFileSystems are Helm lists (no deep-merge), so each entry below is
-    # the chart's default `spec` untouched plus only the field we're
-    # actually changing — reclaimPolicy/volumeBindingMode/allowVolumeExpansion
-    # etc. all have `| default ...` fallbacks in the chart's templates, so
-    # they're left out here. storageClass.parameters (CSI provisioner/node
-    # secret names) has no template fallback, so it's kept in full —
-    # without it the CSI driver can't find its auth secrets.
     cephObjectStores:
       - name: ceph-objectstore
         spec:
@@ -65,7 +54,6 @@ spec:
         storageClass:
           enabled: true
           name: ceph-block
-          isDefault: false
           parameters:
             imageFormat: "2"
             imageFeatures: layering
@@ -101,7 +89,6 @@ spec:
             priorityClassName: system-cluster-critical
         storageClass:
           enabled: true
-          isDefault: true
           name: ceph-filesystem
           pool: data0
           parameters:
