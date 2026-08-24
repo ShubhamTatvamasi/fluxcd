@@ -54,6 +54,7 @@ spec:
         storageClass:
           enabled: true
           name: ceph-block
+          isDefault: true
           parameters:
             imageFormat: "2"
             imageFeatures: layering
