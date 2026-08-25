@@ -16,6 +16,8 @@ spec:
     monitoring:
       enabled: true
     cephClusterSpec:
+      dashboard:
+        prometheusEndpoint: http://kube-prometheus-stack-prometheus.monitoring.svc:9090
       # Existing clusters are auto-promoted to keyGeneration 1 the moment any
       # key is first created, regardless of this feature ever being used —
       # so keyGeneration must be set strictly greater than 1 (the CRD only
