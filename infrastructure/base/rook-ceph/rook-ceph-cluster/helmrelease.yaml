@@ -16,6 +16,7 @@ spec:
       resources: null
     monitoring:
       enabled: true
+      createPrometheusRules: true
     cephClusterSpec:
       dashboard:
         ssl: false
