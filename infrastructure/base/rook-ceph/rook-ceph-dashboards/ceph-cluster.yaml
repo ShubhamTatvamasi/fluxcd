@@ -1343,7 +1343,7 @@ data:
             },
             "refresh": 1,
             "regex": "",
-            "skipUrlSync": false,
+            "skipUrlSync": true,
             "sort": 0,
             "type": "query"
           },
