@@ -113,11 +113,11 @@ spec:
     # sealed-secrets; ceph-block from rook-ceph-cluster is this cluster's
     # default StorageClass for its PVC)
     # - service: "portainer"
-    #   path: "./infrastructure/base/portainer"
-    #   dependsOn:
-    #     - "traefik"
-    #     - "sealed-secrets"
-    #     - "rook-ceph-cluster"
+      path: "./infrastructure/base/portainer"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+        - "rook-ceph-cluster"
 
     # MinIO Operator — manages MinIO Tenant custom resources (Silo:
     # https://silo.pgsty.com/operations/deployments/k8s-deploy-minio-tenant-helm-on-kubernetes/)
