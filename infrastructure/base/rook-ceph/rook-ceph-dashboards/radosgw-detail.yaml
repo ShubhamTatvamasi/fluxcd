@@ -357,21 +357,21 @@ data:
                    "refId": "A"
                 },
                 {
-                   "expr": "rate(ceph_rgw_op_get_obj_ops{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on (instance_id) group_left (ceph_daemon) ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
+                   "expr": "rate(ceph_rgw_get{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on (instance_id) group_left (ceph_daemon) ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
                    "format": "time_series",
                    "intervalFactor": 1,
                    "legendFormat": "GETs {{ceph_daemon}}",
                    "refId": "B"
                 },
                 {
-                   "expr": "rate(ceph_rgw_op_put_obj_ops{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on (instance_id) group_left (ceph_daemon) ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
+                   "expr": "rate(ceph_rgw_put{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on (instance_id) group_left (ceph_daemon) ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
                    "format": "time_series",
                    "intervalFactor": 1,
                    "legendFormat": "PUTs {{ceph_daemon}}",
                    "refId": "C"
                 },
                 {
-                   "expr": "(\n  rate(ceph_rgw_req{cluster=~\"$cluster|\", }[$__rate_interval]) -\n    (\n      rate(ceph_rgw_op_get_obj_ops{cluster=~\"$cluster|\", }[$__rate_interval]) +\n        rate(ceph_rgw_op_put_obj_ops{cluster=~\"$cluster|\", }[$__rate_interval])\n    )\n) * on (instance_id) group_left (ceph_daemon) ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
+                   "expr": "(\n  rate(ceph_rgw_req{cluster=~\"$cluster|\", }[$__rate_interval]) -\n    (\n      rate(ceph_rgw_get{cluster=~\"$cluster|\", }[$__rate_interval]) +\n        rate(ceph_rgw_put{cluster=~\"$cluster|\", }[$__rate_interval])\n    )\n) * on (instance_id) group_left (ceph_daemon) ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
                    "format": "time_series",
                    "intervalFactor": 1,
                    "legendFormat": "Other {{ceph_daemon}}",
@@ -550,21 +550,21 @@ data:
                    "refId": "A"
                 },
                 {
-                   "expr": "rate(ceph_rgw_op_get_obj_ops{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on (instance_id) group_left (ceph_daemon) ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
+                   "expr": "rate(ceph_rgw_get{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on (instance_id) group_left (ceph_daemon) ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
                    "format": "time_series",
                    "intervalFactor": 1,
                    "legendFormat": "GETs {{ceph_daemon}}",
                    "refId": "B"
                 },
                 {
-                   "expr": "rate(ceph_rgw_op_put_obj_ops{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on (instance_id) group_left (ceph_daemon) ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
+                   "expr": "rate(ceph_rgw_put{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on (instance_id) group_left (ceph_daemon) ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
                    "format": "time_series",
                    "intervalFactor": 1,
                    "legendFormat": "PUTs {{ceph_daemon}}",
                    "refId": "C"
                 },
                 {
-                   "expr": "(\n  rate(ceph_rgw_req{cluster=~\"$cluster|\", }[$__rate_interval]) -\n    (\n      rate(ceph_rgw_op_get_obj_ops{cluster=~\"$cluster|\", }[$__rate_interval]) +\n        rate(ceph_rgw_op_put_obj_ops{cluster=~\"$cluster|\", }[$__rate_interval])\n    )\n) * on (instance_id) group_left (ceph_daemon)\n  ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
+                   "expr": "(\n  rate(ceph_rgw_req{cluster=~\"$cluster|\", }[$__rate_interval]) -\n    (\n      rate(ceph_rgw_get{cluster=~\"$cluster|\", }[$__rate_interval]) +\n        rate(ceph_rgw_put{cluster=~\"$cluster|\", }[$__rate_interval])\n    )\n) * on (instance_id) group_left (ceph_daemon)\n  ceph_rgw_metadata{ceph_daemon=~\"$rgw_servers\", cluster=~\"$cluster|\", }\n",
                    "format": "time_series",
                    "intervalFactor": 1,
                    "legendFormat": "Other (DELETE,LIST) {{ceph_daemon}}",
