@@ -6,3 +6,4 @@ resources:
 - helmrelease.yaml
 - ingressroute.yaml
 - ceph-tls.yaml
+- ceph-health-fsid-prometheusrule.yaml
