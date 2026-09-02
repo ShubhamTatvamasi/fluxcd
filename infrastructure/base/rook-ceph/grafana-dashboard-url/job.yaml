@@ -1,18 +1,54 @@
 ---
+# Wires the Ceph mgr dashboard's embedded Grafana panels to this cluster's
+# Grafana instance. Rook has no CephCluster/Helm field for this — it's pure
+# mgr module config (`ceph dashboard set-grafana-*-url`), set via the mon
+# config-key store, not a Kubernetes object Rook reconciles.
+#
+# Connection setup mirrors the rook-ceph-tools deployment's own startup
+# script (read the admin secret, build a keyring file + ceph.conf) rather
+# than exec-ing into the toolbox pod, so this doesn't depend on the toolbox
+# being up or racing its own restarts.
+#
+# The keyring is rebuilt from the live secret mount on EVERY retry attempt,
+# not just once at pod start: this cluster's cephx key rotation
+# (security.cephx.daemon.keyRotationPolicy: KeyGeneration) can invalidate
+# an already-built keyring mid-run — a stale keyring fails with "RADOS
+# permission denied", not a clean "cluster unreachable", so a one-shot
+# connectivity check before the real commands isn't enough. The retry loop
+# below re-reads the secret fresh each time and keeps trying indefinitely
+# instead of erroring out, since key rotation is a transient condition that
+# resolves once Rook finishes reconciling — there's nothing to fix by
+# failing fast here.
+#
+# Job.spec.template is immutable — if this ever needs to change, bump the
+# name suffix (e.g. -v2) so Kustomize creates a new Job instead of trying to
+# patch the old one in place.
+#
+# No ttlSecondsAfterFinished on purpose: this is meant to run exactly once
+# (successfully). With a TTL, the completed Job would self-delete and
+# Flux's next reconcile would recreate (and re-run) it — effectively a
+# CronJob with jittery timing. Leaving the finished Job in place is what
+# stops that; clean it up manually (or bump the name to rerun) if the
+# Grafana URL setting is ever lost and needs reapplying.
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: grafana-dashboard-url
   namespace: rook-ceph
 spec:
-  backoffLimit: 3
+  # No backoffLimit: retries happen inside the container's own loop instead,
+  # so a single pod keeps waiting out key rotation rather than the Job
+  # giving up after N pod-level restarts and landing in a silent, permanent
+  # Failed state.
+  backoffLimit: 0
+  activeDeadlineSeconds: 3600
   template:
     metadata:
       name: grafana-dashboard-url
     spec:
       restartPolicy: Never
-      initContainers:
-        - name: wait-for-ceph
+      containers:
+        - name: set-grafana-url
           image: quay.io/ceph/ceph:v20.2.4
           env:
             - name: ROOK_CEPH_USERNAME
@@ -29,30 +65,38 @@ spec:
               KEYRING_FILE="/etc/ceph/keyring"
               CEPH_CONFIG="/etc/ceph/ceph.conf"
 
-              cat <<EOF > "${KEYRING_FILE}"
+              write_ceph_config() {
+                cat <<EOF > "${KEYRING_FILE}"
               [${ROOK_CEPH_USERNAME}]
               key = $(cat /var/lib/rook-ceph-mon/secret.keyring)
               EOF
 
-              mon_endpoints=$(sed 's/[a-z0-9_-]\+=//g' "${MON_CONFIG}")
-              cat <<EOF > "${CEPH_CONFIG}"
+                mon_endpoints=$(sed 's/[a-z0-9_-]\+=//g' "${MON_CONFIG}")
+                cat <<EOF > "${CEPH_CONFIG}"
               [global]
               mon_host = ${mon_endpoints}
 
               [${ROOK_CEPH_USERNAME}]
               keyring = ${KEYRING_FILE}
               EOF
+              }
 
-              for i in $(seq 1 30); do
-                if ceph -s --connect-timeout 10 >/dev/null 2>&1; then
-                  echo "ceph cluster is reachable"
+              attempt=0
+              while true; do
+                attempt=$((attempt + 1))
+                write_ceph_config
+
+                if ceph dashboard set-grafana-api-url --connect-timeout 10 \
+                    "http://kube-prometheus-stack-grafana.monitoring.svc:80" \
+                  && ceph dashboard set-grafana-frontend-api-url --connect-timeout 10 \
+                    "https://grafana.k8s.shubhamtatvamasi.com"; then
+                  echo "grafana urls set successfully after ${attempt} attempt(s)"
                   exit 0
                 fi
-                echo "attempt ${i}/30: ceph cluster not reachable yet, retrying in 20s"
+
+                echo "attempt ${attempt}: ceph dashboard command failed (cluster unreachable, or cephx keys mid-rotation) — rebuilding keyring and retrying in 20s"
                 sleep 20
               done
-              echo "ceph cluster never became reachable after 10m, giving up"
-              exit 1
           volumeMounts:
             - mountPath: /etc/ceph
               name: ceph-config
@@ -60,21 +104,6 @@ spec:
               name: mon-endpoint-volume
             - mountPath: /var/lib/rook-ceph-mon
               name: ceph-admin-secret
-      containers:
-        - name: set-grafana-url
-          image: quay.io/ceph/ceph:v20.2.4
-          command:
-            - /bin/bash
-            - -c
-            - |
-              set -euo pipefail
-              ceph dashboard set-grafana-api-url \
-                "http://kube-prometheus-stack-grafana.monitoring.svc:80"
-              ceph dashboard set-grafana-frontend-api-url \
-                "https://grafana.k8s.shubhamtatvamasi.com"
-          volumeMounts:
-            - mountPath: /etc/ceph
-              name: ceph-config
       volumes:
         - name: ceph-admin-secret
           secret:
