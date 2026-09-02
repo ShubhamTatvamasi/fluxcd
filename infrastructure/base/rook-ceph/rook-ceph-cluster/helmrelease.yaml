@@ -45,6 +45,20 @@ spec:
           rbdMirrorPeer:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
+    cephBlockPools:
+      - name: ceph-blockpool
+        spec:
+          failureDomain: host
+          replicated:
+            size: 3
+          enableRBDStats: true
+        storageClass:
+          enabled: true
+          name: ceph-block
+          isDefault: true
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          volumeBindingMode: "Immediate"
     cephObjectStores:
       - name: ceph-objectstore
         spec:
