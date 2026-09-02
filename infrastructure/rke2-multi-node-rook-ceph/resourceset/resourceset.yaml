@@ -75,9 +75,25 @@ spec:
       dependsOn:
         - "rook-ceph"
 
+    # kube-prometheus-stack provides monitoring, and backs the ceph dashboard's
+    # metrics/graphs tab (needs traefik and sealed-secrets). Deployed before
+    # rook-ceph-cluster now: its chart's monitoring.createPrometheusRules:
+    # true makes rook-ceph-cluster render a PrometheusRule object, which
+    # needs the monitoring.coreos.com CRDs this chart installs — without
+    # this ordering, rook-ceph-cluster's Helm install fails outright with
+    # "no matches for kind PrometheusRule". Prometheus/Grafana's own PVCs
+    # just stay Pending until ceph-block exists from rook-ceph-cluster
+    # afterwards — PVC binding is lazy, so this isn't a hard dependency the
+    # other direction.
+    - service: "kube-prometheus-stack"
+      path: "./infrastructure/base/kube-prometheus-stack"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+
     # Rook — Ceph cluster (needs the rook-ceph operator and CRDs installed first; also
     # exposes the ceph dashboard via a Traefik IngressRoute, so traefik and sealed-secrets
-    # must be up too)
+    # must be up too; needs kube-prometheus-stack for the PrometheusRule CRD, see above)
     - service: "rook-ceph-cluster"
       path: "./infrastructure/base/rook-ceph/rook-ceph-cluster"
       dependsOn:
@@ -85,16 +101,7 @@ spec:
         - "ceph-csi-operator"
         - "traefik"
         - "sealed-secrets"
-
-    # kube-prometheus-stack provides monitoring, and backs the ceph dashboard's
-    # metrics/graphs tab (needs traefik and sealed-secrets; ceph-block from
-    # rook-ceph-cluster is this cluster's default StorageClass for its PVCs)
-    - service: "kube-prometheus-stack"
-      path: "./infrastructure/base/kube-prometheus-stack"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
-        - "rook-ceph-cluster"
+        - "kube-prometheus-stack"
 
     # One-shot Job wiring the Ceph mgr dashboard's embedded Grafana panels
     # to this cluster's Grafana (no CephCluster/Helm field for this exists —
