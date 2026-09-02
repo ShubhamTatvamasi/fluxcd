@@ -116,6 +116,7 @@ spec:
       dependsOn:
         - "rook-ceph-cluster"
         - "kube-prometheus-stack"
+        - "rook-ceph-dashboards"
 
     # Ceph Grafana dashboards (upstream ceph-mixin), auto-discovered by the
     # kube-prometheus-stack Grafana sidecar via the grafana_dashboard label —
