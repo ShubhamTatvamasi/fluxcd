@@ -98,9 +98,13 @@ spec:
 
     # Ceph Grafana dashboards (upstream ceph-mixin), auto-discovered by the
     # kube-prometheus-stack Grafana sidecar via the grafana_dashboard label —
-    # needs the monitoring namespace/sidecar from kube-prometheus-stack
+    # needs the monitoring namespace/sidecar from kube-prometheus-stack.
+    # skipSubstitute: the dashboard JSON is full of Grafana's own $variable
+    # templating ($cluster, $pool, $application, ...) which Flux's strict-mode
+    # envsubst tries to resolve as postBuild substitutions and fails on.
     - service: "rook-ceph-dashboards"
       path: "./infrastructure/base/rook-ceph/rook-ceph-dashboards"
+      skipSubstitute: true
       dependsOn:
         - "kube-prometheus-stack"
         - "rook-ceph-cluster"
@@ -166,6 +170,7 @@ spec:
         <<- end >>
       <<- end >>
 
+      <<- if not (index inputs "skipSubstitute") >>
       postBuild:
         substitute:
           domain: "${domain}"
@@ -173,3 +178,4 @@ spec:
           tls_secret_name: "<< index inputs "tls_secret_name" >>"
           namespace: "<< index inputs "namespace" >>"
           <<- end >>
+      <<- end >>
