@@ -31,8 +31,8 @@ spec:
         - "metallb"
 
     # Gateway API CRDs (needs the metallb config first)
-    # - service: "gateway-api"
-    #   path: "./infrastructure/base/gateway-api"
+    - service: "gateway-api"
+      path: "./infrastructure/base/gateway-api"
 
     # Traefik — ingress controller (needs metallb and sealed-secrets to be installed first)
     - service: "traefik"
