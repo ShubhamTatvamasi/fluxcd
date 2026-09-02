@@ -22846,8 +22846,8 @@ data:
           },
           {
             "current": {
-              "text": "rook-ceph",
-              "value": "rook-ceph"
+              "text": "6459137a-9de3-11f0-b80d-5254000614a2",
+              "value": "6459137a-9de3-11f0-b80d-5254000614a2"
             },
             "datasource": {
               "type": "prometheus",
@@ -22864,8 +22864,7 @@ data:
             },
             "refresh": 1,
             "regex": "",
-            "type": "query",
-            "skipUrlSync": true
+            "type": "query"
           },
           {
             "current": {

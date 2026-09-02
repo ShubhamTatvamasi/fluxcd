@@ -1273,12 +1273,7 @@ data:
             },
             "refresh": 2,
             "regex": "",
-            "type": "query",
-            "skipUrlSync": true,
-            "current": {
-              "text": "rook-ceph",
-              "value": "rook-ceph"
-            }
+            "type": "query"
           },
           {
             "current": {

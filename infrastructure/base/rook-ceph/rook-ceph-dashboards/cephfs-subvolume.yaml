@@ -852,8 +852,8 @@ data:
           },
           {
             "current": {
-              "text": "rook-ceph",
-              "value": "rook-ceph"
+              "text": "cluster1",
+              "value": "cluster1"
             },
             "datasource": {
               "type": "prometheus",
@@ -871,8 +871,7 @@ data:
             },
             "refresh": 1,
             "regex": "",
-            "type": "query",
-            "skipUrlSync": true
+            "type": "query"
           },
           {
             "current": {
@@ -897,7 +896,8 @@ data:
             "type": "query"
           },
           {
-            "current": {},
+            "current": {
+            },
             "datasource": {
               "type": "prometheus",
               "uid": "${datasource}"
