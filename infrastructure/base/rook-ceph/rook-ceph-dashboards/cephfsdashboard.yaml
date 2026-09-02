@@ -4597,8 +4597,8 @@ data:
           },
           {
             "current": {
-              "text": "cluster1",
-              "value": "cluster1"
+              "text": "rook-ceph",
+              "value": "rook-ceph"
             },
             "datasource": "$datasource",
             "includeAll": false,
@@ -4609,7 +4609,8 @@ data:
             "refresh": 1,
             "regex": "(.*)",
             "sort": 1,
-            "type": "query"
+            "type": "query",
+            "skipUrlSync": true
           },
           {
             "current": {
