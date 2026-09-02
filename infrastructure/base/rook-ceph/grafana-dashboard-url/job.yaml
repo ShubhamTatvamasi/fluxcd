@@ -71,7 +71,7 @@ spec:
               ceph dashboard set-grafana-api-url \
                 "http://kube-prometheus-stack-grafana.monitoring.svc:80"
               ceph dashboard set-grafana-frontend-api-url \
-                "https://grafana.${domain}"
+                "https://grafana.k8s.shubhamtatvamasi.com"
           volumeMounts:
             - mountPath: /etc/ceph
               name: ceph-config

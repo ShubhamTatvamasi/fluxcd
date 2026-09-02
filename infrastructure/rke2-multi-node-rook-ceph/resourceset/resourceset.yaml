@@ -96,6 +96,20 @@ spec:
         - "sealed-secrets"
         - "rook-ceph-cluster"
 
+    # One-shot Job wiring the Ceph mgr dashboard's embedded Grafana panels
+    # to this cluster's Grafana (no CephCluster/Helm field for this exists —
+    # see grafana-dashboard-url/job.yaml for details). Its own Kustomization
+    # because the Job's shell script is full of ${VAR} shell variables that
+    # Flux's strict-mode postBuild.substitute can't tell apart from real
+    # substitution variables — skipSubstitute avoids that, at the cost of
+    # the domain being hardcoded in the Job instead of using ${domain}.
+    - service: "grafana-dashboard-url"
+      path: "./infrastructure/base/rook-ceph/grafana-dashboard-url"
+      skipSubstitute: true
+      dependsOn:
+        - "rook-ceph-cluster"
+        - "kube-prometheus-stack"
+
     # Ceph Grafana dashboards (upstream ceph-mixin), auto-discovered by the
     # kube-prometheus-stack Grafana sidecar via the grafana_dashboard label —
     # needs the monitoring namespace/sidecar from kube-prometheus-stack.
