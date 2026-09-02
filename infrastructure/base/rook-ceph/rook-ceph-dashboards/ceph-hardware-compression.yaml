@@ -1425,9 +1425,8 @@ data:
           {
             "allValue": ".*",
             "current": {
-              "selected": false,
-              "text": "All",
-              "value": "$__all"
+              "text": "rook-ceph",
+              "value": "rook-ceph"
             },
             "datasource": {
               "type": "prometheus",
@@ -1446,7 +1445,7 @@ data:
             },
             "refresh": 2,
             "regex": "",
-            "skipUrlSync": false,
+            "skipUrlSync": true,
             "sort": 1,
             "type": "query"
           },

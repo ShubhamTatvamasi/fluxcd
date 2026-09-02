@@ -632,11 +632,11 @@ data:
           "datasource": "$datasource",
           "fieldConfig": {
             "defaults": {
-               "custom": {
-                  "fillOpacity": 8,
-                  "showPoints": "never"
-               },
-               "unit": "short"
+              "custom": {
+                "fillOpacity": 8,
+                "showPoints": "never"
+              },
+              "unit": "short"
             }
           },
           "fill": 0,
@@ -797,11 +797,11 @@ data:
           "datasource": "$datasource",
           "fieldConfig": {
             "defaults": {
-               "custom": {
-                  "fillOpacity": 8,
-                  "showPoints": "never"
-               },
-               "unit": "ms"
+              "custom": {
+                "fillOpacity": 8,
+                "showPoints": "never"
+              },
+              "unit": "ms"
             }
           },
           "fill": 0,
@@ -912,11 +912,11 @@ data:
           "datasource": "$datasource",
           "fieldConfig": {
             "defaults": {
-               "custom": {
-                  "fillOpacity": 8,
-                  "showPoints": "never"
-               },
-               "unit": "Bps"
+              "custom": {
+                "fillOpacity": 8,
+                "showPoints": "never"
+              },
+              "unit": "Bps"
             }
           },
           "fill": 1,
@@ -1013,11 +1013,11 @@ data:
           "datasource": "$datasource",
           "fieldConfig": {
             "defaults": {
-               "custom": {
-                  "fillOpacity": 8,
-                  "showPoints": "never"
-               },
-               "unit": "Bps"
+              "custom": {
+                "fillOpacity": 8,
+                "showPoints": "never"
+              },
+              "unit": "Bps"
             }
           },
           "fill": 1,
@@ -1224,11 +1224,11 @@ data:
           "datasource": "$datasource",
           "fieldConfig": {
             "defaults": {
-               "custom": {
-                  "fillOpacity": 8,
-                  "showPoints": "never"
-               },
-               "unit": "ops"
+              "custom": {
+                "fillOpacity": 8,
+                "showPoints": "never"
+              },
+              "unit": "ops"
             }
           },
           "fill": 0,
@@ -1345,7 +1345,11 @@ data:
             "regex": "",
             "skipUrlSync": true,
             "sort": 0,
-            "type": "query"
+            "type": "query",
+            "current": {
+              "text": "rook-ceph",
+              "value": "rook-ceph"
+            }
           },
           {
             "auto": true,
