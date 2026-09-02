@@ -20,10 +20,6 @@ spec:
       dashboard:
         ssl: false
         prometheusEndpoint: http://kube-prometheus-stack-prometheus.monitoring.svc:9090
-      mgr:
-        modules:
-          - name: rook
-            enabled: true
       resources:
         mgr: null
         mon: null
