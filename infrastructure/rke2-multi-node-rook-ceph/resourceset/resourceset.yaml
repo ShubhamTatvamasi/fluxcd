@@ -31,8 +31,8 @@ spec:
         - "metallb"
 
     # Gateway API CRDs (needs the metallb config first)
-    - service: "gateway-api"
-      path: "./infrastructure/base/gateway-api"
+    # - service: "gateway-api"
+    #   path: "./infrastructure/base/gateway-api"
 
     # Traefik — ingress controller (needs metallb and sealed-secrets to be installed first)
     - service: "traefik"
@@ -63,15 +63,26 @@ spec:
 
     # Rook — Ceph storage operator
     - service: "rook-ceph"
-      path: "./infrastructure/base/rook-ceph"
+      path: "./infrastructure/base/rook-ceph/operator"
+
+    # ceph-csi-drivers chart — creates the RBD/CephFS Driver CRs and their
+    # ServiceAccounts/RBAC. rook-ceph's chart only vendors the ceph-csi-operator
+    # controller as a subchart; it does not install this chart, so it must be
+    # installed separately (see rook/rook#18081) or PVCs on ceph-block /
+    # ceph-filesystem stay Pending with no CSI plugin pods ever scheduled.
+    - service: "ceph-csi-operator"
+      path: "./infrastructure/base/rook-ceph/ceph-csi-operator"
+      dependsOn:
+        - "rook-ceph"
 
     # Rook — Ceph cluster (needs the rook-ceph operator and CRDs installed first; also
     # exposes the ceph dashboard via a Traefik IngressRoute, so traefik and sealed-secrets
     # must be up too)
     - service: "rook-ceph-cluster"
-      path: "./infrastructure/base/rook-ceph-cluster"
+      path: "./infrastructure/base/rook-ceph/rook-ceph-cluster"
       dependsOn:
         - "rook-ceph"
+        - "ceph-csi-operator"
         - "traefik"
         - "sealed-secrets"
 
@@ -85,15 +96,24 @@ spec:
         - "sealed-secrets"
         - "rook-ceph-cluster"
 
+    # Ceph Grafana dashboards (upstream ceph-mixin), auto-discovered by the
+    # kube-prometheus-stack Grafana sidecar via the grafana_dashboard label —
+    # needs the monitoring namespace/sidecar from kube-prometheus-stack
+    - service: "rook-ceph-dashboards"
+      path: "./infrastructure/base/rook-ceph/rook-ceph-dashboards"
+      dependsOn:
+        - "kube-prometheus-stack"
+        - "rook-ceph-cluster"
+
     # Portainer — container/Kubernetes management UI (needs traefik and
     # sealed-secrets; ceph-block from rook-ceph-cluster is this cluster's
     # default StorageClass for its PVC)
-    - service: "portainer"
-      path: "./infrastructure/base/portainer"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
-        - "rook-ceph-cluster"
+    # - service: "portainer"
+    #   path: "./infrastructure/base/portainer"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "sealed-secrets"
+    #     - "rook-ceph-cluster"
 
     # MinIO Operator — manages MinIO Tenant custom resources (Silo:
     # https://silo.pgsty.com/operations/deployments/k8s-deploy-minio-tenant-helm-on-kubernetes/)
@@ -116,12 +136,12 @@ spec:
     # to MinIO/Silo): https://artifacthub.io/packages/helm/rustfs/rustfs
     # (needs ceph-filesystem from rook-ceph-cluster for its PVCs, and
     # traefik/sealed-secrets for its ingress TLS)
-    - service: "rustfs"
-      path: "./infrastructure/base/rustfs"
-      dependsOn:
-        - "rook-ceph-cluster"
-        - "traefik"
-        - "sealed-secrets"
+    # - service: "rustfs"
+    #   path: "./infrastructure/base/rustfs"
+    #   dependsOn:
+    #     - "rook-ceph-cluster"
+    #     - "traefik"
+    #     - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization

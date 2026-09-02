@@ -13,20 +13,26 @@ spec:
   values:
     toolbox:
       enabled: true
+      resources: null
     monitoring:
       enabled: true
     cephClusterSpec:
       dashboard:
+        ssl: false
         prometheusEndpoint: http://kube-prometheus-stack-prometheus.monitoring.svc:9090
-      # Existing clusters are auto-promoted to keyGeneration 1 the moment any
-      # key is first created, regardless of this feature ever being used —
-      # so keyGeneration must be set strictly greater than 1 (the CRD only
-      # rotates on keyGeneration > status.keyGeneration) to actually trigger
-      # rotation on a pre-existing cluster like this one.
+      resources:
+        mgr: null
+        mon: null
+        osd: null
+        prepareosd: null
+        mgr-sidecar: null
+        crashcollector: null
+        logcollector: null
+        cleanup: null
+        exporter: null
+        cmd-reporter: null
       security:
         cephx:
-          # All entities have rotated to aes256k; disallow the legacy aes
-          # cipher entirely so mons stop accepting/offering it.
           allowedCiphers:
             - aes256k
           daemon:
@@ -39,9 +45,6 @@ spec:
           rbdMirrorPeer:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
-    # cephObjectStores is a list, so Helm replaces it wholesale rather than
-    # deep-merging with the chart default — the full spec must stay here even
-    # though only dataPool.parameters.bulk differs from the chart default.
     cephObjectStores:
       - name: ceph-objectstore
         spec:
@@ -51,20 +54,14 @@ spec:
               size: 3
           dataPool:
             failureDomain: host
-            erasureCoded:
-              dataChunks: 2
-              codingChunks: 1
+            replicated:
+              size: 3
             parameters:
               bulk: "false"
           preservePoolsOnDelete: true
           gateway:
             port: 80
-            resources:
-              limits:
-                memory: "2Gi"
-              requests:
-                cpu: "1000m"
-                memory: "1Gi"
+            resources: null
             instances: 1
             priorityClassName: system-cluster-critical
         storageClass:

@@ -12,18 +12,14 @@ spec:
     namespace: monitoring
   values:
     prometheus:
-      # service:
-      #   type: LoadBalancer
       prometheusSpec:
         serviceMonitorNamespaceSelector:
           matchLabels:
             monitoring: enabled
-        # Ship all scraped metrics to Mimir for long-term storage. Mimir's
-        # push API is fronted by the mimir-gateway service.
-        remoteWrite:
-          - url: http://mimir-gateway.mimir.svc.cluster.local/api/v1/push
-            headers:
-              X-Scope-OrgID: anonymous
+        # remoteWrite:
+        #   - url: http://mimir-gateway.mimir.svc.cluster.local/api/v1/push
+        #     headers:
+        #       X-Scope-OrgID: anonymous
       ingress:
         enabled: true
         ingressClassName: traefik
@@ -34,16 +30,34 @@ spec:
             hosts:
               - prometheus.${domain}
     grafana:
-      # service:
-      #   type: LoadBalancer
       adminUser: admin
       adminPassword: admin
-      # Logs Drilldown app (Metrics/Traces/Profiles Drilldown ship by default).
-      plugins:
-        - grafana-lokiexplore-app
+      # plugins:
+      #   - grafana-lokiexplore-app
+      grafana.ini:
+        auth.anonymous:
+          enabled: true
+          org_role: Viewer
+        security:
+          allow_embedding: true
+      # Ceph's dashboard module hardcodes its Grafana panel URLs with
+      # var-datasource=Dashboard1, so a datasource literally named
+      # "Dashboard1" is required alongside the default "Prometheus" one.
+      additionalDataSources:
+        - name: Dashboard1
+          type: prometheus
+          access: proxy
+          url: http://kube-prometheus-stack-prometheus.monitoring.svc:9090
+          isDefault: false
+          editable: false
       ingress:
         enabled: true
         ingressClassName: traefik
+        # oauth2-proxy gates the whole ingress so anon Viewer access above
+        # only ever applies to already-OIDC-authenticated users, not the
+        # public internet.
+        annotations:
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-oauth2-proxy-errors@kubernetescrd,traefik-oauth2-proxy-auth@kubernetescrd
         hosts:
           - grafana.${domain}
         tls:

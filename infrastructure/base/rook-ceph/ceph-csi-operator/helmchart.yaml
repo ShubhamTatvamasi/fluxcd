@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: ceph-csi-drivers
+  namespace: rook-ceph
+spec:
+  interval: 10m
+  chart: ceph-csi-drivers
+  version: "1.0.4"
+  sourceRef:
+    name: ceph-csi-operator
+    kind: HelmRepository

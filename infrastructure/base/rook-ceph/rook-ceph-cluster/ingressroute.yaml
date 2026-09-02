@@ -12,9 +12,8 @@ spec:
       kind: Rule
       services:
         - name: rook-ceph-mgr-dashboard
-          port: 8443
-          scheme: https
-          serversTransport: ceph-dashboard
+          port: 7000
+          scheme: http
   tls:
     secretName: ceph-tls
 ---

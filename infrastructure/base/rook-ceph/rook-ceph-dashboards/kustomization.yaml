@@ -1,0 +1,28 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ceph-application-overview.yaml
+- ceph-cluster-advanced.yaml
+- ceph-cluster.yaml
+- ceph-hardware-compression.yaml
+- ceph-nvmeof-performance.yaml
+- ceph-nvmeof.yaml
+- cephfs-subvolume.yaml
+- cephfsdashboard.yaml
+- hardware.yaml
+- host-details.yaml
+- hosts-overview.yaml
+- multi-cluster-overview.yaml
+- node-exporter.yaml
+- osd-device-details.yaml
+- osds-overview.yaml
+- pool-detail.yaml
+- pool-overview.yaml
+- radosgw-detail.yaml
+- radosgw-overview.yaml
+- radosgw-sync-overview.yaml
+- rbd-details.yaml
+- rbd-overview.yaml
+- rgw-s3-analytics.yaml
+- smb-overview.yaml

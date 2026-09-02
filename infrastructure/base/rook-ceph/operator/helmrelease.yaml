@@ -11,8 +11,6 @@ spec:
     name: rook-ceph
     namespace: rook-ceph
   values:
-    # Required for the operator's ClusterRole to include servicemonitors.
-    # monitoring.enabled on the rook-ceph-cluster chart only enables Ceph's
-    # own Prometheus rules/exporters — it doesn't grant this RBAC.
+    resources: null
     monitoring:
       enabled: true
