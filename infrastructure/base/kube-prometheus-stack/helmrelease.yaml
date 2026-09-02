@@ -41,6 +41,8 @@ spec:
           org_role: Viewer
         security:
           allow_embedding: true
+        users:
+          default_theme: light
       # Ceph's dashboard module hardcodes its Grafana panel URLs with
       # var-datasource=Dashboard1, so a datasource literally named
       # "Dashboard1" is required alongside the default "Prometheus" one.
