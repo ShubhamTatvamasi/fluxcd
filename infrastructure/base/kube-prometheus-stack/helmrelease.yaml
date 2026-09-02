@@ -16,6 +16,7 @@ spec:
         serviceMonitorNamespaceSelector:
           matchLabels:
             monitoring: enabled
+        serviceMonitorSelectorNilUsesHelmValues: false
         # remoteWrite:
         #   - url: http://mimir-gateway.mimir.svc.cluster.local/api/v1/push
         #     headers:
