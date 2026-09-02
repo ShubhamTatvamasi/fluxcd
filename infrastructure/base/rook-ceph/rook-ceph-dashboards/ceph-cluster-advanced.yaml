@@ -2475,7 +2475,7 @@ data:
                 },
                 {
                    "datasource": "$datasource",
-                   "expr": "sum(ceph_unclean_pgs{cluster=~\"$cluster|\", })",
+                   "expr": "sum(ceph_pg_total{cluster=~\"$cluster|\", }) - sum(ceph_pg_clean{cluster=~\"$cluster|\", })",
                    "format": "time_series",
                    "interval": "$interval",
                    "intervalFactor": 1,
@@ -2537,7 +2537,7 @@ data:
                 },
                 {
                    "datasource": "$datasource",
-                   "expr": "sum(ceph_pg_wait_backfill{cluster=~\"$cluster|\", })",
+                   "expr": "sum(ceph_pg_backfill_wait{cluster=~\"$cluster|\", })",
                    "format": "time_series",
                    "interval": "$interval",
                    "intervalFactor": 1,
@@ -2607,7 +2607,7 @@ data:
                 },
                 {
                    "datasource": "$datasource",
-                   "expr": "sum(ceph_pg_backfill{cluster=~\"$cluster|\", })",
+                   "expr": "sum(ceph_pg_backfilling{cluster=~\"$cluster|\", })",
                    "format": "time_series",
                    "interval": "$interval",
                    "intervalFactor": 1,
