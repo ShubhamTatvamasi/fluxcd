@@ -1,0 +1,92 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: grafana-dashboard-url
+  namespace: rook-ceph
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      name: grafana-dashboard-url
+    spec:
+      restartPolicy: Never
+      initContainers:
+        - name: wait-for-ceph
+          image: quay.io/ceph/ceph:v20.2.4
+          env:
+            - name: ROOK_CEPH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rook-ceph-mon
+                  key: ceph-username
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -euo pipefail
+              MON_CONFIG="/etc/rook/mon-endpoints"
+              KEYRING_FILE="/etc/ceph/keyring"
+              CEPH_CONFIG="/etc/ceph/ceph.conf"
+
+              cat <<EOF > "${KEYRING_FILE}"
+              [${ROOK_CEPH_USERNAME}]
+              key = $(cat /var/lib/rook-ceph-mon/secret.keyring)
+              EOF
+
+              mon_endpoints=$(sed 's/[a-z0-9_-]\+=//g' "${MON_CONFIG}")
+              cat <<EOF > "${CEPH_CONFIG}"
+              [global]
+              mon_host = ${mon_endpoints}
+
+              [${ROOK_CEPH_USERNAME}]
+              keyring = ${KEYRING_FILE}
+              EOF
+
+              for i in $(seq 1 30); do
+                if ceph -s --connect-timeout 10 >/dev/null 2>&1; then
+                  echo "ceph cluster is reachable"
+                  exit 0
+                fi
+                echo "attempt ${i}/30: ceph cluster not reachable yet, retrying in 20s"
+                sleep 20
+              done
+              echo "ceph cluster never became reachable after 10m, giving up"
+              exit 1
+          volumeMounts:
+            - mountPath: /etc/ceph
+              name: ceph-config
+            - mountPath: /etc/rook
+              name: mon-endpoint-volume
+            - mountPath: /var/lib/rook-ceph-mon
+              name: ceph-admin-secret
+      containers:
+        - name: set-grafana-url
+          image: quay.io/ceph/ceph:v20.2.4
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -euo pipefail
+              ceph dashboard set-grafana-api-url \
+                "http://kube-prometheus-stack-grafana.monitoring.svc:80"
+              ceph dashboard set-grafana-frontend-api-url \
+                "https://grafana.${domain}"
+          volumeMounts:
+            - mountPath: /etc/ceph
+              name: ceph-config
+      volumes:
+        - name: ceph-admin-secret
+          secret:
+            secretName: rook-ceph-mon
+            items:
+              - key: ceph-secret
+                path: secret.keyring
+        - name: mon-endpoint-volume
+          configMap:
+            name: rook-ceph-mon-endpoints
+            items:
+              - key: data
+                path: mon-endpoints
+        - name: ceph-config
+          emptyDir: {}

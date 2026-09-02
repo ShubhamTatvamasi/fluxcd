@@ -6,3 +6,4 @@ resources:
 - helmrelease.yaml
 - ingressroute.yaml
 - ceph-tls.yaml
+- grafana-dashboard-url-job.yaml
