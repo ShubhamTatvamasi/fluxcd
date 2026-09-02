@@ -14,3 +14,6 @@ spec:
     resources: null
     monitoring:
       enabled: true
+    csi:
+      cephcsi:
+        tag: v3.17.1
