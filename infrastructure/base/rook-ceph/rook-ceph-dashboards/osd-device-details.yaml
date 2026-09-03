@@ -156,14 +156,14 @@ data:
           ],
           "targets": [
             {
-              "expr": "rate(ceph_osd_op_r_latency_sum{ceph_daemon=~\"$osd\", cluster=~\"$cluster|\", }[$__rate_interval]) /\n  on (ceph_daemon) rate(ceph_osd_op_r_latency_count{cluster=~\"$cluster|\", }[$__rate_interval])\n",
+              "expr": "rate(ceph_osd_op_r_latency_sum{ceph_daemon=~\"$osd\", cluster=~\"$cluster|\", }[$__rate_interval]) /\n  on (ceph_daemon) rate(ceph_osd_op_r_latency_count{ceph_daemon=~\"$osd\", cluster=~\"$cluster|\", }[$__rate_interval])\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "read",
               "refId": "A"
             },
             {
-              "expr": "rate(ceph_osd_op_w_latency_sum{ceph_daemon=~\"$osd\", cluster=~\"$cluster|\", }[$__rate_interval]) /\n  on (ceph_daemon) rate(ceph_osd_op_w_latency_count{cluster=~\"$cluster|\", }[$__rate_interval])\n",
+              "expr": "rate(ceph_osd_op_w_latency_sum{ceph_daemon=~\"$osd\", cluster=~\"$cluster|\", }[$__rate_interval]) /\n  on (ceph_daemon) rate(ceph_osd_op_w_latency_count{ceph_daemon=~\"$osd\", cluster=~\"$cluster|\", }[$__rate_interval])\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "write",
