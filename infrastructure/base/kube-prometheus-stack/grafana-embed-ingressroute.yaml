@@ -14,5 +14,11 @@ spec:
       services:
         - name: kube-prometheus-stack-grafana
           port: 80
+    - match: Host(`grafana.${domain}`) && PathPrefix(`/public/`)
+      kind: Rule
+      priority: 100
+      services:
+        - name: kube-prometheus-stack-grafana
+          port: 80
   tls:
     secretName: kube-prometheus-stack-tls
