@@ -301,7 +301,7 @@ data:
           "seriesOverrides": [],
           "targets": [
             {
-              "expr": "deriv(ceph_pool_objects{cluster=~\"$cluster|\", }[1m]) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
+              "expr": "max by (pool_id) (deriv(ceph_pool_objects{cluster=~\"$cluster|\", }[1m])) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "Objects per second",
@@ -385,14 +385,14 @@ data:
           ],
           "targets": [
             {
-              "expr": "rate(ceph_pool_rd{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
+              "expr": "max by (pool_id) (rate(ceph_pool_rd{cluster=~\"$cluster|\", }[$__rate_interval])) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "reads",
               "refId": "A"
             },
             {
-              "expr": "rate(ceph_pool_wr{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
+              "expr": "max by (pool_id) (rate(ceph_pool_wr{cluster=~\"$cluster|\", }[$__rate_interval])) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "writes",
@@ -476,14 +476,14 @@ data:
           ],
           "targets": [
             {
-              "expr": "rate(ceph_pool_rd_bytes{cluster=~\"$cluster|\", }[$__rate_interval]) +\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
+              "expr": "max by (pool_id) (rate(ceph_pool_rd_bytes{cluster=~\"$cluster|\", }[$__rate_interval])) +\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "reads",
               "refId": "A"
             },
             {
-              "expr": "rate(ceph_pool_wr_bytes{cluster=~\"$cluster|\", }[$__rate_interval]) +\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
+              "expr": "max by (pool_id) (rate(ceph_pool_wr_bytes{cluster=~\"$cluster|\", }[$__rate_interval])) +\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "writes",
@@ -562,7 +562,7 @@ data:
           "seriesOverrides": [],
           "targets": [
             {
-              "expr": "ceph_pool_objects{cluster=~\"$cluster|\", } *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
+              "expr": "max by (pool_id) (ceph_pool_objects{cluster=~\"$cluster|\", }) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{name=~\"$pool_name\", cluster=~\"$cluster|\", })\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "Number of Objects",
