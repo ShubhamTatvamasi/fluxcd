@@ -24,12 +24,14 @@ spec:
       rbd:
         enabled: true
         name: rook-ceph.rbd.csi.ceph.com
+        enableFencing: true
+        deployCsiAddons: true
       cephfs:
         enabled: true
         name: rook-ceph.cephfs.csi.ceph.com
       nfs:
-        enabled: false
+        enabled: true
         name: rook-ceph.nfs.csi.ceph.com
       nvmeof:
-        enabled: false
+        enabled: true
         name: rook-ceph.nvmeof.csi.ceph.com
