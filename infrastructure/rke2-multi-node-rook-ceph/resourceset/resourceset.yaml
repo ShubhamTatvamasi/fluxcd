@@ -65,6 +65,13 @@ spec:
     - service: "rook-ceph"
       path: "./infrastructure/base/rook-ceph/operator"
 
+    # CSI-Addons CRDs + controller (vendored from csi-addons/kubernetes-csi-addons).
+    # Required by the RBD driver's deployCsiAddons/enableFencing settings —
+    # without these CRDs, the CSI-Addons sidecars that those flags deploy
+    # crash-loop with "no matches for csiaddons.openshift.io/v1alpha1".
+    - service: "csi-addons"
+      path: "./infrastructure/base/csi-addons"
+
     # ceph-csi-drivers chart — creates the RBD/CephFS Driver CRs and their
     # ServiceAccounts/RBAC. rook-ceph's chart only vendors the ceph-csi-operator
     # controller as a subchart; it does not install this chart, so it must be
@@ -74,6 +81,7 @@ spec:
       path: "./infrastructure/base/rook-ceph/ceph-csi-operator"
       dependsOn:
         - "rook-ceph"
+        - "csi-addons"
 
     # kube-prometheus-stack provides monitoring, and backs the ceph dashboard's
     # metrics/graphs tab (needs traefik and sealed-secrets). Deployed before
