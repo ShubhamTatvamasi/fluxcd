@@ -56,11 +56,6 @@ spec:
       ingress:
         enabled: true
         ingressClassName: traefik
-        # oauth2-proxy gates the whole ingress so anon Viewer access above
-        # only ever applies to already-OIDC-authenticated users, not the
-        # public internet.
-        annotations:
-          traefik.ingress.kubernetes.io/router.middlewares: traefik-oauth2-proxy-errors@kubernetescrd,traefik-oauth2-proxy-auth@kubernetescrd
         hosts:
           - grafana.${domain}
         tls:

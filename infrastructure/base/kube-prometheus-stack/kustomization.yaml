@@ -6,4 +6,3 @@ resources:
 - ocirepository.yaml
 - helmrelease.yaml
 - kube-prometheus-stack-tls.yaml
-- grafana-embed-ingressroute.yaml
