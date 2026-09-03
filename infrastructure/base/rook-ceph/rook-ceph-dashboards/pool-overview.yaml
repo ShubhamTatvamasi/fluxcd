@@ -1195,7 +1195,7 @@ data:
               "refId": "A"
             },
             {
-              "expr": "ceph_pool_max_avail{cluster=~\"$cluster|\", } *\n  on(pool_id) group_left(name) ceph_pool_metadata{cluster=~\"$cluster|\", }\n",
+              "expr": "ceph_pool_max_avail{cluster=~\"$cluster|\", } *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\", })\n",
               "format": "table",
               "instant": true,
               "intervalFactor": 1,
@@ -1211,7 +1211,7 @@ data:
               "refId": "C"
             },
             {
-              "expr": "ceph_pool_percent_used{cluster=~\"$cluster|\", } *\n  on(pool_id) group_left(name) ceph_pool_metadata{cluster=~\"$cluster|\", }\n",
+              "expr": "ceph_pool_percent_used{cluster=~\"$cluster|\", } *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\", })\n",
               "format": "table",
               "instant": true,
               "intervalFactor": 1,
@@ -1259,7 +1259,7 @@ data:
               "refId": "I"
             },
             {
-              "expr": "ceph_pool_stored{cluster=~\"$cluster|\", } * on(pool_id) group_left ceph_pool_metadata{cluster=~\"$cluster|\", }",
+              "expr": "ceph_pool_stored{cluster=~\"$cluster|\", } * on(pool_id) group_left max by (pool_id) (ceph_pool_metadata{cluster=~\"$cluster|\", })",
               "format": "table",
               "instant": true,
               "intervalFactor": 1,
@@ -1391,14 +1391,14 @@ data:
           "seriesOverrides": [],
           "targets": [
             {
-              "expr": "topk($topk,\n  round(\n    (\n      rate(ceph_pool_rd{cluster=~\"$cluster|\", }[$__rate_interval]) +\n      rate(ceph_pool_wr{cluster=~\"$cluster|\", }[$__rate_interval])\n    ), 1\n  ) * on(pool_id) group_left(instance,name) ceph_pool_metadata{cluster=~\"$cluster|\", }\n)\n",
+              "expr": "topk($topk,\n  round(\n    (\n      rate(ceph_pool_rd{cluster=~\"$cluster|\", }[$__rate_interval]) +\n      rate(ceph_pool_wr{cluster=~\"$cluster|\", }[$__rate_interval])\n    ), 1\n  ) * on(pool_id) group_left(instance,name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\", })\n)\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{name}}",
               "refId": "A"
             },
             {
-              "expr": "topk($topk,\n  rate(ceph_pool_wr{cluster=~\"$cluster|\", }[$__rate_interval]) +\n  on(pool_id) group_left(instance,name) ceph_pool_metadata{cluster=~\"$cluster|\", }\n)\n",
+              "expr": "topk($topk,\n  rate(ceph_pool_wr{cluster=~\"$cluster|\", }[$__rate_interval]) +\n  on(pool_id) group_left(instance,name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\", })\n)\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{name}} - write",
@@ -1477,7 +1477,7 @@ data:
           "seriesOverrides": [],
           "targets": [
             {
-              "expr": "topk($topk,\n  (\n    rate(ceph_pool_rd_bytes{cluster=~\"$cluster|\", }[$__rate_interval]) +\n    rate(ceph_pool_wr_bytes{cluster=~\"$cluster|\", }[$__rate_interval])\n  ) * on(pool_id) group_left(instance, name) ceph_pool_metadata{cluster=~\"$cluster|\", }\n)\n",
+              "expr": "topk($topk,\n  (\n    rate(ceph_pool_rd_bytes{cluster=~\"$cluster|\", }[$__rate_interval]) +\n    rate(ceph_pool_wr_bytes{cluster=~\"$cluster|\", }[$__rate_interval])\n  ) * on(pool_id) group_left(instance, name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\", })\n)\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{name}}",
@@ -1556,7 +1556,7 @@ data:
           "seriesOverrides": [],
           "targets": [
             {
-              "expr": "ceph_pool_bytes_used{cluster=~\"$cluster|\", } * on(pool_id) group_right ceph_pool_metadata{cluster=~\"$cluster|\", }",
+              "expr": "max by (pool_id) (ceph_pool_bytes_used{cluster=~\"$cluster|\", }) * on(pool_id) group_right ceph_pool_metadata{cluster=~\"$cluster|\", }",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{name}}",

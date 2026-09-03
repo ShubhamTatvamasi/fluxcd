@@ -176,7 +176,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(rate(ceph_pool_wr{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"})",
+              "expr": "sum(rate(ceph_pool_wr{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"}))",
               "legendFormat": "Write",
               "range": true,
               "refId": "A"
@@ -187,7 +187,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(rate(ceph_pool_rd{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"})",
+              "expr": "sum(rate(ceph_pool_rd{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"}))",
               "hide": false,
               "legendFormat": "Read",
               "range": true,
@@ -299,7 +299,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum by (application) (ceph_pool_bytes_used{cluster=~\"$cluster|\",} *\n  on(pool_id) group_left(instance, name, application) ceph_pool_metadata{cluster=~\"$cluster|\",application=~\"(.*Block.*)|(.*Filesystem.*)|(.*Object.*)\"})",
+              "expr": "sum by (application) (ceph_pool_bytes_used{cluster=~\"$cluster|\",} *\n  on(pool_id) group_left(instance, name, application) max by (pool_id, instance, name, application) (ceph_pool_metadata{cluster=~\"$cluster|\",application=~\"(.*Block.*)|(.*Filesystem.*)|(.*Object.*)\"}))",
               "format": "time_series",
               "instant": true,
               "legendFormat": "__auto",
@@ -367,7 +367,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(rate(ceph_pool_wr_bytes{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"})",
+              "expr": "sum(rate(ceph_pool_wr_bytes{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"}))",
               "legendFormat": "Write",
               "range": true,
               "refId": "A"
@@ -378,7 +378,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(rate(ceph_pool_rd_bytes{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(name) ceph_pool_metadata{cluster=~\"$cluster|\",application=~\"$application\", name=~\"$pool\"})",
+              "expr": "sum(rate(ceph_pool_rd_bytes{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\",application=~\"$application\", name=~\"$pool\"}))",
               "hide": false,
               "legendFormat": "Read",
               "range": true,
@@ -619,7 +619,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "(ceph_pool_quota_bytes{cluster=~\"$cluster|\",}*\n  on(pool_id) group_left(instance, name) ceph_pool_metadata{cluster=~\"$cluster|\",application=~\"$application\", name=~\"$pool\"}\n   - \n   (ceph_pool_stored{cluster=~\"$cluster|\",}  *\n  on(pool_id) group_left(instance, name) ceph_pool_metadata{cluster=~\"$cluster|\",application=~\"$application\", name=~\"$pool\"})) > 0 \n  or\n  \n(ceph_pool_max_avail{cluster=~\"$cluster|\",} *\n  on(pool_id) group_left(instance, name) ceph_pool_metadata{cluster=~\"$cluster|\",application=~\"$application\", name=~\"$pool\"})",
+              "expr": "(ceph_pool_quota_bytes{cluster=~\"$cluster|\",}*\n  on(pool_id) group_left(instance, name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\",application=~\"$application\", name=~\"$pool\"})\n   - \n   (ceph_pool_stored{cluster=~\"$cluster|\",}  *\n  on(pool_id) group_left(instance, name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\",application=~\"$application\", name=~\"$pool\"}))) > 0 \n  or\n  \n(ceph_pool_max_avail{cluster=~\"$cluster|\",} *\n  on(pool_id) group_left(instance, name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\",application=~\"$application\", name=~\"$pool\"}))",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -632,7 +632,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "(ceph_pool_stored{cluster=~\"$cluster|\",} *on(pool_id) group_left(instance, name) ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"})\n  /\n  (((ceph_pool_quota_bytes{cluster=~\"$cluster|\"} > 0) *\n  on(pool_id) group_left(instance, name) ceph_pool_metadata{cluster=~\"$cluster|\", name=~\"$pool\", application=~\"$application\"}) or \n((ceph_pool_max_avail{cluster=~\"$cluster|\"} \n+\nceph_pool_stored{cluster=~\"$cluster|\", }) *\n  on(pool_id) group_left(instance, name) ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\", application=~\"$application\"}))",
+              "expr": "(ceph_pool_stored{cluster=~\"$cluster|\",} *on(pool_id) group_left(instance, name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"}))\n  /\n  (((ceph_pool_quota_bytes{cluster=~\"$cluster|\"} > 0) *\n  on(pool_id) group_left(instance, name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\", name=~\"$pool\", application=~\"$application\"})) or \n((ceph_pool_max_avail{cluster=~\"$cluster|\"} \n+\nceph_pool_stored{cluster=~\"$cluster|\", }) *\n  on(pool_id) group_left(instance, name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\", application=~\"$application\"})))",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -645,7 +645,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "rate(ceph_pool_rd{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on(pool_id) group_left(name) ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"}\n  + rate(ceph_pool_wr{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on(pool_id) group_left(name) ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"}\n",
+              "expr": "rate(ceph_pool_rd{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"})\n  + rate(ceph_pool_wr{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"})\n",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -658,7 +658,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "rate(ceph_pool_rd_bytes{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on(pool_id) group_left(name) ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"} +\n  rate(ceph_pool_wr_bytes{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on(pool_id) group_left(name) ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"}\n",
+              "expr": "rate(ceph_pool_rd_bytes{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"}) +\n  rate(ceph_pool_wr_bytes{cluster=~\"$cluster|\", }[$__rate_interval]) *\n  on(pool_id) group_left(name) max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"})\n",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -684,7 +684,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "ceph_pool_stored{cluster=~\"$cluster|\", } * on(pool_id) group_left ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"}",
+              "expr": "ceph_pool_stored{cluster=~\"$cluster|\", } * on(pool_id) group_left max by (pool_id) (ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"})",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -699,7 +699,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "ceph_pool_quota_bytes{cluster=~\"$cluster|\",} *\n  on(pool_id) group_left(instance, name) ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\",name=~\"$pool\"}",
+              "expr": "ceph_pool_quota_bytes{cluster=~\"$cluster|\",} *\n  on(pool_id) group_left(instance, name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\",name=~\"$pool\"})",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -714,7 +714,7 @@ data:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "((ceph_pool_quota_bytes{cluster=~\"$cluster|\"}) *\n  on(pool_id) group_left(instance, name) ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"})",
+              "expr": "((ceph_pool_quota_bytes{cluster=~\"$cluster|\"}) *\n  on(pool_id) group_left(instance, name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"}))",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -727,7 +727,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "ceph_pool_bytes_used{cluster=~\"$cluster|\", } * on(pool_id) group_left ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"}",
+              "expr": "ceph_pool_bytes_used{cluster=~\"$cluster|\", } * on(pool_id) group_left max by (pool_id) (ceph_pool_metadata{cluster=~\"$cluster|\", application=~\"$application\", name=~\"$pool\"})",
               "format": "table",
               "hide": false,
               "instant": true,
@@ -895,7 +895,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "ceph_pool_bytes_used{cluster=~\"$cluster|\",} *\n  on(pool_id) group_left(instance, name) ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"}",
+              "expr": "ceph_pool_bytes_used{cluster=~\"$cluster|\",} *\n  on(pool_id) group_left(instance, name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"})",
               "legendFormat": "{{name}}",
               "range": true,
               "refId": "A"
@@ -998,7 +998,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "rate(ceph_pool_wr{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"}",
+              "expr": "rate(ceph_pool_wr{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"})",
               "legendFormat": "{{name}} - Writes",
               "range": true,
               "refId": "A"
@@ -1009,7 +1009,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "rate(ceph_pool_rd{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"}",
+              "expr": "rate(ceph_pool_rd{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\",name=~\"$pool\"})",
               "hide": false,
               "legendFormat": "{{name}} - Reads",
               "range": true,
@@ -1113,7 +1113,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "rate(ceph_pool_wr_bytes{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) ceph_pool_metadata{cluster=~\"$cluster|\", name=~\"$pool\"}",
+              "expr": "rate(ceph_pool_wr_bytes{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\", name=~\"$pool\"})",
               "legendFormat": "{{name}} - Writes",
               "range": true,
               "refId": "A"
@@ -1124,7 +1124,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "rate(ceph_pool_rd_bytes{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) ceph_pool_metadata{cluster=~\"$cluster|\", name=~\"$pool\"}",
+              "expr": "rate(ceph_pool_rd_bytes{cluster=~\"$cluster|\",}[$__rate_interval]) *\n  on(pool_id) group_left(instance,name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\", name=~\"$pool\"})",
               "hide": false,
               "legendFormat": "{{name}} - Reads",
               "range": true,
@@ -1228,7 +1228,7 @@ data:
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "ceph_pool_objects{cluster=~\"$cluster|\",} *\n  on(pool_id) group_left(instance,name) ceph_pool_metadata{cluster=~\"$cluster|\", name=~\"$pool\"}\n",
+              "expr": "ceph_pool_objects{cluster=~\"$cluster|\",} *\n  on(pool_id) group_left(instance,name) max by (pool_id, instance, name) (ceph_pool_metadata{cluster=~\"$cluster|\", name=~\"$pool\"})\n",
               "legendFormat": "{{name}}",
               "range": true,
               "refId": "A"

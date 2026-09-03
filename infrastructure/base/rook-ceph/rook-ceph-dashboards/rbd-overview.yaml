@@ -509,7 +509,7 @@ data:
           "styles": [],
           "targets": [
             {
-              "expr": "topk(10,\n  (\n    sort((\n      rate(ceph_rbd_write_ops{cluster=~\"$cluster|\", }[$__rate_interval]) +\n        on (image, pool, namespace) rate(ceph_rbd_read_ops{cluster=~\"$cluster|\", }[$__rate_interval])\n    ))\n  )\n)\n",
+              "expr": "topk(10,\n  (\n    sort((\n      max by (image, pool, namespace) (rate(ceph_rbd_write_ops{cluster=~\"$cluster|\", }[$__rate_interval])) +\n        on (image, pool, namespace) max by (image, pool, namespace) (rate(ceph_rbd_read_ops{cluster=~\"$cluster|\", }[$__rate_interval]))\n    ))\n  )\n)\n",
               "format": "table",
               "instant": true,
               "intervalFactor": 1,

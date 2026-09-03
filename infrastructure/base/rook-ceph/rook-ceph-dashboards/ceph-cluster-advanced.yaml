@@ -1806,7 +1806,7 @@ data:
           "targets": [
             {
               "datasource": "$datasource",
-              "expr": "(ceph_pool_bytes_used{cluster=~\"$cluster|\", }) *on (pool_id) group_left(name)(ceph_pool_metadata{cluster=~\"$cluster|\", })",
+              "expr": "(ceph_pool_bytes_used{cluster=~\"$cluster|\", }) *on (pool_id) group_left(name) (max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\", }))",
               "format": "time_series",
               "interval": "$interval",
               "intervalFactor": 1,
@@ -1910,7 +1910,7 @@ data:
           "targets": [
             {
               "datasource": "$datasource",
-              "expr": "(ceph_pool_stored_raw{cluster=~\"$cluster|\", }) *on (pool_id) group_left(name)(ceph_pool_metadata{cluster=~\"$cluster|\", })",
+              "expr": "(ceph_pool_stored_raw{cluster=~\"$cluster|\", }) *on (pool_id) group_left(name) (max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\", }))",
               "format": "time_series",
               "hide": false,
               "interval": "",
@@ -2004,7 +2004,7 @@ data:
           "targets": [
             {
               "datasource": "$datasource",
-              "expr": "(ceph_pool_quota_objects{cluster=~\"$cluster|\", }) *on (pool_id) group_left(name)(ceph_pool_metadata{cluster=~\"$cluster|\", })",
+              "expr": "(ceph_pool_quota_objects{cluster=~\"$cluster|\", }) *on (pool_id) group_left(name) (max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\", }))",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -2096,7 +2096,7 @@ data:
           "targets": [
             {
               "datasource": "$datasource",
-              "expr": "(ceph_pool_quota_bytes{cluster=~\"$cluster|\", }) *on (pool_id) group_left(name)(ceph_pool_metadata{cluster=~\"$cluster|\", })",
+              "expr": "(ceph_pool_quota_bytes{cluster=~\"$cluster|\", }) *on (pool_id) group_left(name) (max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\", }))",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -2188,7 +2188,7 @@ data:
           "targets": [
             {
               "datasource": "$datasource",
-              "expr": "(ceph_pool_objects{cluster=~\"$cluster|\", }) * on (pool_id) group_left(name)(ceph_pool_metadata{cluster=~\"$cluster|\", })",
+              "expr": "(ceph_pool_objects{cluster=~\"$cluster|\", }) * on (pool_id) group_left(name) (max by (pool_id, name) (ceph_pool_metadata{cluster=~\"$cluster|\", }))",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
