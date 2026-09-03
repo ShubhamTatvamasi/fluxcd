@@ -144,21 +144,21 @@ data:
           "seriesOverrides": [],
           "targets": [
             {
-              "expr": "avg(\n  rate(ceph_osd_op_r_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval]) /\n  on (ceph_daemon) rate(ceph_osd_op_r_latency_count{cluster=~\"$cluster|\", }[$__rate_interval]) * 1000\n)\n",
+              "expr": "avg(\n  max by (ceph_daemon) (rate(ceph_osd_op_r_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval])) /\n  on (ceph_daemon) max by (ceph_daemon) (rate(ceph_osd_op_r_latency_count{cluster=~\"$cluster|\", }[$__rate_interval])) * 1000\n)\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "AVG read",
               "refId": "A"
             },
             {
-              "expr": "max(\n  rate(ceph_osd_op_r_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval]) /\n  on (ceph_daemon) rate(ceph_osd_op_r_latency_count{cluster=~\"$cluster|\", }[$__rate_interval]) * 1000\n)\n",
+              "expr": "max(\n  max by (ceph_daemon) (rate(ceph_osd_op_r_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval])) /\n  on (ceph_daemon) max by (ceph_daemon) (rate(ceph_osd_op_r_latency_count{cluster=~\"$cluster|\", }[$__rate_interval])) * 1000\n)\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "MAX read",
               "refId": "B"
             },
             {
-              "expr": "quantile(0.95,\n  (\n    rate(ceph_osd_op_r_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval]) /\n    on (ceph_daemon) rate(ceph_osd_op_r_latency_count{cluster=~\"$cluster|\", }[$__rate_interval]) * 1000\n  )\n)\n",
+              "expr": "quantile(0.95,\n  (\n    max by (ceph_daemon) (rate(ceph_osd_op_r_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval])) /\n    on (ceph_daemon) max by (ceph_daemon) (rate(ceph_osd_op_r_latency_count{cluster=~\"$cluster|\", }[$__rate_interval])) * 1000\n  )\n)\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "@95%ile",
@@ -271,7 +271,7 @@ data:
           "styles": [],
           "targets": [
             {
-              "expr": "topk(10,\n  (sort(\n    (\n      rate(ceph_osd_op_r_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval]) /\n        on (ceph_daemon) rate(ceph_osd_op_r_latency_count{cluster=~\"$cluster|\", }[$__rate_interval]) *\n        1000\n    )\n  ))\n)\n",
+              "expr": "topk(10,\n  (sort(\n    (\n      max by (ceph_daemon) (rate(ceph_osd_op_r_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval])) /\n        on (ceph_daemon) max by (ceph_daemon) (rate(ceph_osd_op_r_latency_count{cluster=~\"$cluster|\", }[$__rate_interval])) *\n        1000\n    )\n  ))\n)\n",
               "format": "table",
               "instant": true,
               "intervalFactor": 1,
@@ -373,21 +373,21 @@ data:
           "seriesOverrides": [],
           "targets": [
             {
-              "expr": "avg(\n  rate(ceph_osd_op_w_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval]) /\n  on (ceph_daemon) rate(ceph_osd_op_w_latency_count{cluster=~\"$cluster|\", }[$__rate_interval]) * 1000\n)\n",
+              "expr": "avg(\n  max by (ceph_daemon) (rate(ceph_osd_op_w_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval])) /\n  on (ceph_daemon) max by (ceph_daemon) (rate(ceph_osd_op_w_latency_count{cluster=~\"$cluster|\", }[$__rate_interval])) * 1000\n)\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "AVG write",
               "refId": "A"
             },
             {
-              "expr": "max(\n  rate(ceph_osd_op_w_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval]) /\n  on (ceph_daemon) rate(ceph_osd_op_w_latency_count{cluster=~\"$cluster|\", }[$__rate_interval]) * 1000\n)\n",
+              "expr": "max(\n  max by (ceph_daemon) (rate(ceph_osd_op_w_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval])) /\n  on (ceph_daemon) max by (ceph_daemon) (rate(ceph_osd_op_w_latency_count{cluster=~\"$cluster|\", }[$__rate_interval])) * 1000\n)\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "MAX write",
               "refId": "B"
             },
             {
-              "expr": "quantile(0.95,\n  (\n    rate(ceph_osd_op_w_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval]) /\n    on (ceph_daemon) rate(ceph_osd_op_w_latency_count{cluster=~\"$cluster|\", }[$__rate_interval]) * 1000\n  )\n)\n",
+              "expr": "quantile(0.95,\n  (\n    max by (ceph_daemon) (rate(ceph_osd_op_w_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval])) /\n    on (ceph_daemon) max by (ceph_daemon) (rate(ceph_osd_op_w_latency_count{cluster=~\"$cluster|\", }[$__rate_interval])) * 1000\n  )\n)\n",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "@95%ile write",
@@ -535,7 +535,7 @@ data:
           "styles": [],
           "targets": [
             {
-              "expr": "topk(10,\n  (sort(\n    (rate(ceph_osd_op_w_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval]) /\n      on (ceph_daemon) rate(ceph_osd_op_w_latency_count{cluster=~\"$cluster|\", }[$__rate_interval]) *\n      1000)\n  ))\n)\n",
+              "expr": "topk(10,\n  (sort(\n    (max by (ceph_daemon) (rate(ceph_osd_op_w_latency_sum{cluster=~\"$cluster|\", }[$__rate_interval])) /\n      on (ceph_daemon) max by (ceph_daemon) (rate(ceph_osd_op_w_latency_count{cluster=~\"$cluster|\", }[$__rate_interval])) *\n      1000)\n  ))\n)\n",
               "format": "table",
               "instant": true,
               "intervalFactor": 1,
