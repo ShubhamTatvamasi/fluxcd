@@ -94,8 +94,9 @@ spec:
                   exit 0
                 fi
 
-                echo "attempt ${attempt}: ceph dashboard command failed (cluster unreachable, or cephx keys mid-rotation) — rebuilding keyring and retrying in 20s"
-                sleep 20
+
+                echo "attempt ${attempt}: ceph dashboard command failed (cluster unreachable, or cephx keys mid-rotation) — rebuilding keyring and retrying in 60s"
+                sleep 60
               done
           volumeMounts:
             - mountPath: /etc/ceph
