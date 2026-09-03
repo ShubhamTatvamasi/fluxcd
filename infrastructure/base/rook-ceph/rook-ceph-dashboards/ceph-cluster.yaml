@@ -1124,7 +1124,7 @@ data:
           "span": 12,
           "targets": [
             {
-              "expr": "ceph_osd_stat_bytes_used{cluster=~'$cluster|'} / ceph_osd_stat_bytes{cluster=~'$cluster|'}",
+              "expr": "max by (ceph_daemon) (ceph_osd_stat_bytes_used{cluster=~'$cluster|'}) / max by (ceph_daemon) (ceph_osd_stat_bytes{cluster=~'$cluster|'})",
               "format": "time_series",
               "interval": "1m",
               "intervalFactor": 1,
