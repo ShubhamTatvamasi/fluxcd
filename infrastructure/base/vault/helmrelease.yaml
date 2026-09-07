@@ -44,3 +44,6 @@ spec:
           storage:
             file:
               path: "/vault/file"
+      envs:
+        - name: VAULT_CACERT
+          value: /vault/tls/tls.crt
