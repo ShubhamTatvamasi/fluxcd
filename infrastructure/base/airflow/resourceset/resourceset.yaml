@@ -11,22 +11,22 @@ spec:
     - service: "airflow-tls"
       path: "./secrets/sealed-secrets/tls/shubhamtatvamasi-tls"
       tls_secret_name: "airflow-tls"
-    # Swap to "./secrets/external-secrets/git-credentials" (dependsOn
-    # "vault-store" instead of "sealed-secrets") to source from Vault.
+    # Swap to "./secrets/sealed-secrets/git-credentials" (dependsOn
+    # "sealed-secrets" instead of "vault-store") to source from a SealedSecret.
     - service: "git-credentials"
-      path: "./secrets/sealed-secrets/git-credentials"
+      path: "./secrets/external-secrets/git-credentials"
     - service: "airflow-config"
       path: "./apps/${cluster}/${namespace}"
     # Each of the following has two interchangeable backends side by side
-    # under secrets/ — swap "sealed-secrets" to "external-secrets" in the
-    # path (e.g. "./secrets/external-secrets/airflow/airflow-fernet-key") to
-    # source it from Vault via ESO instead.
+    # under secrets/ — swap "external-secrets" to "sealed-secrets" in the
+    # path (e.g. "./secrets/sealed-secrets/airflow/airflow-fernet-key") to
+    # source it from a SealedSecret instead.
     - service: "airflow-metadata-connection"
-      path: "./secrets/sealed-secrets/airflow/airflow-metadata-connection"
+      path: "./secrets/external-secrets/airflow/airflow-metadata-connection"
     - service: "airflow-opensearch-connection"
-      path: "./secrets/sealed-secrets/airflow/airflow-opensearch-connection"
+      path: "./secrets/external-secrets/airflow/airflow-opensearch-connection"
     - service: "airflow-fernet-key"
-      path: "./secrets/sealed-secrets/airflow/airflow-fernet-key"
+      path: "./secrets/external-secrets/airflow/airflow-fernet-key"
     - service: "airflow"
       path: "./infrastructure/base/airflow/airflow"
       dependsOn:

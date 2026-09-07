@@ -16,6 +16,16 @@ spec:
     - service: "sealed-secrets"
       path: "./infrastructure/base/sealed-secrets"
 
+    # cert-manager controller (installs the cert-manager.io CRDs)
+    - service: "cert-manager"
+      path: "./infrastructure/base/cert-manager/controller"
+
+    # self-signed internal CA + ClusterIssuer, built from cert-manager's CRDs
+    - service: "cert-manager-config"
+      path: "./infrastructure/base/cert-manager/config"
+      dependsOn:
+        - "cert-manager"
+
     # flux web UI TLS (sealed secret decrypted by sealed-secrets)
     - service: "flux-tls"
       path: "./secrets/sealed-secrets/tls/shubhamtatvamasi-tls"
