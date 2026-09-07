@@ -6,7 +6,7 @@ metadata:
   namespace: openbao
 spec:
   size: 1
-  image: quay.io/openbao/openbao:2.6.1
+  image: quay.io/openbao/openbao:2.6.2
   serviceAccount: openbao
   serviceType: ClusterIP
   configPath: /openbao/config

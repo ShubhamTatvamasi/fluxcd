@@ -6,7 +6,7 @@ metadata:
   namespace: vault
 spec:
   size: 1
-  image: hashicorp/vault:2.0.3
+  image: hashicorp/vault:2.1.0
   serviceAccount: vault
   serviceType: ClusterIP
 
