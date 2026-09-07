@@ -176,6 +176,27 @@ spec:
     #     - "rook-ceph-cluster"
     #     - "traefik"
     #     - "sealed-secrets"
+
+    # Vault Operator — Bank-Vaults CRD controller for managing Vault instances
+    - service: "vault-operator"
+      path: "./infrastructure/base/bank-vaults/vault-operator"
+
+    # Vault — namespace, RBAC, PVC, TLS secret, and the Vault CR itself
+    # (its PVC binds against ceph-block, this cluster's default StorageClass
+    # from rook-ceph-cluster)
+    - service: "vault"
+      path: "./infrastructure/base/vault"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+        - "vault-operator"
+        - "rook-ceph-cluster"
+
+    # Vault infra — vault-secrets-webhook for injecting Vault secrets into other pods (needs the vault namespace + Vault instance)
+    - service: "vault-infra"
+      path: "./infrastructure/base/bank-vaults/vault-infra"
+      dependsOn:
+        - "vault"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
