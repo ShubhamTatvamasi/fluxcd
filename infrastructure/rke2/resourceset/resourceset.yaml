@@ -217,13 +217,12 @@ spec:
     - service: "vault-operator"
       path: "./infrastructure/base/bank-vaults/vault-operator"
 
-    # Vault — namespace, RBAC, PVC, TLS secret, and the Vault CR itself
+    # Vault — HashiCorp Vault chart (self-contained; no longer needs vault-operator)
     - service: "vault"
       path: "./infrastructure/base/vault"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
-        - "vault-operator"
 
     # Vault infra — vault-secrets-webhook for injecting Vault secrets into other pods (needs the vault namespace + Vault instance)
     - service: "vault-infra"
