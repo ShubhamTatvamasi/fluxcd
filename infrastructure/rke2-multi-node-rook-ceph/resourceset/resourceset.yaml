@@ -18,7 +18,7 @@ spec:
 
     # flux web UI TLS (sealed secret decrypted by sealed-secrets)
     - service: "flux-tls"
-      path: "./secrets/tls/shubhamtatvamasi-tls"
+      path: "./secrets/sealed-secrets/tls/shubhamtatvamasi-tls"
       tls_secret_name: "flux-tls"
       namespace: "flux-system"
       dependsOn:
@@ -193,8 +193,23 @@ spec:
     #   dependsOn:
     #     - "vault"
 
+    # External Secrets Operator — syncs secrets from Vault into regular
+    # Kubernetes Secrets (replacing Sealed Secrets for values sourced from
+    # Vault). Neither Airflow's chart nor CNPG support the Vault Agent
+    # Injector natively, so this is the supported integration path for both.
     - service: "external-secrets"
       path: "./infrastructure/base/external-secrets"
+      dependsOn:
+        - "vault"
+
+    # ClusterSecretStore wiring ESO to this cluster's Vault instance (needs
+    # the external-secrets.io CRDs from the operator, and a running Vault
+    # with its kubernetes auth role/policy already configured for ESO).
+    - service: "vault-store"
+      path: "./infrastructure/base/external-secrets/vault-store"
+      dependsOn:
+        - "external-secrets"
+        - "vault"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization

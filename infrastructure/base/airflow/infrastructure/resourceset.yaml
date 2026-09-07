@@ -27,9 +27,12 @@ spec:
     - service: "cnpg-operator"
       path: "./infrastructure/base/cnpg/operator"
 
-    # basic-auth credentials for the cnpg cluster (sealed secret)
+    # basic-auth credentials for the cnpg cluster. Two interchangeable backends
+    # live side by side under secrets/ — swap the path to
+    # "./secrets/external-secrets/airflow/cnpg-system" (dependsOn "vault-store"
+    # instead of "sealed-secrets") to source it from Vault via ESO instead.
     - service: "airflow-basic-auth"
-      path: "./secrets/airflow/cnpg-system"
+      path: "./secrets/sealed-secrets/airflow/cnpg-system"
       dependsOn:
         - "sealed-secrets"
 
@@ -44,6 +47,47 @@ spec:
     # Airflow's Celery worker ScaledObject to scale workers on queued task count
     - service: "keda"
       path: "./infrastructure/base/keda"
+
+    # Airflow's metadata DB connection string + KEDA connection variant. Swap
+    # to "./secrets/external-secrets/airflow/airflow-metadata-connection"
+    # (dependsOn "vault-store" instead of "sealed-secrets") to source from Vault.
+    - service: "airflow-metadata-connection"
+      path: "./secrets/sealed-secrets/airflow/airflow-metadata-connection"
+      dependsOn:
+        - "sealed-secrets"
+
+    # Airflow's Fernet key (encrypts Connections/Variables at rest). Swap to
+    # "./secrets/external-secrets/airflow/airflow-fernet-key" (dependsOn
+    # "vault-store" instead of "sealed-secrets") to source from Vault.
+    - service: "airflow-fernet-key"
+      path: "./secrets/sealed-secrets/airflow/airflow-fernet-key"
+      dependsOn:
+        - "sealed-secrets"
+
+    # Airflow's OpenSearch remote-log connection. Swap to
+    # "./secrets/external-secrets/airflow/airflow-opensearch-connection"
+    # (dependsOn "vault-store" instead of "sealed-secrets") to source from Vault.
+    - service: "airflow-opensearch-connection"
+      path: "./secrets/sealed-secrets/airflow/airflow-opensearch-connection"
+      dependsOn:
+        - "sealed-secrets"
+
+    # Bulk-imported Airflow Connections (connections.yaml), consumed by the
+    # airflow-import CronJob. Swap to
+    # "./secrets/external-secrets/airflow/airflow-import" (dependsOn
+    # "vault-store" instead of "sealed-secrets") to source from Vault.
+    - service: "airflow-connections-import"
+      path: "./secrets/sealed-secrets/airflow/airflow-import"
+      dependsOn:
+        - "sealed-secrets"
+
+    # Env-var-style Airflow Connections (AIRFLOW_CONN_*). Swap to
+    # "./secrets/external-secrets/airflow/airflow-connections" (dependsOn
+    # "vault-store" instead of "sealed-secrets") to source from Vault.
+    - service: "airflow-connections"
+      path: "./secrets/sealed-secrets/airflow/airflow-connections"
+      dependsOn:
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
