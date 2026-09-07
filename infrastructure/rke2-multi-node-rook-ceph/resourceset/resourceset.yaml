@@ -192,6 +192,9 @@ spec:
     #   path: "./infrastructure/base/bank-vaults/vault-infra"
     #   dependsOn:
     #     - "vault"
+
+    - service: "external-secrets"
+      path: "./infrastructure/base/external-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
