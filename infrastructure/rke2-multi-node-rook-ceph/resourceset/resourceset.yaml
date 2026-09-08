@@ -220,6 +220,17 @@ spec:
       dependsOn:
         - "external-secrets"
         - "vault"
+
+    # OpenBao — open-source Vault fork, deployed with the same self-contained
+    # bank-vaults chart as "vault" above, just pointed at the OpenBao image
+    # instead of HashiCorp's Vault. Its PVC binds against ceph-block, this
+    # cluster's default StorageClass from rook-ceph-cluster.
+    - service: "openbao"
+      path: "./infrastructure/base/openbao"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+        - "rook-ceph-cluster"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
