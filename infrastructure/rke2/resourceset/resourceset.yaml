@@ -213,9 +213,9 @@ spec:
         - "traefik"
         - "sealed-secrets"
 
-    # Vault Operator — Bank-Vaults CRD controller for managing Vault instances
-    - service: "vault-operator"
-      path: "./infrastructure/base/bank-vaults/vault-operator"
+    # Vault Operator — removed; bank-vaults/vault-operator no longer exists (see vault/openbao self-contained charts)
+    # - service: "vault-operator"
+    #   path: "./infrastructure/base/bank-vaults/vault-operator"
 
     # Vault — HashiCorp Vault chart (self-contained; no longer needs vault-operator)
     - service: "vault"
@@ -224,19 +224,18 @@ spec:
         - "traefik"
         - "sealed-secrets"
 
-    # Vault infra — vault-secrets-webhook for injecting Vault secrets into other pods (needs the vault namespace + Vault instance)
-    - service: "vault-infra"
-      path: "./infrastructure/base/bank-vaults/vault-infra"
-      dependsOn:
-        - "vault"
+    # Vault infra — removed; bank-vaults/vault-infra no longer exists
+    # - service: "vault-infra"
+    #   path: "./infrastructure/base/bank-vaults/vault-infra"
+    #   dependsOn:
+    #     - "vault"
 
-    # OpenBao — Vault-API-compatible secrets management, run as a second Vault CR under the same Bank-Vaults operator
+    # OpenBao — Vault-API-compatible secrets management, deployed with the same self-contained chart as "vault" above
     - service: "openbao"
       path: "./infrastructure/base/openbao"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
-        - "vault-operator"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
