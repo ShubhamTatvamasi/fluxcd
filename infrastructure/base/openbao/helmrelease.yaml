@@ -47,6 +47,12 @@ spec:
     vault:
       config:
         disable_mlock: true
+        # Reuses the persisted vault-file PVC (already mounted read-write into
+        # the vault container) since the chart has no value to mount an extra
+        # volume into the main container for a dedicated plugin path.
+        plugin_directory: "/vault/file/plugins"
+        plugin_auto_download: true
+        plugin_auto_register: true
         listener:
           tcp:
             address: "[::]:8200"
@@ -55,3 +61,103 @@ spec:
           storage:
             file:
               path: "/vault/file"
+        plugin:
+          auth:
+            aws:
+              image: "ghcr.io/openbao/openbao-plugin-auth-aws"
+              version: "v0.1.1"
+              binary_name: "openbao-plugin-auth-aws"
+              sha256sum: "7a77057e62973c1aae6035f52110e3302605a47b622756d954915b7b55eca10c"
+            azure:
+              image: "ghcr.io/openbao/openbao-plugin-auth-azure"
+              version: "v0.23.0"
+              binary_name: "openbao-plugin-auth-azure"
+              sha256sum: "e9f83fb05174ecbae16ec1e48eb40e2179f2d39459d63806251e543b723823fa"
+            gcp:
+              image: "ghcr.io/openbao/openbao-plugin-auth-gcp"
+              version: "v0.22.0"
+              binary_name: "openbao-plugin-auth-gcp"
+              sha256sum: "e0d1a29aba54ff35e04ce7821b5c84c4f8049386c4a66536b82208b1177e84ff"
+            github:
+              image: "ghcr.io/openbao/openbao-plugin-auth-github"
+              version: "v0.0.1"
+              binary_name: "openbao-plugin-auth-github"
+              sha256sum: "76a46b7680a974ff367df53b700af95565b88a70f01c10c512b36ec2ea7fe7fc"
+          secrets:
+            aws:
+              image: "ghcr.io/openbao/openbao-plugin-secrets-aws"
+              version: "v0.3.1"
+              binary_name: "openbao-plugin-secrets-aws"
+              sha256sum: "641ae1858c0f660b4c3761286d627e1dcfd33dc35e7c83eb81ca9050b5bdc6d8"
+            azure:
+              image: "ghcr.io/openbao/openbao-plugin-secrets-azure"
+              version: "v0.23.0"
+              binary_name: "openbao-plugin-secrets-azure"
+              sha256sum: "cd4e2e7b7f1f03e72d67594e27439255b46748948735ec3270ecc308068f2caa"
+            gcp:
+              image: "ghcr.io/openbao/openbao-plugin-secrets-gcp"
+              version: "v0.23.1"
+              binary_name: "openbao-plugin-secrets-gcp"
+              sha256sum: "c31df4d547e4d98d70fc97ba77ce77993ffa09848ba929e45e9ee1dbbcab20f1"
+            gcpkms:
+              image: "ghcr.io/openbao/openbao-plugin-secrets-gcpkms"
+              version: "v0.21.0"
+              binary_name: "openbao-plugin-secrets-gcpkms"
+              sha256sum: "dcea6ca47e30b8ffa118210968c9cca0b7c000e19b5e24eebc19c4bcda161e49"
+            nomad:
+              image: "ghcr.io/openbao/openbao-plugin-secrets-nomad"
+              version: "v0.1.6"
+              binary_name: "openbao-plugin-secrets-nomad"
+              sha256sum: "5fb53ab5e614c2d620dcb91c78d1749887b9c72b31d305158571a19d702a82f8"
+            consul:
+              image: "ghcr.io/openbao/openbao-plugin-secrets-consul"
+              version: "v0.1.1"
+              binary_name: "openbao-plugin-secrets-consul"
+              sha256sum: "0f8e436dfc543dd5e4756866bde3e20a93b69a0f5757d09d2fe1e41cd38f5ed7"
+          database:
+            mongodb:
+              image: "ghcr.io/openbao/openbao-plugin-database-mongodb"
+              version: "v0.0.1"
+              binary_name: "openbao-plugin-database-mongodb"
+              sha256sum: "2fc346826f30755136af974bcb42f0578747722cf49a7bb5c20c3fbb9eb01e47"
+          kms:
+            aws:
+              image: "ghcr.io/openbao/openbao-plugin-kms-aws"
+              version: "v0.1.0"
+              binary_name: "openbao-plugin-kms-aws"
+              sha256sum: "fa332cf1863a948d4b166ed9acb7da1608fb1dffbde4425626d787424fda5a05"
+            azure:
+              image: "ghcr.io/openbao/openbao-plugin-kms-azure"
+              version: "v0.1.0"
+              binary_name: "openbao-plugin-kms-azure"
+              sha256sum: "e46a6d13ab427b594c89e58b002db6bbb6d61557f5de8a599557c76827deef0d"
+            gcp:
+              image: "ghcr.io/openbao/openbao-plugin-kms-gcp"
+              version: "v0.1.0"
+              binary_name: "openbao-plugin-kms-gcp"
+              sha256sum: "4e480b95c18fc98cf7e682c197653c7845d229bfc44f93f9ef9fe56ff4a9f7d2"
+            oci:
+              image: "ghcr.io/openbao/openbao-plugin-kms-oci"
+              version: "v0.1.0"
+              binary_name: "openbao-plugin-kms-oci"
+              sha256sum: "1d10812139a4a5f2fec52b9e18c3d1d3129fcea34fbab15bf6b7bbddd989f3e4"
+            ovhcloud:
+              image: "ghcr.io/openbao/openbao-plugin-kms-ovhcloud"
+              version: "v0.0.1"
+              binary_name: "openbao-plugin-kms-ovhcloud"
+              sha256sum: "653ed969ae963caa3622c4505be401756a91c8cd2145ac83b83249648b60f76c"
+            pkcs11:
+              image: "ghcr.io/openbao/openbao-plugin-kms-pkcs11"
+              version: "v0.2.0"
+              binary_name: "openbao-plugin-kms-pkcs11"
+              sha256sum: "21c1785caa0023024ae2db904479de198fd043b319eb6cc82feabe379f561409"
+            alicloud:
+              image: "ghcr.io/openbao/openbao-plugin-kms-alicloud"
+              version: "v0.1.1"
+              binary_name: "openbao-plugin-kms-alicloud"
+              sha256sum: "94b660dc4cfbb68b766ac60b4e41643a17ecbae910b1da6b71c7aca91e750144"
+            tcloudpublic:
+              image: "ghcr.io/openbao/openbao-plugin-kms-tcloudpublic"
+              version: "v0.0.1"
+              binary_name: "openbao-plugin-kms-tcloudpublic"
+              sha256sum: "e6ae8f3a3beb6f4b603b048d948614bc143d37b462224d91ed46e4e1563d4ded"
