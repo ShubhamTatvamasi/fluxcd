@@ -61,16 +61,16 @@ spec:
                 bound_service_account_namespaces: default
                 policies: allow_secrets
                 ttl: 1h
-          - type: auth-aws
+          - type: aws
             path: aws
             description: "AWS IAM/EC2 auth (openbao-plugins auth-aws)"
-          - type: auth-azure
+          - type: azure
             path: azure
             description: "Azure auth (openbao-plugins auth-azure)"
-          - type: auth-gcp
+          - type: gcp
             path: gcp
             description: "GCP auth (openbao-plugins auth-gcp)"
-          - type: auth-github
+          - type: github
             path: github
             description: "GitHub auth (openbao-plugins auth-github)"
 
@@ -82,27 +82,27 @@ spec:
               version: 2
           - path: aws
             type: plugin
-            plugin_name: secret-aws
+            plugin_name: aws
             description: "AWS secrets engine (openbao-plugins secret-aws)"
           - path: azure
             type: plugin
-            plugin_name: secret-azure
+            plugin_name: azure
             description: "Azure secrets engine (openbao-plugins secret-azure)"
           - path: gcp
             type: plugin
-            plugin_name: secret-gcp
+            plugin_name: gcp
             description: "GCP secrets engine (openbao-plugins secret-gcp)"
           - path: gcpkms
             type: plugin
-            plugin_name: secret-gcpkms
+            plugin_name: gcpkms
             description: "GCP KMS secrets engine (openbao-plugins secret-gcpkms)"
           - path: nomad
             type: plugin
-            plugin_name: secret-nomad
+            plugin_name: nomad
             description: "Nomad ACL token secrets engine (openbao-plugins secret-nomad)"
           - path: consul
             type: plugin
-            plugin_name: secret-consul
+            plugin_name: consul
             description: "Consul ACL token secrets engine (openbao-plugins secret-consul)"
 
       config:
