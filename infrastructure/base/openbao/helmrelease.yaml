@@ -22,6 +22,11 @@ spec:
       enabled: true
       size: 10Gi
 
+    headlessService:
+      # Needed for stable per-pod DNS (POD_NAME.openbao-vault-headless.<ns>.svc),
+      # used by cluster_addr below -- raft's inter-node communication address.
+      enabled: true
+
     ingress:
       enabled: true
       ingressClassName: traefik
@@ -53,6 +58,16 @@ spec:
         # the already-writable persisted vault-file PVC instead.
         - name: TMPDIR
           value: "/vault/file/plugins"
+        # raft's storage.cluster_addr has no chart-templated default (unlike
+        # VAULT_API_ADDR above); OpenBao reads it from VAULT_CLUSTER_ADDR.
+        # Needs the headless service (stable per-pod DNS) enabled above.
+        - name: VAULT_CLUSTER_ADDR
+          value: "https://$(POD_NAME).openbao-vault-headless.$(POD_NAMESPACE).svc:8201"
+        # storage.raft.node_id below is a static placeholder -- this env var
+        # overrides it with the actual per-pod name, needed if this ever
+        # scales beyond one replica.
+        - name: VAULT_RAFT_NODE_ID
+          value: "$(POD_NAME)"
 
       config:
         disable_mlock: true
@@ -67,9 +82,21 @@ spec:
             address: "[::]:8200"
             tls_disable: true
         defaultStorage:
+          # Migrated from file storage (deprecated, removal planned for
+          # v2.7.0) to raft. Path is a subdirectory under the existing
+          # vault-file PVC mount -- the chart hardcodes that single mount
+          # point, there's no value to get a separate /vault/raft mount.
+          # node_id is a placeholder, overridden per-pod by
+          # VAULT_RAFT_NODE_ID above.
           storage:
-            file:
-              path: "/vault/file"
+            # Helm deep-merges values files rather than replacing maps, so the
+            # chart's own default defaultStorage.storage.file would otherwise
+            # survive alongside raft below, producing two storage blocks and
+            # a vault startup error. Explicitly null it out.
+            file: null
+            raft:
+              path: "/vault/file/raft"
+              node_id: "openbao-vault-0"
         plugin:
           auth:
             aws:
