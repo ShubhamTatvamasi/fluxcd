@@ -78,9 +78,8 @@ spec:
           - type: gcp
             path: gcp
             description: "GCP auth (openbao-plugins auth-gcp)"
-          - type: github
-            path: github
-            description: "GitHub auth (openbao-plugins auth-github)"
+          # github auth's config step requires organization (a real GitHub
+          # org), which we don't have -- add back once available.
 
         secrets:
           - path: secret
