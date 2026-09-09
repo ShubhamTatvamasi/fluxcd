@@ -70,16 +70,6 @@ spec:
                 bound_service_account_namespaces: default
                 policies: allow_secrets
                 ttl: 1h
-          - type: aws
-            path: aws
-            description: "AWS IAM/EC2 auth (openbao-plugins auth-aws)"
-          # azure auth's config step requires tenant_id (a real Azure AD
-          # tenant), which we don't have -- add back once available.
-          - type: gcp
-            path: gcp
-            description: "GCP auth (openbao-plugins auth-gcp)"
-          # github auth's config step requires organization (a real GitHub
-          # org), which we don't have -- add back once available.
 
         secrets:
           - path: secret
@@ -87,30 +77,6 @@ spec:
             description: General secrets.
             options:
               version: 2
-          - path: aws
-            type: plugin
-            plugin_name: aws
-            description: "AWS secrets engine (openbao-plugins secret-aws)"
-          - path: azure
-            type: plugin
-            plugin_name: azure
-            description: "Azure secrets engine (openbao-plugins secret-azure)"
-          - path: gcp
-            type: plugin
-            plugin_name: gcp
-            description: "GCP secrets engine (openbao-plugins secret-gcp)"
-          - path: gcpkms
-            type: plugin
-            plugin_name: gcpkms
-            description: "GCP KMS secrets engine (openbao-plugins secret-gcpkms)"
-          - path: nomad
-            type: plugin
-            plugin_name: nomad
-            description: "Nomad ACL token secrets engine (openbao-plugins secret-nomad)"
-          - path: consul
-            type: plugin
-            plugin_name: consul
-            description: "Consul ACL token secrets engine (openbao-plugins secret-consul)"
 
       config:
         disable_mlock: true
