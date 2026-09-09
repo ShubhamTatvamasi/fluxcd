@@ -27,6 +27,18 @@ spec:
       # used by cluster_addr below -- raft's inter-node communication address.
       enabled: true
 
+    extraInitContainers:
+      # storage.raft.path (/vault/file/raft) must exist before the vault
+      # container starts -- unlike the file backend, raft's bolt db open
+      # fails outright ("no such file or directory") if its directory isn't
+      # already there.
+      - name: raft-data-dir
+        image: quay.io/openbao/openbao:2.6.2
+        command: ["sh", "-c", "mkdir -p /vault/file/raft"]
+        volumeMounts:
+          - name: vault-file
+            mountPath: /vault/file
+
     ingress:
       enabled: true
       ingressClassName: traefik
