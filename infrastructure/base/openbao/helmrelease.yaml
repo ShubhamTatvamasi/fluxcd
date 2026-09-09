@@ -73,9 +73,8 @@ spec:
           - type: aws
             path: aws
             description: "AWS IAM/EC2 auth (openbao-plugins auth-aws)"
-          - type: azure
-            path: azure
-            description: "Azure auth (openbao-plugins auth-azure)"
+          # azure auth's config step requires tenant_id (a real Azure AD
+          # tenant), which we don't have -- add back once available.
           - type: gcp
             path: gcp
             description: "GCP auth (openbao-plugins auth-gcp)"
