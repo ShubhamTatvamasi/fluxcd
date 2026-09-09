@@ -83,7 +83,7 @@ spec:
               version: "v0.0.1"
               binary_name: "openbao-plugin-auth-github"
               sha256sum: "76a46b7680a974ff367df53b700af95565b88a70f01c10c512b36ec2ea7fe7fc"
-          secrets:
+          secret:
             aws:
               image: "ghcr.io/openbao/openbao-plugin-secrets-aws"
               version: "v0.3.1"
