@@ -45,6 +45,66 @@ spec:
         - "bank-vaults"
 
     vault:
+      externalConfig:
+        policies:
+          - name: allow_secrets
+            rules: |
+              path "secret/*" {
+                capabilities = ["create", "read", "update", "delete", "list"]
+              }
+
+        auth:
+          - type: kubernetes
+            roles:
+              - name: default
+                bound_service_account_names: default
+                bound_service_account_namespaces: default
+                policies: allow_secrets
+                ttl: 1h
+          - type: auth-aws
+            path: aws
+            description: "AWS IAM/EC2 auth (openbao-plugins auth-aws)"
+          - type: auth-azure
+            path: azure
+            description: "Azure auth (openbao-plugins auth-azure)"
+          - type: auth-gcp
+            path: gcp
+            description: "GCP auth (openbao-plugins auth-gcp)"
+          - type: auth-github
+            path: github
+            description: "GitHub auth (openbao-plugins auth-github)"
+
+        secrets:
+          - path: secret
+            type: kv
+            description: General secrets.
+            options:
+              version: 2
+          - path: aws
+            type: plugin
+            plugin_name: secret-aws
+            description: "AWS secrets engine (openbao-plugins secret-aws)"
+          - path: azure
+            type: plugin
+            plugin_name: secret-azure
+            description: "Azure secrets engine (openbao-plugins secret-azure)"
+          - path: gcp
+            type: plugin
+            plugin_name: secret-gcp
+            description: "GCP secrets engine (openbao-plugins secret-gcp)"
+          - path: gcpkms
+            type: plugin
+            plugin_name: secret-gcpkms
+            description: "GCP KMS secrets engine (openbao-plugins secret-gcpkms)"
+          - path: nomad
+            type: plugin
+            plugin_name: secret-nomad
+            description: "Nomad ACL token secrets engine (openbao-plugins secret-nomad)"
+          - path: consul
+            type: plugin
+            plugin_name: secret-consul
+            description: "Consul ACL token secrets engine (openbao-plugins secret-consul)"
+
       config:
         disable_mlock: true
         # Reuses the persisted vault-file PVC (already mounted read-write into
