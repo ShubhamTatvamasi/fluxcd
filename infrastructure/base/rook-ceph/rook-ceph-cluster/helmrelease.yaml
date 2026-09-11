@@ -53,6 +53,9 @@ spec:
           replicated:
             size: 3
           enableRBDStats: true
+          parameters:
+            compression_mode: aggressive
+            compression_algorithm: zstd
         storageClass:
           enabled: true
           name: ceph-block
@@ -85,6 +88,8 @@ spec:
               size: 3
             parameters:
               bulk: "false"
+              compression_mode: aggressive
+              compression_algorithm: zstd
           preservePoolsOnDelete: true
           gateway:
             port: 80
