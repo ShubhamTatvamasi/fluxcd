@@ -1,0 +1,32 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: nextcloud
+    namespace: nextcloud
+  values:
+    nextcloud:
+      host: "nextcloud.${domain}"
+      username: admin
+      password: admin
+      trustedDomains:
+        - "nextcloud.${domain}"
+    internalDatabase:
+      enabled: true
+    persistence:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 20Gi
+    ingress:
+      enabled: true
+      className: traefik
+      tls:
+        - secretName: nextcloud-tls
+          hosts:
+            - "nextcloud.${domain}"
