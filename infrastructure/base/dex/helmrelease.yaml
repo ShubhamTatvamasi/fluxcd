@@ -22,7 +22,7 @@ spec:
       enablePasswordDB: true
       staticPasswords:
         - email: "admin@shubhamtatvamasi.com"
-          hash: "$2y$10$c7g52mnit7OiLQ6XOCk5IuniSrIllR53yeYVbjsgcbSgB37Fgbkoa"
+          hash: "$2y$15$e.hdaBV3zXorG6g3EACXNe43/7jA2K6gpXU8st8lqT0Q84iPJUTiC"
           username: "admin"
           userID: "1"
       staticClients:
