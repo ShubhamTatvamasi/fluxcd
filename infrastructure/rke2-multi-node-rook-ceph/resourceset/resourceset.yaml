@@ -163,12 +163,12 @@ spec:
     # sealed-secrets for ingress TLS; ceph-block from rook-ceph-cluster for
     # its data PVC). Uses the chart's built-in SQLite database, matching
     # filestash's self-contained pattern.
-    - service: "nextcloud"
-      path: "./infrastructure/base/nextcloud"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
-        - "rook-ceph-cluster"
+    # - service: "nextcloud"
+    #   path: "./infrastructure/base/nextcloud"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "sealed-secrets"
+    #     - "rook-ceph-cluster"
 
     # MinIO Operator — manages MinIO Tenant custom resources (Silo:
     # https://silo.pgsty.com/operations/deployments/k8s-deploy-minio-tenant-helm-on-kubernetes/)
