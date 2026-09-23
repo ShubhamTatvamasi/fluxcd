@@ -221,11 +221,11 @@ spec:
     #   dependsOn:
     #     - "vault"
 
-    - service: "gitea"
-      path: "./infrastructure/base/gitea"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
+    # - service: "gitea"
+    #   path: "./infrastructure/base/gitea"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "sealed-secrets"
 
     # External Secrets Operator — syncs secrets from Vault into regular
     # Kubernetes Secrets (replacing Sealed Secrets for values sourced from
