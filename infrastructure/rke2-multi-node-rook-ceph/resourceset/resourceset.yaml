@@ -159,6 +159,13 @@ spec:
         - "sealed-secrets"
         - "rook-ceph-cluster"
 
+    # Rancher — cluster management UI
+    - service: "rancher"
+      path: "./infrastructure/base/rancher"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+
     # Nextcloud — self-hosted file sync/share (needs traefik and
     # sealed-secrets for ingress TLS; ceph-block from rook-ceph-cluster for
     # its data PVC). Uses the chart's built-in SQLite database, matching
