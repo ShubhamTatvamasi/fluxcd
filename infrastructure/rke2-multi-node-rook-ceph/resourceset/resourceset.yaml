@@ -221,7 +221,7 @@ spec:
     #   dependsOn:
     #     - "vault"
 
-    # - service: "gitea"
+    - service: "gitea"
       path: "./infrastructure/base/gitea"
       dependsOn:
         - "traefik"
