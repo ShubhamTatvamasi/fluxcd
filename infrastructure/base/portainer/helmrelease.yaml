@@ -18,7 +18,8 @@ spec:
         # repository: portainerci/portainer-ee
         # tag: develop
         # Feature
-        repository: harbor.${domain}/portainer/portainer-ee
+        # repository: harbor.${domain}/portainer/portainer-ee
+        repository: shubhamtatvamasi/portainer-ee
         tag: gpu-metrics
         # tag: new-custom-resources
     trusted_origins:
