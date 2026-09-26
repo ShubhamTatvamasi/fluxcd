@@ -97,13 +97,11 @@ spec:
     #     - "local-path-provisioner"
     #     - "sealed-secrets"
 
-    # kube-prometheus-stack provides monitoring and alerting for the cluster (needs traefik, local-path-provisioner, and sealed-secrets)
+    # kube-prometheus-stack provides monitoring and alerting for the cluster. No dependsOn:
+    # it has no PVCs (emptyDir only), its TLS secret is a sub-Kustomization that
+    # waits on sealed-secrets itself, and its Ingresses don't need traefik up to apply.
     - service: "kube-prometheus-stack"
       path: "./infrastructure/base/kube-prometheus-stack"
-      dependsOn:
-        - "traefik"
-        - "local-path-provisioner"
-        - "sealed-secrets"
 
     # traefik's ServiceMonitor (needs the monitoring.coreos.com CRDs from kube-prometheus-stack,
     # which itself depends on traefik — so this can't live in the traefik HelmRelease values)
