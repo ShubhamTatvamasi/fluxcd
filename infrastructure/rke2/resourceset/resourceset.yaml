@@ -9,8 +9,8 @@ metadata:
 spec:
   inputs:
     # metallb provides load balancer services for the cluster
-    - service: "metallb"
-      path: "./infrastructure/base/metallb"
+    # - service: "metallb"
+    #   path: "./infrastructure/base/metallb"
 
     # OpenEBS provides persistent storage for the cluster
     # - service: "openebs"
@@ -47,10 +47,10 @@ spec:
         - "sealed-secrets"
 
     # metallb config (needs the metallb controller CRDs first)
-    - service: "metallb-config"
-      path: "./infrastructure/rke2/metallb-system"
-      dependsOn:
-        - "metallb"
+    # - service: "metallb-config"
+    #   path: "./infrastructure/rke2/metallb-system"
+    #   dependsOn:
+    #     - "metallb"
 
     # gateway-api CRDs (needs the metallb config first)
     - service: "gateway-api"
@@ -71,12 +71,12 @@ spec:
         - "traefik"
 
     # harbor container registry (needs traefik, local-path-provisioner, and sealed-secrets)
-    - service: "harbor"
-      path: "./infrastructure/base/harbor"
-      dependsOn:
-        - "traefik"
-        - "local-path-provisioner"
-        - "sealed-secrets"
+    # - service: "harbor"
+    #   path: "./infrastructure/base/harbor"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "local-path-provisioner"
+    #     - "sealed-secrets"
 
     # dex OIDC provider (needs traefik and sealed-secrets)
     - service: "dex"
@@ -100,12 +100,12 @@ spec:
         - "sealed-secrets"
 
     # portainer-run is a companion to portainer that runs the portainer agent on each node, so that portainer can manage the nodes and containers.
-    - service: "portainer-run"
-      path: "./infrastructure/base/portainer-run"
-      dependsOn:
-        - "traefik"
-        - "local-path-provisioner"
-        - "sealed-secrets"
+    # - service: "portainer-run"
+    #   path: "./infrastructure/base/portainer-run"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "local-path-provisioner"
+    #     - "sealed-secrets"
 
     # kube-prometheus-stack provides monitoring and alerting for the cluster (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "kube-prometheus-stack"
@@ -124,24 +124,24 @@ spec:
         - "kube-prometheus-stack"
 
     # mimir is a time series database that stores metrics from the cluster and makes them available in Grafana (needs traefik, local-path-provisioner, and sealed-secrets)
-    - service: "mimir"
-      path: "./infrastructure/base/mimir"
-      dependsOn:
-        - "kube-prometheus-stack"
-        - "local-path-provisioner"
+    # - service: "mimir"
+    #   path: "./infrastructure/base/mimir"
+    #   dependsOn:
+    #     - "kube-prometheus-stack"
+    #     - "local-path-provisioner"
 
     # Loki is a log aggregation system that stores logs from the cluster and makes them available in Grafana (needs traefik, local-path-provisioner, and sealed-secrets)
-    - service: "loki"
-      path: "./infrastructure/base/loki"
-      dependsOn:
-        - "kube-prometheus-stack"
-        - "local-path-provisioner"
+    # - service: "loki"
+    #   path: "./infrastructure/base/loki"
+    #   dependsOn:
+    #     - "kube-prometheus-stack"
+    #     - "local-path-provisioner"
 
     # alloy ships pod logs into Loki (needs traefik, local-path-provisioner, and sealed-secrets)
-    - service: "alloy"
-      path: "./infrastructure/base/alloy"
-      dependsOn:
-        - "loki"
+    # - service: "alloy"
+    #   path: "./infrastructure/base/alloy"
+    #   dependsOn:
+    #     - "loki"
 
     # gitea is a self-hosted Git service (needs traefik, local-path-provisioner, and sealed-secrets)
     # - service: "gitea"
@@ -152,66 +152,66 @@ spec:
     #     - "sealed-secrets"
 
     # Keycloak is an identity and access management solution (needs traefik and sealed-secrets)
-    - service: "keycloak"
-      path: "./infrastructure/base/keycloak"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
+    # - service: "keycloak"
+    #   path: "./infrastructure/base/keycloak"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "sealed-secrets"
 
     # Rancher — cluster management UI
-    - service: "rancher"
-      path: "./infrastructure/base/rancher"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
+    # - service: "rancher"
+    #   path: "./infrastructure/base/rancher"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "sealed-secrets"
 
     # StackGres — Postgres operator with web console (needs traefik and sealed-secrets)
-    - service: "stackgres"
-      path: "./infrastructure/base/stackgres"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
+    # - service: "stackgres"
+    #   path: "./infrastructure/base/stackgres"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "sealed-secrets"
 
     # Teleport — zero-trust access proxy for SSH, Kubernetes, and web apps
-    - service: "teleport-cluster"
-      path: "./infrastructure/base/teleport/cluster"
-      dependsOn:
-        - "metallb-config"
-        - "sealed-secrets"
+    # - service: "teleport-cluster"
+    #   path: "./infrastructure/base/teleport/cluster"
+    #   dependsOn:
+    #     - "metallb-config"
+    #     - "sealed-secrets"
 
     # Teleport config — custom resources (TeleportRole etc.) that require the operator CRDs to exist first
-    - service: "teleport-config"
-      path: "./infrastructure/base/teleport/config"
-      dependsOn:
-        - "teleport-cluster"
+    # - service: "teleport-config"
+    #   path: "./infrastructure/base/teleport/config"
+    #   dependsOn:
+    #     - "teleport-cluster"
 
     # CloudBeaver — web-based database management UI (needs traefik and sealed-secrets)
-    - service: "cloudbeaver"
-      path: "./infrastructure/base/cloudbeaver"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
+    # - service: "cloudbeaver"
+    #   path: "./infrastructure/base/cloudbeaver"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "sealed-secrets"
 
     # Infisical — secrets management platform (needs traefik and sealed-secrets)
-    - service: "infisical"
-      path: "./infrastructure/base/infisical"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
+    # - service: "infisical"
+    #   path: "./infrastructure/base/infisical"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "sealed-secrets"
 
     # Stirling PDF — locally hosted PDF manipulation web app (needs traefik and sealed-secrets)
-    - service: "stirling-pdf"
-      path: "./infrastructure/base/stirling-pdf"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
+    # - service: "stirling-pdf"
+    #   path: "./infrastructure/base/stirling-pdf"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "sealed-secrets"
 
     # Argo CD — GitOps continuous delivery tool (needs traefik and sealed-secrets)
-    - service: "argocd"
-      path: "./infrastructure/base/argocd"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
+    # - service: "argocd"
+    #   path: "./infrastructure/base/argocd"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "sealed-secrets"
 
     # Vault Operator — removed; bank-vaults/vault-operator no longer exists (see vault/openbao self-contained charts)
     # - service: "vault-operator"
@@ -223,12 +223,6 @@ spec:
       dependsOn:
         - "traefik"
         - "sealed-secrets"
-
-    # Vault infra — removed; bank-vaults/vault-infra no longer exists
-    # - service: "vault-infra"
-    #   path: "./infrastructure/base/bank-vaults/vault-infra"
-    #   dependsOn:
-    #     - "vault"
 
     # OpenBao — Vault-API-compatible secrets management, deployed with the same self-contained chart as "vault" above
     - service: "openbao"
