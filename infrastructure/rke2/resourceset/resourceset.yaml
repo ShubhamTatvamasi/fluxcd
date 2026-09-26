@@ -34,10 +34,6 @@ spec:
       dependsOn:
         - "cert-manager"
 
-    # reloader watches for changes in ConfigMaps and Secrets and reloads the pods that use them
-    - service: "reloader"
-      path: "./infrastructure/base/reloader"
-
     # flux web UI TLS (sealed secret decrypted by sealed-secrets)
     - service: "flux-tls"
       path: "./secrets/sealed-secrets/tls/shubhamtatvamasi-tls"

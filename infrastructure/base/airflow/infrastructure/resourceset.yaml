@@ -48,6 +48,11 @@ spec:
     - service: "keda"
       path: "./infrastructure/base/keda"
 
+    # reloader restarts Airflow pods when the airflow-connections Secret or
+    # airflow-variables ConfigMap change (see reloader annotations in the HelmRelease)
+    - service: "reloader"
+      path: "./infrastructure/base/reloader"
+
     # Airflow's metadata DB connection string + KEDA connection variant. Swap
     # to "./secrets/sealed-secrets/airflow/airflow-metadata-connection"
     # (dependsOn "sealed-secrets" instead of "vault-store") to source from a SealedSecret.
