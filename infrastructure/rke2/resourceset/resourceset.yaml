@@ -229,11 +229,11 @@ spec:
         - "sealed-secrets"
 
     # OpenBao — Vault-API-compatible secrets management, deployed with the same self-contained chart as "vault" above
-    - service: "openbao"
-      path: "./infrastructure/base/openbao"
-      dependsOn:
-        - "traefik"
-        - "sealed-secrets"
+    # - service: "openbao"
+    #   path: "./infrastructure/base/openbao"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
