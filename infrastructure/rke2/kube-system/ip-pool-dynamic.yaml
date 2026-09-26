@@ -1,0 +1,11 @@
+---
+# Replaces the MetalLB "ip-pool-dynamic" (autoAssign: true).
+# Hands out addresses to any LoadBalancer service.
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: ip-pool-dynamic
+spec:
+  blocks:
+  - start: 10.10.10.24
+    stop: 10.10.10.31

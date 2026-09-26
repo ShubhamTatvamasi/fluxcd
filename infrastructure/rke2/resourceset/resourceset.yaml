@@ -52,15 +52,19 @@ spec:
     #   dependsOn:
     #     - "metallb"
 
-    # gateway-api CRDs (needs the metallb config first)
+    # cilium LB-IPAM pools + L2 announcement policy (CRDs ship with rke2-cilium)
+    - service: "cilium-lb-config"
+      path: "./infrastructure/rke2/kube-system"
+
+    # gateway-api CRDs (needs the cilium LB config first)
     - service: "gateway-api"
       path: "./infrastructure/base/gateway-api"
 
-    # traefik ingress controller (needs the metallb config first)
+    # traefik ingress controller (needs the cilium LB config first)
     - service: "traefik"
       path: "./infrastructure/base/traefik/controller"
       dependsOn:
-        - "metallb-config"
+        - "cilium-lb-config"
         - "sealed-secrets"
         - "gateway-api"
 

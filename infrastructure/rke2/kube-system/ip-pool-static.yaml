@@ -1,0 +1,19 @@
+---
+# Replaces the MetalLB "ip-pool-static" (autoAssign: false).
+# Only services in the listed namespaces can draw from this pool; they pick
+# their exact address with the "lbipam.cilium.io/ips" annotation.
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: ip-pool-static
+spec:
+  blocks:
+  - start: 10.10.10.16
+    stop: 10.10.10.23
+  serviceSelector:
+    matchExpressions:
+    - key: io.kubernetes.service.namespace
+      operator: In
+      values:
+      - traefik
+      - teleport
