@@ -8,6 +8,17 @@ metadata:
     fluxcd.controlplane.io/reconcileEvery: "10m"
 spec:
   inputs:
+    # cert-manager issues TLS certs (installs its own CRDs); only OpenSearch's
+    # node/admin Certificates use it, via internal-ca-issuer
+    - service: "cert-manager"
+      path: "./infrastructure/base/cert-manager/controller"
+
+    # self-signed internal CA + ClusterIssuer, built from cert-manager's CRDs
+    - service: "cert-manager-config"
+      path: "./infrastructure/base/cert-manager/config"
+      dependsOn:
+        - "cert-manager"
+
     # log/search store + its web UI, both in the opensearch namespace (its
     # Certificates need cert-manager's ClusterIssuer; the admin-credentials
     # secret needs vault-store/ESO to sync from Vault).
