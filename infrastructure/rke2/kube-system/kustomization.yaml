@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
 - ip-pool-static.yaml
 - ip-pool-dynamic.yaml
+- l2-announcement-policy.yaml

@@ -1,0 +1,11 @@
+---
+# Replaces the MetalLB L2Advertisement: answers ARP for LoadBalancer IPs
+# from both pools. Requires l2announcements.enabled and kubeProxyReplacement
+# in the rke2-cilium HelmChartConfig.
+apiVersion: cilium.io/v2alpha1
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: l2-announcement-policy
+spec:
+  loadBalancerIPs: true
+  externalIPs: false
