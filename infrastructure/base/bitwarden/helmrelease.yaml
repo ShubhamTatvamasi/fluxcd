@@ -21,6 +21,9 @@ spec:
             namespace: traefik
             sectionName: websecure
       volumeAccessMode: ReadWriteOnce
+      databaseProvider: postgres
     sharedStorageClassName: ""
     secrets:
       secretName: bitwarden-secret
+    database:
+      enabled: false

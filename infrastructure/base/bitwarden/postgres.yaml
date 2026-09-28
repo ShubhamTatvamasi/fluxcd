@@ -1,0 +1,16 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: bitwarden-db
+  namespace: bitwarden
+spec:
+  instances: 1
+  storage:
+    size: 10Gi
+  bootstrap:
+    initdb:
+      database: vault
+      owner: bitwarden
+      secret:
+        name: bitwarden-db-auth

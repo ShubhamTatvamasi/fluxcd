@@ -5,5 +5,7 @@ resources:
 - namespace.yaml
 - helmrepository.yaml
 - helmchart.yaml
+- bitwarden-db-auth-sealedsecret.yaml
 - bitwarden-secret-sealedsecret.yaml
+- postgres.yaml
 - helmrelease.yaml

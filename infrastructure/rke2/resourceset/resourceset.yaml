@@ -214,13 +214,18 @@ spec:
         - "traefik"
         - "sealed-secrets"
 
-    # Bitwarden — self-hosted password manager with bundled MSSQL (needs traefik gateway, local-path-provisioner, and sealed-secrets)
+    # CloudNativePG operator — Postgres clusters as CRDs
+    - service: "cnpg-operator"
+      path: "./infrastructure/base/cnpg/operator"
+
+    # Bitwarden — self-hosted password manager on a CNPG Postgres (needs traefik gateway, local-path-provisioner, sealed-secrets, and cnpg)
     - service: "bitwarden"
       path: "./infrastructure/base/bitwarden"
       dependsOn:
         - "traefik"
         - "local-path-provisioner"
         - "sealed-secrets"
+        - "cnpg-operator"
 
     # OpenBao — Vault-API-compatible secrets management, deployed with the same self-contained chart as "vault" above
     # - service: "openbao"
