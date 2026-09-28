@@ -22,7 +22,7 @@ spec:
             sectionName: websecure
       volumeAccessMode: ReadWriteOnce
       databaseProvider: postgres
-    sharedStorageClassName: ""
+    sharedStorageClassName: "local-path"
     secrets:
       secretName: bitwarden-secret
     database:
