@@ -22,3 +22,5 @@ spec:
             sectionName: websecure
       volumeAccessMode: ReadWriteOnce
     sharedStorageClassName: ""
+    secrets:
+      secretName: bitwarden-secret
