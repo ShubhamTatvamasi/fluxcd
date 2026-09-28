@@ -214,6 +214,14 @@ spec:
         - "traefik"
         - "sealed-secrets"
 
+    # Bitwarden — self-hosted password manager with bundled MSSQL (needs traefik gateway, local-path-provisioner, and sealed-secrets)
+    - service: "bitwarden"
+      path: "./infrastructure/base/bitwarden"
+      dependsOn:
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
+
     # OpenBao — Vault-API-compatible secrets management, deployed with the same self-contained chart as "vault" above
     # - service: "openbao"
     #   path: "./infrastructure/base/openbao"

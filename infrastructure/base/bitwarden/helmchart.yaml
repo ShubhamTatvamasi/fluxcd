@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: bitwarden
+  namespace: bitwarden
+spec:
+  interval: 10m
+  chart: self-host
+  version: "2.4.2"
+  sourceRef:
+    name: bitwarden
+    kind: HelmRepository
