@@ -1,16 +1,19 @@
 ---
-apiVersion: postgresql.cnpg.io/v1
-kind: Cluster
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
 metadata:
-  name: bitwarden-db
+  name: bitwarden-postgres
   namespace: bitwarden
 spec:
-  instances: 1
-  storage:
-    size: 10Gi
-  bootstrap:
-    initdb:
-      database: vault
-      owner: bitwarden
-      secret:
-        name: bitwarden-db-auth
+  interval: 10m0s
+  path: ./infrastructure/base/postgres
+  postBuild:
+    substitute:
+      namespace: bitwarden
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  timeout: 10m
+  wait: true
