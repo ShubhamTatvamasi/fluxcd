@@ -215,12 +215,12 @@ spec:
         - "sealed-secrets"
 
     # Bitwarden — self-hosted password manager on postgres (needs traefik gateway, local-path-provisioner, and sealed-secrets)
-    - service: "bitwarden"
-      path: "./infrastructure/base/bitwarden"
-      dependsOn:
-        - "traefik"
-        - "local-path-provisioner"
-        - "sealed-secrets"
+    # - service: "bitwarden"
+    #   path: "./infrastructure/base/bitwarden"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "local-path-provisioner"
+    #     - "sealed-secrets"
 
     # OpenBao — Vault-API-compatible secrets management, deployed with the same self-contained chart as "vault" above
     # - service: "openbao"
