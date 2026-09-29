@@ -32,6 +32,16 @@ spec:
       dependsOn:
         - "sealed-secrets"
 
+    # cert-manager issues and renews TLS certificates (installs its own CRDs)
+    - service: "cert-manager"
+      path: "./infrastructure/base/cert-manager/controller"
+
+    # cert-manager ClusterIssuers + internal CA (need the cert-manager.io CRDs first)
+    - service: "cert-manager-config"
+      path: "./infrastructure/base/cert-manager/config"
+      dependsOn:
+        - "cert-manager"
+
     # metallb config (needs the metallb controller CRDs first)
     # - service: "metallb-config"
     #   path: "./infrastructure/rke2/metallb-system"
