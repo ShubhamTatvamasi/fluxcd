@@ -17,6 +17,7 @@ helm upgrade -i flux-operator \
   --namespace flux-system \
   --create-namespace
 ```
+> Add `--reset-values` flag for fresh setup
 
 Create a FluxInstance components:
 ```yaml
