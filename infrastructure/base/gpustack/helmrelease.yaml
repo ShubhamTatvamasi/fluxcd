@@ -28,3 +28,9 @@ spec:
       # vendor DaemonSets need NFD's pci-<vendor>.present labels (NFD ships with the GPU operators)
       gpuVendors:
         - ${gpu_vendor}
+      environmentConfig:
+        # gpustack 2.2.3's runtime (0.2.1) looks for "feature.gpustack.ai/<manu>-*.profile-queue"
+        # node labels, but the bundled operator v0.5.4 labels "*.z-queue" and names LocalQueues
+        # "gpustack-fnv64-*", so every GPU model fails with "Failed to find Kueue queue name".
+        # Skip Kueue admission; pods still request <vendor>.com/gpu and the scheduler places them.
+        GPUSTACK_RUNTIME_KUBERNETES_KDP_NO_KUEUE_ADMISSION: "true"
