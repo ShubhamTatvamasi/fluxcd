@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: open-webui
+  namespace: open-webui
+spec:
+  interval: 10m
+  chart: open-webui
+  version: "16.6.0"
+  sourceRef:
+    name: open-webui
+    kind: HelmRepository

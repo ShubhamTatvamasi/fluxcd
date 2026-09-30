@@ -20,3 +20,5 @@ spec:
       traefik_lb_ip: 162.243.96.72
       # amd | nvidia — must match the GPU operator enabled in the resourceset
       gpu_vendor: amd
+      # RuntimeClass for GPU pods: "nvidia" on NVIDIA (RKE2 creates it), empty on AMD
+      gpu_runtime_class: ""

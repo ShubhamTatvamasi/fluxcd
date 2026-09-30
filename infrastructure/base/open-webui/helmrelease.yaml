@@ -1,0 +1,30 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: open-webui
+  namespace: open-webui
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: open-webui
+    namespace: open-webui
+  values:
+    ingress:
+      enabled: true
+      class: traefik
+      host: openwebui.${domain}
+      tls: true
+      existingSecret: open-webui-tls
+    ollama:
+      # host driver files only reach the pod via the "nvidia" RuntimeClass on NVIDIA; AMD needs none
+      runtimeClassName: "${gpu_runtime_class:=}"
+      ollama:
+        gpu:
+          enabled: true
+          # amd -> ollama "-rocm" image + amd.com/gpu; nvidia -> nvidia.com/gpu
+          type: ${gpu_vendor}
+      persistentVolume:
+        enabled: true
+        size: 100Gi

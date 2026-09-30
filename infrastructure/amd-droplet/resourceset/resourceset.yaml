@@ -95,6 +95,15 @@ spec:
         - "traefik"
         - "local-path-provisioner"
         - "sealed-secrets"
+
+    # Open WebUI — chat UI with a bundled Ollama running on the node's GPU (needs the GPU operator, traefik, local-path-provisioner, and sealed-secrets)
+    - service: "open-webui"
+      path: "./infrastructure/base/open-webui"
+      dependsOn:
+        - "amd-gpu-operator"
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
@@ -124,6 +133,7 @@ spec:
           domain: "${domain}"
           traefik_lb_ip: "${traefik_lb_ip}"
           gpu_vendor: "${gpu_vendor}"
+          gpu_runtime_class: "${gpu_runtime_class}"
           <<- if index inputs "tls_secret_name" >>
           tls_secret_name: "<< index inputs "tls_secret_name" >>"
           namespace: "<< index inputs "namespace" >>"
