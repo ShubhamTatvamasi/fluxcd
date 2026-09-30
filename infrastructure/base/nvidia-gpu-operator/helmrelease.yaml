@@ -11,8 +11,14 @@ spec:
     name: gpu-operator
     namespace: gpu-operator
   values:
-    # RKE2 runs its own containerd; point the toolkit at its socket (https://docs.rke2.io/add-ons/gpu_operators)
+    # DigitalOcean GPU images ship the NVIDIA driver and container toolkit, and RKE2
+    # auto-detects /usr/bin/nvidia-container-runtime (adds the "nvidia" containerd runtime
+    # and RuntimeClass). So the operator only runs device plugin, GFD, DCGM exporter and NFD.
+    driver:
+      enabled: false
     toolkit:
+      enabled: false
+      # only used if the toolkit is re-enabled: RKE2 runs its own containerd (https://docs.rke2.io/add-ons/gpu_operators)
       env:
         - name: CONTAINERD_SOCKET
           value: /run/k3s/containerd/containerd.sock
