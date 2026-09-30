@@ -36,7 +36,7 @@ spec:
 
     # cilium LB-IPAM pool holding the droplet's public IP (CRDs ship with rke2-cilium)
     - service: "cilium-lb-config"
-      path: "./infrastructure/droplet/kube-system"
+      path: "./infrastructure/nvidia-droplet/kube-system"
 
     # gateway-api CRDs
     - service: "gateway-api"
@@ -77,21 +77,21 @@ spec:
         - "local-path-provisioner"
         - "sealed-secrets"
 
-    # AMD GPU operator: device plugin, node labeller and metrics exporter for the droplet's Instinct GPU (host driver, no driver build)
-    - service: "amd-gpu-operator"
-      path: "./infrastructure/base/amd-gpu-operator"
-      dependsOn:
-        - "cert-manager"
+    # AMD GPU operator — used by the amd-droplet cluster instead
+    # - service: "amd-gpu-operator"
+    #   path: "./infrastructure/base/amd-gpu-operator"
+    #   dependsOn:
+    #     - "cert-manager"
 
-    # NVIDIA GPU operator — enable instead of amd-gpu-operator on an NVIDIA droplet, and set gpu_vendor: nvidia in clusters/droplet/infrastructure.yaml
-    # - service: "nvidia-gpu-operator"
-    #   path: "./infrastructure/base/nvidia-gpu-operator"
+    # NVIDIA GPU operator: driver (skipped if preinstalled on the host), container toolkit, device plugin, DCGM exporter and NFD
+    - service: "nvidia-gpu-operator"
+      path: "./infrastructure/base/nvidia-gpu-operator"
 
     # GPUStack — GPU cluster manager for serving models (needs NFD labels from the GPU operator, traefik, local-path-provisioner, and sealed-secrets)
     - service: "gpustack"
       path: "./infrastructure/base/gpustack"
       dependsOn:
-        - "amd-gpu-operator"
+        - "nvidia-gpu-operator"
         - "traefik"
         - "local-path-provisioner"
         - "sealed-secrets"

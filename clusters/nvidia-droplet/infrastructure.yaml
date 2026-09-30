@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./infrastructure/droplet/resourceset
+  path: ./infrastructure/nvidia-droplet/resourceset
   prune: true
   wait: true
   timeout: 10m
@@ -15,8 +15,9 @@ spec:
     name: flux-system
   postBuild:
     substitute:
-      domain: droplet.shubhamtatvamasi.com
+      domain: nvidia-droplet.shubhamtatvamasi.com
       # droplet public IP (eth0), handed to traefik via cilium LB-IPAM
-      traefik_lb_ip: 162.243.96.72
+      # TODO: set to the NVIDIA droplet's public IP before bootstrapping
+      traefik_lb_ip: 159.203.10.105
       # amd | nvidia — must match the GPU operator enabled in the resourceset
-      gpu_vendor: amd
+      gpu_vendor: nvidia

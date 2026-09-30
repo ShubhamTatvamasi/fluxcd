@@ -10,4 +10,9 @@ spec:
     kind: HelmChart
     name: gpu-operator
     namespace: gpu-operator
-  values: {}
+  values:
+    # RKE2 runs its own containerd; point the toolkit at its socket (https://docs.rke2.io/add-ons/gpu_operators)
+    toolkit:
+      env:
+        - name: CONTAINERD_SOCKET
+          value: /run/k3s/containerd/containerd.sock

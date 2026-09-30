@@ -1,8 +1,11 @@
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
+# Public entry point: traefik terminates TLS and hands off to the higress gateway.
+# Named apart from the chart's own "gpustack" Ingress (class higress), which higress
+# uses to route that host to the server; sharing the name makes helm and flux fight over it.
 metadata:
-  name: gpustack
+  name: gpustack-traefik
   namespace: gpustack-system
 spec:
   ingressClassName: traefik
