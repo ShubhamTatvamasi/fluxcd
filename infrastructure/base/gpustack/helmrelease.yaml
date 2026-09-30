@@ -34,3 +34,9 @@ spec:
         # "gpustack-fnv64-*", so every GPU model fails with "Failed to find Kueue queue name".
         # Skip Kueue admission; pods still request <vendor>.com/gpu and the scheduler places them.
         GPUSTACK_RUNTIME_KUBERNETES_KDP_NO_KUEUE_ADMISSION: "true"
+        # AMD only. On VF GPUs amdsmi_get_gpu_metrics_info fails, so detection falls back to
+        # rocm_smi; its Python bindings sit under /opt/rocm/libexec, an /etc/alternatives symlink
+        # that dangles in the pod, and the fallback crashes (NameError: rsmi_status_t) leaving
+        # the worker with no GPUs ("Failed to get vLLM backend image"). Point at a path with no
+        # librocm_smi64.so so the fallback is skipped; utilization then reports 0.
+        ROCM_SMI_LIB_PATH: /nonexistent
