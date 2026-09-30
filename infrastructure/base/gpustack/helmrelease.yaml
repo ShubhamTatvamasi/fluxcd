@@ -21,6 +21,8 @@ spec:
         # traefik owns the node's LoadBalancer IP; higress sits behind it
         service:
           type: ClusterIP
+          # gpustack's parent values set Local, which the API rejects on a ClusterIP service
+          externalTrafficPolicy: ""
     worker:
       enabled: true
       # vendor DaemonSets need NFD's pci-<vendor>.present labels (NFD ships with the GPU operators)
