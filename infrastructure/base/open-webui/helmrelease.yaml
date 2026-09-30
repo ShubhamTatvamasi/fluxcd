@@ -23,8 +23,31 @@ spec:
       ollama:
         gpu:
           enabled: true
-          # amd -> ollama "-rocm" image + amd.com/gpu; nvidia -> nvidia.com/gpu
+          # amd -> ollama "-rocm" image; the GPU limit is rewritten to <vendor>.com/gpu.shared below
           type: ${gpu_vendor}
       persistentVolume:
         enabled: true
         size: 100Gi
+  # Request a time-sliced <vendor>.com/gpu.shared slot instead of the whole GPU, so ollama
+  # shares the card with gpustack. The chart hardcodes amd.com/gpu (only the NVIDIA name is
+  # configurable), so swap the limit after rendering; null drops the chart's whole-GPU key.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: open-webui-ollama
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: open-webui-ollama
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: ollama
+                        resources:
+                          limits:
+                            ${gpu_vendor}.com/gpu: null
+                            ${gpu_vendor}.com/gpu.shared: 1
