@@ -1,0 +1,130 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: infrastructure
+  namespace: flux-system
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: "10m"
+spec:
+  inputs:
+    # local-path-provisioner provides a default storage class for the cluster
+    - service: "local-path-provisioner"
+      path: "./infrastructure/base/local-path-provisioner"
+
+    # sealed-secrets encrypts secrets so they can be stored in Git safely
+    - service: "sealed-secrets"
+      path: "./infrastructure/base/sealed-secrets"
+
+    # flux web UI TLS (sealed secret decrypted by sealed-secrets)
+    - service: "flux-tls"
+      path: "./secrets/sealed-secrets/tls/shubhamtatvamasi-tls"
+      tls_secret_name: "flux-tls"
+      namespace: "flux-system"
+      dependsOn:
+        - "sealed-secrets"
+
+    # cert-manager issues and renews TLS certificates (installs its own CRDs); the AMD GPU operator needs it for its webhooks
+    - service: "cert-manager"
+      path: "./infrastructure/base/cert-manager/controller"
+
+    # cert-manager ClusterIssuers + internal CA (need the cert-manager.io CRDs first)
+    - service: "cert-manager-config"
+      path: "./infrastructure/base/cert-manager/config"
+      dependsOn:
+        - "cert-manager"
+
+    # cilium LB-IPAM pool holding the droplet's public IP (CRDs ship with rke2-cilium)
+    - service: "cilium-lb-config"
+      path: "./infrastructure/droplet/kube-system"
+
+    # gateway-api CRDs
+    - service: "gateway-api"
+      path: "./infrastructure/base/gateway-api"
+
+    # traefik ingress controller (needs the cilium LB config first)
+    - service: "traefik"
+      path: "./infrastructure/base/traefik/controller"
+      dependsOn:
+        - "cilium-lb-config"
+        - "sealed-secrets"
+        - "gateway-api"
+
+    # traefik IngressRoute/Middleware CRs (need the traefik.io CRDs installed by the HelmRelease first)
+    - service: "traefik-routes"
+      path: "./infrastructure/base/traefik/routes"
+      dependsOn:
+        - "traefik"
+
+    # dex OIDC provider (needs traefik and sealed-secrets)
+    - service: "dex"
+      path: "./infrastructure/base/dex"
+      dependsOn:
+        - "traefik"
+        - "sealed-secrets"
+
+    # oauth2-proxy guards the traefik dashboard; needs dex up first to configure the OIDC provider
+    - service: "oauth2-proxy"
+      path: "./infrastructure/base/oauth2-proxy"
+      dependsOn:
+        - "dex"
+
+    # portainer is a web UI for managing containers and Kubernetes clusters (needs traefik, local-path-provisioner, and sealed-secrets)
+    - service: "portainer"
+      path: "./infrastructure/base/portainer"
+      dependsOn:
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
+
+    # AMD GPU operator: device plugin, node labeller and metrics exporter for the droplet's Instinct GPU (host driver, no driver build)
+    - service: "amd-gpu-operator"
+      path: "./infrastructure/base/amd-gpu-operator"
+      dependsOn:
+        - "cert-manager"
+
+    # NVIDIA GPU operator — enable instead of amd-gpu-operator on an NVIDIA droplet, and set gpu_vendor: nvidia in clusters/droplet/infrastructure.yaml
+    # - service: "nvidia-gpu-operator"
+    #   path: "./infrastructure/base/nvidia-gpu-operator"
+
+    # GPUStack — GPU cluster manager for serving models (needs NFD labels from the GPU operator, traefik, local-path-provisioner, and sealed-secrets)
+    - service: "gpustack"
+      path: "./infrastructure/base/gpustack"
+      dependsOn:
+        - "amd-gpu-operator"
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
+  resourcesTemplate: |
+    apiVersion: kustomize.toolkit.fluxcd.io/v1
+    kind: Kustomization
+    metadata:
+      name: << inputs.service >>
+      namespace: flux-system
+    spec:
+      interval: 10m0s
+      path: << inputs.path >>
+      prune: true
+      wait: true
+      timeout: 10m
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+
+      <<- if index inputs "dependsOn" >>
+      dependsOn:
+        <<- range index inputs "dependsOn" >>
+        - name: << . >>
+        <<- end >>
+      <<- end >>
+
+      postBuild:
+        substitute:
+          domain: "${domain}"
+          traefik_lb_ip: "${traefik_lb_ip}"
+          gpu_vendor: "${gpu_vendor}"
+          <<- if index inputs "tls_secret_name" >>
+          tls_secret_name: "<< index inputs "tls_secret_name" >>"
+          namespace: "<< index inputs "namespace" >>"
+          <<- end >>

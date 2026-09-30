@@ -1,0 +1,28 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gpustack
+  namespace: gpustack-system
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: gpustack
+    namespace: gpustack-system
+  values:
+    server:
+      ingress:
+        # host the bundled higress Ingress matches; traefik terminates TLS in front of it (see ingress.yaml)
+        hostname: gpustack.${domain}
+    higress-core:
+      gateway:
+        replicas: 1
+        # traefik owns the node's LoadBalancer IP; higress sits behind it
+        service:
+          type: ClusterIP
+    worker:
+      enabled: true
+      # vendor DaemonSets need NFD's pci-<vendor>.present labels (NFD ships with the GPU operators)
+      gpuVendors:
+        - ${gpu_vendor}

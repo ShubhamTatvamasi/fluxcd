@@ -13,8 +13,8 @@ spec:
   values:
     service:
       annotations:
-        metallb.io/loadBalancerIPs: 10.10.10.16
-        lbipam.cilium.io/ips: 10.10.10.16
+        metallb.io/loadBalancerIPs: ${traefik_lb_ip:=10.10.10.16}
+        lbipam.cilium.io/ips: ${traefik_lb_ip:=10.10.10.16}
     accessLog:
       enabled: true
       # JSON format so Loki/Alloy can parse fields (status, path, duration).

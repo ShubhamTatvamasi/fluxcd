@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: amd-gpu-operator
+  namespace: kube-amd-gpu
+spec:
+  interval: 10m
+  chart: gpu-operator-charts
+  version: "v1.5.1"
+  sourceRef:
+    name: amd-gpu-operator
+    kind: HelmRepository

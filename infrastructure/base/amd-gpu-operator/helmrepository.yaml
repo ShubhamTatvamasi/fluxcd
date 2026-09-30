@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: amd-gpu-operator
+  namespace: kube-amd-gpu
+spec:
+  interval: 10m
+  url: https://rocm.github.io/gpu-operator

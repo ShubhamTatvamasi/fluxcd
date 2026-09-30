@@ -1,0 +1,23 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gpustack
+  namespace: gpustack-system
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: gpustack.${domain}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: higress-gateway
+                port:
+                  number: 80
+  tls:
+    - secretName: gpustack-tls
+      hosts:
+        - gpustack.${domain}

@@ -1,0 +1,41 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: amd-gpu-operator
+  namespace: kube-amd-gpu
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: amd-gpu-operator
+    namespace: kube-amd-gpu
+  values:
+    node-feature-discovery:
+      worker:
+        config:
+          sources:
+            pci:
+              deviceClassWhitelist:
+                - "0200"
+                - "03"
+                - "12"
+              # gpustack's per-vendor worker DaemonSet selects on
+              # feature.node.kubernetes.io/pci-<vendor>.present (e.g. pci-1002),
+              # which NFD only emits when "vendor" is the sole label field.
+              deviceLabelFields:
+                - "vendor"
+    # auto-remediation runs an Argo workflow controller; not needed on a single test node
+    remediation:
+      enabled: false
+    deviceConfig:
+      spec:
+        # Cloud GPU droplets expose the Instinct card as an SR-IOV VF (e.g. MI325X VF 74b9),
+        # which the default NFD rule labels amd-vgpu rather than amd-gpu.
+        # (null drops the chart's default amd-gpu key — selector labels are ANDed)
+        selector:
+          feature.node.kubernetes.io/amd-gpu: null
+          feature.node.kubernetes.io/amd-vgpu: "true"
+        # amdgpu + ROCm are preinstalled on the host, so the operator must not build/load a driver
+        driver:
+          enable: false
