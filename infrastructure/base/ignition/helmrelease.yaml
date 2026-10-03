@@ -15,6 +15,16 @@ spec:
       acceptIgnitionEULA: true
       edition: standard
       # admin password is randomly generated into the "ignition-gateway-admin-password" secret
+    gateway:
+      # chart default (1536Mi limit, heap at 75%) leaves too little off-heap room and OOMKills
+      maxRAMPercentage: 50
+      resources:
+        requests:
+          cpu: 500m
+          memory: 2Gi
+        limits:
+          cpu: "2"
+          memory: 4Gi
     ingress:
       enabled: true
       className: traefik
