@@ -21,10 +21,10 @@ spec:
       resources:
         requests:
           cpu: 500m
-          memory: 2Gi
+          memory: 4Gi
         limits:
           cpu: "2"
-          memory: 4Gi
+          memory: 6Gi
     ingress:
       enabled: true
       className: traefik
