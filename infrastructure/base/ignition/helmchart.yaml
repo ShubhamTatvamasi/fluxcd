@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: ignition
+  namespace: ignition
+spec:
+  interval: 10m
+  chart: ignition
+  version: "0.2.4"
+  sourceRef:
+    name: inductiveautomation
+    kind: HelmRepository
