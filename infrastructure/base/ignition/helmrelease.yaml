@@ -11,6 +11,8 @@ spec:
     name: ignition
     namespace: ignition
   values:
+    image:
+      tag: "8.3.9"
     commissioning:
       acceptIgnitionEULA: true
       edition: standard
