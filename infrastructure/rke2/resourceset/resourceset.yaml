@@ -252,6 +252,14 @@ spec:
     #   path: "./infrastructure/rke2/valkey"
     #   dependsOn:
     #     - "local-path-provisioner"
+
+    # MisterShell — infrastructure access platform, All in One topology (needs traefik, local-path-provisioner, and sealed-secrets)
+    - service: "mistershell"
+      path: "./infrastructure/base/mistershell"
+      dependsOn:
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization

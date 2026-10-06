@@ -1,0 +1,79 @@
+---
+# MisterShell — All in One topology (https://mistershell.com/docs/deployment):
+# a single core with embedded database and app store on /data.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mistershell
+  namespace: mistershell
+  labels:
+    app.kubernetes.io/name: mistershell
+spec:
+  replicas: 1 # All in One is single-core; scaling out needs the HA Cluster topology
+  # single pod on a RWO volume — don't run old and new pods against the same data dir
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mistershell
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mistershell
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: core
+          image: mistershell/core:latest
+          imagePullPolicy: Always # :latest, so pull on every restart
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+          env:
+            - name: DB_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mistershell-secrets
+                  key: db-encryption-key
+            - name: TLS_CERT_CN
+              value: mistershell.${domain}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          # SYS_ADMIN + unconfined AppArmor are required for browser web-app sessions
+          securityContext:
+            capabilities:
+              add: ["SYS_ADMIN"]
+            appArmorProfile:
+              type: Unconfined
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              memory: 4Gi
+          # Port 80 serves the full app and health endpoints
+          # (ENABLE_HTTP_REDIRECT defaults to false); TLS terminates at the Gateway.
+          startupProbe:
+            httpGet:
+              path: /health/
+              port: http
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health/
+              port: http
+            periodSeconds: 20
+            failureThreshold: 3
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mistershell-data

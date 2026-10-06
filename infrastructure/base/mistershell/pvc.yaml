@@ -1,0 +1,15 @@
+---
+# Embedded database, app store and local recordings live here (All in One topology)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mistershell-data
+  namespace: mistershell
+  labels:
+    app.kubernetes.io/name: mistershell
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 20Gi

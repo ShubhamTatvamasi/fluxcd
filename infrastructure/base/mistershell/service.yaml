@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mistershell
+  namespace: mistershell
+  labels:
+    app.kubernetes.io/name: mistershell
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: mistershell
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
