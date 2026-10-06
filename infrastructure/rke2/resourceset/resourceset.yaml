@@ -248,10 +248,10 @@ spec:
     #     - "sealed-secrets"
 
     # Valkey — Redis-compatible in-memory key/value store (needs local-path-provisioner for its PVC)
-    - service: "valkey"
-      path: "./infrastructure/rke2/valkey"
-      dependsOn:
-        - "local-path-provisioner"
+    # - service: "valkey"
+    #   path: "./infrastructure/rke2/valkey"
+    #   dependsOn:
+    #     - "local-path-provisioner"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
