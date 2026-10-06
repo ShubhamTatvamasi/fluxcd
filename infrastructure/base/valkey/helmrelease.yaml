@@ -1,0 +1,26 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: valkey
+  namespace: ${namespace}
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: valkey
+    namespace: ${namespace}
+  values:
+    # single pod on a RWO volume — don't run old and new pods against the same data dir
+    deploymentStrategy: Recreate
+    dataStorage:
+      enabled: true
+      requestedSize: 8Gi
+      className: local-path
+      keepPvc: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 1Gi

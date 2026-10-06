@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: valkey
+  namespace: ${namespace}
+spec:
+  interval: 10m
+  chart: valkey
+  version: "0.12.0"
+  sourceRef:
+    name: valkey
+    kind: HelmRepository

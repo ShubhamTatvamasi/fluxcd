@@ -233,12 +233,12 @@ spec:
     #     - "sealed-secrets"
 
     # Ignition — Inductive Automation SCADA/IIoT gateway (needs traefik, local-path-provisioner, and sealed-secrets)
-    - service: "ignition"
-      path: "./infrastructure/base/ignition"
-      dependsOn:
-        - "traefik"
-        - "local-path-provisioner"
-        - "sealed-secrets"
+    # - service: "ignition"
+    #   path: "./infrastructure/base/ignition"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "local-path-provisioner"
+    #     - "sealed-secrets"
 
     # OpenBao — Vault-API-compatible secrets management, deployed with the same self-contained chart as "vault" above
     # - service: "openbao"
@@ -246,6 +246,12 @@ spec:
     #   dependsOn:
     #     - "traefik"
     #     - "sealed-secrets"
+
+    # Valkey — Redis-compatible in-memory key/value store (needs local-path-provisioner for its PVC)
+    - service: "valkey"
+      path: "./infrastructure/rke2/valkey"
+      dependsOn:
+        - "local-path-provisioner"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
