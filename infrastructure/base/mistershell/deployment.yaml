@@ -55,7 +55,7 @@ spec:
             limits:
               memory: 4Gi
           # Port 80 serves the full app and health endpoints
-          # (ENABLE_HTTP_REDIRECT defaults to false); TLS terminates at the Gateway.
+          # (ENABLE_HTTP_REDIRECT defaults to false); TLS terminates at the traefik Ingress.
           startupProbe:
             httpGet:
               path: /health/

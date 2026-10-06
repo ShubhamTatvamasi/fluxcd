@@ -1,0 +1,23 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mistershell
+  namespace: mistershell
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: mistershell.${domain}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mistershell
+                port:
+                  number: 80
+  tls:
+    - secretName: mistershell-tls
+      hosts:
+        - mistershell.${domain}
