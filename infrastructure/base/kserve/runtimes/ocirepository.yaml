@@ -1,0 +1,15 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: kserve-runtime-configs
+  namespace: kserve
+spec:
+  interval: 10m
+  url: oci://ghcr.io/kserve/charts/kserve-runtime-configs
+  layerSelector:
+    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
+    operation: copy
+  ref:
+    # the v0.21.0 GitHub release ships its charts tagged v0.21.0-rc1; images are pinned via kserve.version
+    tag: "v0.21.0-rc1"

@@ -1,0 +1,22 @@
+---
+# llmisvc-controller for LLMInferenceService (vLLM + llm-d routing)
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kserve-llmisvc-resources
+  namespace: kserve
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: kserve-llmisvc-resources
+    namespace: kserve
+  values:
+    kserve:
+      version: v0.21.0
+      # the controller layer already creates the shared resources
+      createSharedResources: false
+      llmisvc:
+        # the gateway-api kustomization installs the GIE InferencePool CRD; the controller
+        # only watches the alpha InferencePool and llm-d CRDs if they are present
+        createGIECRDs: false

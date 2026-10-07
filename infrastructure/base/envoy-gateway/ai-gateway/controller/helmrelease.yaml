@@ -1,0 +1,20 @@
+---
+# ai-gateway-controller: Envoy Gateway extension server (InferencePool backends, token limits) and
+# the webhook that injects the ext-proc sidecar into Envoy proxy pods
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: envoy-ai-gateway
+  namespace: envoy-ai-gateway-system
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: envoy-ai-gateway
+    namespace: envoy-ai-gateway-system
+  values:
+    controller:
+      mutatingWebhook:
+        # issue the webhook cert with cert-manager instead of the self-signed one embedded in the chart
+        certManager:
+          enable: true

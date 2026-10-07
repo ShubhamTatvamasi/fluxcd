@@ -1,0 +1,33 @@
+---
+# kserve-controller for InferenceService (needs cert-manager for its webhook certs)
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kserve-resources
+  namespace: kserve
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: kserve-resources
+    namespace: kserve
+  values:
+    kserve:
+      version: v0.21.0
+      # owns the shared inferenceservice-config, cert-manager Issuer and ClusterStorageContainer
+      createSharedResources: true
+      controller:
+        # plain Deployments + HPA/KEDA instead of Knative
+        deploymentMode: Standard
+        gateway:
+          # every model is served on one host, path-routed: https://api.${domain}/serving/<namespace>/<name>
+          domain: api.${domain}
+          pathTemplate: "/serving/{{ .Namespace }}/{{ .Name }}"
+          # traefik terminates TLS in front of the gateway
+          urlScheme: https
+          disableIstioVirtualHost: true
+          ingressGateway:
+            # HTTPRoutes on the Envoy Gateway from the kserve/gateway layer instead of Ingresses
+            enableGatewayApi: true
+            kserveGateway: kserve/kserve-ingress-gateway
+            createGateway: false

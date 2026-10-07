@@ -1,0 +1,47 @@
+---
+# Envoy Gateway with the Envoy AI Gateway extension, which lets HTTPRoutes target GIE InferencePools
+# (values from ai-gateway v1.1.0 manifests/envoy-gateway-values.yaml + examples/inference-pool addon)
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: envoy-gateway
+  namespace: envoy-gateway-system
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: envoy-gateway
+    namespace: envoy-gateway-system
+  values:
+    # CRDs are installed by the envoy-gateway-crds release
+    crds:
+      enabled: false
+    config:
+      envoyGateway:
+        extensionApis:
+          enableEnvoyPatchPolicy: true
+          enableBackend: true
+        extensionManager:
+          hooks:
+            xdsTranslator:
+              translation:
+                listener:
+                  includeAll: true
+                route:
+                  includeAll: true
+                cluster:
+                  includeAll: true
+                secret:
+                  includeAll: true
+              post:
+                - Translation
+                - Cluster
+                - Route
+          service:
+            fqdn:
+              hostname: ai-gateway-controller.envoy-ai-gateway-system.svc.cluster.local
+              port: 1063
+          backendResources:
+            - group: inference.networking.k8s.io
+              kind: InferencePool
+              version: v1

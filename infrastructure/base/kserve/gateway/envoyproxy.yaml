@@ -1,0 +1,14 @@
+---
+# traefik owns the node's LoadBalancer IP, so Envoy gets a fixed-name ClusterIP Service behind it (see ingress.yaml)
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: kserve-ingress-gateway
+  namespace: envoy-gateway-system
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyService:
+        name: kserve-ingress-gateway
+        type: ClusterIP

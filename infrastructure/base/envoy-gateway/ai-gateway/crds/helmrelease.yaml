@@ -1,0 +1,13 @@
+---
+# AIGatewayRoute, AIServiceBackend, BackendSecurityPolicy, QuotaPolicy, MCPRoute, GatewayConfig CRDs
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: envoy-ai-gateway-crds
+  namespace: envoy-ai-gateway-system
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: envoy-ai-gateway-crds
+    namespace: envoy-ai-gateway-system

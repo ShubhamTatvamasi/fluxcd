@@ -1,0 +1,21 @@
+---
+# ClusterServingRuntimes (vLLM, Hugging Face, Triton, sklearn, ...) and LLMInferenceServiceConfig presets;
+# both are checked by the controllers' webhooks, so they install last
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kserve-runtime-configs
+  namespace: kserve
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: kserve-runtime-configs
+    namespace: kserve
+  values:
+    kserve:
+      version: v0.21.0
+      servingruntime:
+        enabled: true
+      llmisvcConfigs:
+        enabled: true

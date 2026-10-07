@@ -1,0 +1,13 @@
+---
+# InferenceService, ServingRuntime, InferenceGraph and ClusterStorageContainer CRDs
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kserve-crd
+  namespace: kserve
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: kserve-crd
+    namespace: kserve

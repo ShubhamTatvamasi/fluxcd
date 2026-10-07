@@ -1,0 +1,26 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+# Public entry point: traefik terminates TLS and hands off to the Envoy proxy of kserve-ingress-gateway.
+# LLMInferenceService: https://api.${domain}/<namespace>/<name>/v1/chat/completions
+# InferenceService:    https://api.${domain}/serving/<namespace>/<name>/...
+metadata:
+  name: kserve-ingress-gateway
+  namespace: envoy-gateway-system
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: api.${domain}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kserve-ingress-gateway
+                port:
+                  number: 80
+  tls:
+    - secretName: kserve-ingress-gateway-tls
+      hosts:
+        - api.${domain}

@@ -1,0 +1,20 @@
+---
+# the Gateway KServe attaches InferenceService and LLMInferenceService HTTPRoutes to
+# (kserve.controller.gateway.ingressGateway.kserveGateway in the controller layer)
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: kserve-ingress-gateway
+  namespace: kserve
+spec:
+  gatewayClassName: envoy
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+  infrastructure:
+    labels:
+      serving.kserve.io/gateway: kserve-ingress-gateway
