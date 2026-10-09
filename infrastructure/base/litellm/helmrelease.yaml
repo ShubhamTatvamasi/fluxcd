@@ -89,5 +89,8 @@ spec:
         drop_params: true
       general_settings:
         master_key: os.environ/PROXY_MASTER_KEY
+        # no UI sign-in with the shared UI_USERNAME/UI_PASSWORD (or master key); admins log in with
+        # their own accounts (invited via /invitation/new). The master key still works for the API.
+        disable_env_credential_login: true
         # models added in the UI are stored in Postgres alongside the ones above
         store_model_in_db: true
