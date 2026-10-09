@@ -17,7 +17,15 @@ spec:
   replicas: 1
   router:
     # llm-d endpoint picker + InferencePool "qwen-coder-inference-pool" (kserve-config-llm-scheduler)
-    scheduler: {}
+    scheduler:
+      template:
+        containers:
+          - name: main
+            # the preset requests 1 CPU / 2Gi per picker; one model replica needs far less
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
     # KServe's own path routes (/models/qwen-coder/v1/...) on the default kserve-ingress-gateway;
     # clients use the AIGatewayRoute instead, these only match their own prefix
     route: {}

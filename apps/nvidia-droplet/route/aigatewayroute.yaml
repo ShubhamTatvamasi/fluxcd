@@ -22,9 +22,9 @@ spec:
       type: OutputToken
     - metadataKey: llm_total_token
       type: TotalToken
+  # every rule targets an LLMInferenceService's InferencePool: llm-d's endpoint picker (EPP) chooses
+  # the vLLM replica (prefix-cache and load aware) instead of a plain Service round-robin
   rules:
-    # LLMInferenceService: llm-d's endpoint picker (EPP) chooses the vLLM replica behind the
-    # InferencePool (prefix-cache and load aware) instead of a plain Service round-robin
     - name: qwen-coder
       matches:
         - headers:
@@ -44,6 +44,8 @@ spec:
               name: x-ai-eg-model
               value: phi
       backendRefs:
-        - name: phi
+        - group: inference.networking.k8s.io
+          kind: InferencePool
+          name: phi-inference-pool
       timeouts:
         request: 300s

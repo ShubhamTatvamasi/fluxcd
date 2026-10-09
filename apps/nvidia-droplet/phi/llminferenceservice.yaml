@@ -1,0 +1,53 @@
+---
+# Phi-3.5 mini Instruct (3.8B) as an LLMInferenceService: vLLM (llm-d image) plus llm-d's endpoint
+# picker behind the InferencePool "phi-inference-pool", on a time-sliced GPU share.
+# Call it through the shared endpoint: POST https://api.${domain}/v1/chat/completions
+#   -H "Authorization: Bearer <key>"  -d '{"model":"phi", ...}'
+apiVersion: serving.kserve.io/v1alpha2
+kind: LLMInferenceService
+metadata:
+  name: phi
+  namespace: models
+spec:
+  model:
+    # served name (vLLM --served-model-name); must match the AIGatewayRoute rule value
+    name: phi
+    uri: hf://microsoft/Phi-3.5-mini-instruct
+  replicas: 1
+  router:
+    # llm-d endpoint picker + InferencePool (kserve-config-llm-scheduler)
+    scheduler:
+      template:
+        containers:
+          - name: main
+            # the preset requests 1 CPU / 2Gi per picker; one model replica needs far less
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+    # KServe's own path routes (/models/phi/v1/...); clients use the AIGatewayRoute instead
+    route: {}
+    gateway: {}
+  template:
+    containers:
+      - name: main
+        env:
+          # the RHEL-based llm-d image bakes in TRITON_LIBCUDA_PATH=/usr/lib64, but on this Ubuntu node
+          # the NVIDIA toolkit mounts the driver at /usr/lib/x86_64-linux-gnu
+          - name: TRITON_LIBCUDA_PATH
+            value: /usr/lib/x86_64-linux-gnu
+          - name: VLLM_ADDITIONAL_ARGS
+            # 35% of the 48GB card (~17GB): ~7.6GB weights, the rest KV cache (qwen-coder has 0.5);
+            # the 128k default context needs more KV cache than this share holds
+            value: >-
+              --gpu-memory-utilization=0.35
+              --max-model-len=8192
+        resources:
+          requests:
+            cpu: "1"
+            memory: 8Gi
+            nvidia.com/gpu: "1"
+          limits:
+            cpu: "4"
+            memory: 16Gi
+            nvidia.com/gpu: "1"
