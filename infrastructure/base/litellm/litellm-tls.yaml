@@ -2,8 +2,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: kserve-ingress-gateway-tls
-  namespace: envoy-gateway-system
+  name: litellm-tls
+  namespace: litellm
 spec:
   dependsOn:
   - name: sealed-secrets
@@ -13,8 +13,8 @@ spec:
   path: ./secrets/sealed-secrets/tls/shubhamtatvamasi-tls
   postBuild:
     substitute:
-      tls_secret_name: kserve-ingress-gateway-tls
-      namespace: envoy-gateway-system
+      tls_secret_name: litellm-tls
+      namespace: litellm
   prune: true
   sourceRef:
     kind: GitRepository

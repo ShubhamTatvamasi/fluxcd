@@ -1,5 +1,5 @@
 ---
-# traefik owns the node's LoadBalancer IP, so Envoy gets a fixed-name ClusterIP Service behind it (see ingress.yaml)
+# internal fixed-name ClusterIP Service; LiteLLM calls http://kserve-ingress-gateway.envoy-gateway-system.svc/v1
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyProxy
 metadata:

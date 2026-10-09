@@ -1,0 +1,93 @@
+---
+# LiteLLM Proxy: the public OpenAI-compatible API (https://api.${domain}/v1) and admin UI
+# (https://api.${domain}/ui). It owns users, teams, virtual keys, budgets, rate limits and spend
+# tracking, and forwards every model call to the internal Envoy AI Gateway (kserve-ingress-gateway),
+# which routes by model name to the llm-d InferencePools.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: litellm
+  namespace: litellm
+spec:
+  interval: 10m
+  timeout: 10m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  chartRef:
+    kind: OCIRepository
+    name: litellm
+    namespace: litellm
+  values:
+    image:
+      pullPolicy: IfNotPresent
+    # master key, DB credentials and env (GATEWAY_API_KEY, UI_USERNAME, UI_PASSWORD) from litellm-secrets
+    masterkeySecretName: litellm-secrets
+    masterkeySecretKey: masterkey
+    environmentSecrets:
+      - litellm-secrets
+    db:
+      useExisting: true
+      deployStandalone: false
+      # shared postgres base, deployed by the litellm-postgres Kustomization
+      endpoint: postgres.litellm.svc.cluster.local
+      database: litellm
+      secret:
+        name: litellm-secrets
+        usernameKey: username
+        passwordKey: postgres-password
+    migrationJob:
+      hooks:
+        # a plain Job would be patched (immutable) on every Flux upgrade; as a Helm hook it is
+        # recreated before each install/upgrade instead
+        helm:
+          enabled: true
+        argocd:
+          enabled: false
+    resources:
+      requests:
+        cpu: 250m
+        memory: 1Gi
+      limits:
+        memory: 3Gi
+    ingress:
+      enabled: true
+      className: traefik
+      hosts:
+        - host: api.${domain}
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: litellm-tls
+          hosts:
+            - api.${domain}
+    proxy_config:
+      # models served by the cluster: the Envoy AI Gateway picks the InferencePool from "model",
+      # so every entry only differs in the name. More (incl. external providers) can be added in the UI.
+      model_list:
+        - model_name: qwen-coder
+          litellm_params:
+            model: openai/qwen-coder
+            api_base: http://kserve-ingress-gateway.envoy-gateway-system.svc.cluster.local/v1
+            api_key: os.environ/GATEWAY_API_KEY
+          model_info:
+            supports_function_calling: true
+            max_input_tokens: 32768
+        - model_name: phi
+          litellm_params:
+            model: openai/phi
+            api_base: http://kserve-ingress-gateway.envoy-gateway-system.svc.cluster.local/v1
+            api_key: os.environ/GATEWAY_API_KEY
+          model_info:
+            max_input_tokens: 8192
+      litellm_settings:
+        # drop OpenAI params a backend doesn't support instead of failing the request
+        drop_params: true
+      general_settings:
+        master_key: os.environ/PROXY_MASTER_KEY
+        # models added in the UI are stored in Postgres alongside the ones above
+        store_model_in_db: true

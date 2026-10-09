@@ -1,5 +1,6 @@
 ---
-# Every model behind kserve-ingress-gateway needs an API key, sent the OpenAI way
+# Every model behind kserve-ingress-gateway needs an API key (only LiteLLM holds one), so nothing in
+# the cluster can bypass LiteLLM's keys, budgets and rate limits. Sent the OpenAI way
 # ("Authorization: Bearer <key>", Envoy strips the Bearer prefix) or as "x-api-key: <key>".
 # Requests without a valid key get 401 before reaching the model.
 apiVersion: gateway.envoyproxy.io/v1alpha1

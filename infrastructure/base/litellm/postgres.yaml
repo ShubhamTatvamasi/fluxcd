@@ -1,0 +1,25 @@
+---
+# Postgres for LiteLLM (keys, users, teams, budgets, spend logs) from the shared postgres base:
+# Service postgres.litellm.svc, database "litellm", admin password from litellm-secrets/postgres-password
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: litellm-postgres
+  namespace: litellm
+spec:
+  dependsOn:
+  - name: litellm-secrets
+  interval: 10m0s
+  path: ./infrastructure/base/postgres
+  postBuild:
+    substitute:
+      namespace: litellm
+      postgres_existing_secret: litellm-secrets
+      postgres_database: litellm
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  timeout: 10m
+  wait: true

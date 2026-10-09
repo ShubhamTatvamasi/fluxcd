@@ -2,13 +2,13 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: postgres
-  namespace: ${namespace}
+  name: litellm
+  namespace: litellm
 spec:
   interval: 10m
-  url: oci://registry-1.docker.io/cloudpirates/postgres
+  url: oci://ghcr.io/berriai/litellm-helm
   layerSelector:
     mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
     operation: copy
   ref:
-    semver: "0.21.2"
+    tag: "1.104.2"

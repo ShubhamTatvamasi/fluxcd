@@ -78,6 +78,16 @@ spec:
         - "traefik"
         - "sealed-secrets"
 
+    # LiteLLM Proxy: public API + admin UI at api.${domain} (users, virtual keys, budgets, rate limits),
+    # forwarding to the internal kserve-ingress-gateway with its own gateway API key
+    - service: "litellm"
+      path: "./infrastructure/base/litellm"
+      dependsOn:
+        - "kserve-gateway"
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
+
     # KServe controller for InferenceService in Standard mode (needs cert-manager for webhook certs)
     - service: "kserve-controller"
       path: "./infrastructure/base/kserve/controller"

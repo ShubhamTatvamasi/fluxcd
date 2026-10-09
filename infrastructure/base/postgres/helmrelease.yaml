@@ -13,3 +13,8 @@ spec:
   values:
     auth:
       password: "postgres"
+      # optional (postBuild substitute): Secret holding the admin password under "postgres-password",
+      # which then wins over the inline password above
+      existingSecret: "${postgres_existing_secret:=}"
+      # optional: database created at init (default: postgres)
+      database: "${postgres_database:=}"
