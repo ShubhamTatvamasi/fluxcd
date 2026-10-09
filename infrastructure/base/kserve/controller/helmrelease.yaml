@@ -30,12 +30,16 @@ spec:
         # plain Deployments + HPA/KEDA instead of Knative
         deploymentMode: Standard
         gateway:
-          # every model is served on one host, path-routed: https://api.${domain}/serving/<namespace>/<name>
+          # only used for the InferenceService status URL; requests are routed by the model's
+          # AIGatewayRoute rule (apps/<cluster>/route), not by KServe-generated HTTPRoutes
           domain: api.${domain}
           pathTemplate: "/serving/{{ .Namespace }}/{{ .Name }}"
           # traefik terminates TLS in front of the gateway
           urlScheme: https
           disableIstioVirtualHost: true
+          # KServe would add a catch-all "^/.*$" HTTPRoute on api.${domain} per InferenceService,
+          # so a second model collides with the first; Envoy AI Gateway routes by "model" instead
+          disableIngressCreation: true
           ingressGateway:
             # HTTPRoutes on the Envoy Gateway from the kserve/gateway layer instead of Ingresses
             enableGatewayApi: true

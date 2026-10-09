@@ -24,6 +24,26 @@ spec:
       env:
         - name: CONTAINERD_SOCKET
           value: /run/k3s/containerd/containerd.sock
+    # Time-slice the single GPU so several model pods can each request nvidia.com/gpu: 1.
+    # No memory isolation: every vLLM pod must cap itself with --gpu-memory-utilization so
+    # the shares add up to < 1.0 of the card.
+    devicePlugin:
+      config:
+        create: true
+        name: time-slicing-config
+        default: any
+        data:
+          any: |-
+            version: v1
+            flags:
+              migStrategy: none
+            sharing:
+              timeSlicing:
+                # a pod asking for 2 slices would still get one physical GPU, so refuse it
+                failRequestsGreaterThanOne: true
+                resources:
+                  - name: nvidia.com/gpu
+                    replicas: 4
     # Cloud GPUs are KVM pass-through, where the hypervisor blocks the profiling (DCP)
     # counters; any DCGM_FI_PROF_* field makes dcgm-exporter crash with "third-party
     # Profiling module returned an unrecoverable error". This is dcgm-exporter's

@@ -1,0 +1,36 @@
+---
+# One endpoint for every model: Envoy AI Gateway reads "model" from the request body into the
+# x-ai-eg-model header and routes on it. GET /v1/models lists the rule values below.
+# Auth (API key) is the SecurityPolicy on the Gateway, so it covers every rule.
+apiVersion: aigateway.envoyproxy.io/v1beta1
+kind: AIGatewayRoute
+metadata:
+  name: models
+  namespace: models
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: kserve-ingress-gateway
+      namespace: kserve
+  rules:
+    - name: qwen
+      matches:
+        - headers:
+            - type: Exact
+              name: x-ai-eg-model
+              value: qwen
+      backendRefs:
+        - name: qwen
+      timeouts:
+        request: 300s
+    - name: phi
+      matches:
+        - headers:
+            - type: Exact
+              name: x-ai-eg-model
+              value: phi
+      backendRefs:
+        - name: phi
+      timeouts:
+        request: 300s

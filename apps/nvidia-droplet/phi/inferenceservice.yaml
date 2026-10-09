@@ -1,11 +1,11 @@
 ---
-# Qwen2.5 1.5B Instruct on the Hugging Face runtime (vLLM backend), on a time-sliced GPU share.
+# Phi-3.5 mini Instruct (3.8B) on the Hugging Face runtime (vLLM backend), on a time-sliced GPU share.
 # Call it through the shared endpoint: POST https://api.${domain}/v1/chat/completions
-#   -H "Authorization: Bearer <key>"  -d '{"model":"qwen", ...}'
+#   -H "Authorization: Bearer <key>"  -d '{"model":"phi", ...}'
 apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:
-  name: qwen
+  name: phi
   namespace: models
 spec:
   predictor:
@@ -15,11 +15,12 @@ spec:
     model:
       modelFormat:
         name: huggingface
-      # downloaded by the storage-initializer into /mnt/models before the server starts
-      storageUri: hf://Qwen/Qwen2.5-1.5B-Instruct
+      storageUri: hf://microsoft/Phi-3.5-mini-instruct
       args:
-        # 30% of the 48GB card; time-slicing doesn't isolate memory, shares must sum to < 1.0
-        - --gpu-memory-utilization=0.3
+        # 45% of the 48GB card (~21GB): ~7.6GB weights, the rest KV cache
+        - --gpu-memory-utilization=0.45
+        # the 128k default context needs more KV cache than this share holds
+        - --max-model-len=8192
       resources:
         requests:
           cpu: "2"
