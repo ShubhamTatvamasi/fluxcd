@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
 - inferenceservice.yaml
 - backend.yaml
+- aiservicebackend.yaml

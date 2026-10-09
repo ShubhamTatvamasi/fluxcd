@@ -1,6 +1,5 @@
 ---
-# Where the "qwen" rule of the AIGatewayRoute sends traffic: the InferenceService's predictor Service.
-# The KServe Hugging Face runtime serves OpenAI under /openai/v1, not /v1, hence the prefix.
+# Envoy Gateway Backend for the "qwen" model: the InferenceService's predictor Service.
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: Backend
 metadata:
@@ -11,17 +10,3 @@ spec:
     - fqdn:
         hostname: qwen-predictor.models.svc.cluster.local
         port: 80
----
-apiVersion: aigateway.envoyproxy.io/v1beta1
-kind: AIServiceBackend
-metadata:
-  name: qwen
-  namespace: models
-spec:
-  schema:
-    name: OpenAI
-    prefix: /openai/v1
-  backendRef:
-    group: gateway.envoyproxy.io
-    kind: Backend
-    name: qwen

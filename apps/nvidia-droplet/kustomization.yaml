@@ -1,6 +1,6 @@
 ---
 # Models served behind one OpenAI-compatible endpoint, https://api.${domain}/v1, picked by the
-# request's "model" field. To add a model: new folder (InferenceService + Backend/AIServiceBackend),
+# request's "model" field. To add a model: new folder (InferenceService, Backend, AIServiceBackend),
 # list it here, and add a rule to route/aigatewayroute.yaml.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
