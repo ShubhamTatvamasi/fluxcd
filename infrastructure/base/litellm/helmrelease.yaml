@@ -29,6 +29,9 @@ spec:
     masterkeySecretKey: masterkey
     environmentSecrets:
       - litellm-secrets
+    envVars:
+      # traefik terminates TLS, so without this LiteLLM builds http:// links (invitation/onboarding, SSO callbacks)
+      PROXY_BASE_URL: https://litellm.${domain}
     db:
       useExisting: true
       deployStandalone: false
