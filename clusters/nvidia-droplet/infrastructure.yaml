@@ -17,9 +17,4 @@ spec:
     substitute:
       domain: nvidia-droplet.shubhamtatvamasi.com
       # droplet public IP (eth0), handed to traefik via cilium LB-IPAM
-      # TODO: set to the NVIDIA droplet's public IP before bootstrapping
       traefik_lb_ip: 147.182.157.234
-      # amd | nvidia — must match the GPU operator enabled in the resourceset
-      gpu_vendor: nvidia
-      # RuntimeClass for GPU pods: "nvidia" on NVIDIA (RKE2 creates it), empty on AMD
-      gpu_runtime_class: nvidia

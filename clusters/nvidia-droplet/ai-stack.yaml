@@ -1,0 +1,24 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ai-stack
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./infrastructure/nvidia-droplet/ai-stack
+  prune: true
+  wait: true
+  timeout: 10m
+  dependsOn:
+    - name: infrastructure
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  postBuild:
+    substitute:
+      domain: nvidia-droplet.shubhamtatvamasi.com
+      # amd | nvidia — must match the GPU operator enabled in the ai-stack resourceset
+      gpu_vendor: nvidia
+      # RuntimeClass for GPU pods: "nvidia" on NVIDIA (RKE2 creates it), empty on AMD
+      gpu_runtime_class: nvidia
