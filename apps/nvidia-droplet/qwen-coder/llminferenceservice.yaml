@@ -15,6 +15,11 @@ spec:
     name: qwen-coder
     uri: hf://Qwen/Qwen2.5-Coder-7B-Instruct
   replicas: 1
+  # one shared GPU: the old vLLM pod must release its memory before the new one starts,
+  # otherwise the new pod finds too little free memory and crash-loops
+  rolloutStrategy:
+    maxSurge: 0
+    maxUnavailable: 1
   router:
     # llm-d endpoint picker + InferencePool "qwen-coder-inference-pool" (kserve-config-llm-scheduler)
     scheduler:

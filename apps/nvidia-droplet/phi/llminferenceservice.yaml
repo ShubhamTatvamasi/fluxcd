@@ -14,6 +14,11 @@ spec:
     name: phi
     uri: hf://microsoft/Phi-3.5-mini-instruct
   replicas: 1
+  # one shared GPU: the old vLLM pod must release its memory before the new one starts,
+  # otherwise the new pod finds too little free memory and crash-loops
+  rolloutStrategy:
+    maxSurge: 0
+    maxUnavailable: 1
   router:
     # llm-d endpoint picker + InferencePool (kserve-config-llm-scheduler)
     scheduler:
