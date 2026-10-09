@@ -1,0 +1,24 @@
+---
+# Qwen2.5 1.5B Instruct on the Hugging Face runtime (vLLM backend), using the node's single GPU.
+# OpenAI-compatible API: https://api.${domain}/serving/models/qwen/openai/v1/chat/completions
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: qwen
+  namespace: models
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: huggingface
+      # downloaded by the storage-initializer into /mnt/models before the server starts
+      storageUri: hf://Qwen/Qwen2.5-1.5B-Instruct
+      resources:
+        requests:
+          cpu: "2"
+          memory: 8Gi
+          nvidia.com/gpu: "1"
+        limits:
+          cpu: "4"
+          memory: 16Gi
+          nvidia.com/gpu: "1"

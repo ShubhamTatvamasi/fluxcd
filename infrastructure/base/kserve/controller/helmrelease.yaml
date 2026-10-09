@@ -16,6 +16,16 @@ spec:
       version: v0.21.0
       # owns the shared inferenceservice-config, cert-manager Issuer and ClusterStorageContainer
       createSharedResources: true
+      storage:
+        # storage-initializer init container that downloads storageUri models; the 1Gi default
+        # gets OOMKilled pulling hf:// models
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 500m
+          limits:
+            memory: 4Gi
+            cpu: "2"
       controller:
         # plain Deployments + HPA/KEDA instead of Knative
         deploymentMode: Standard

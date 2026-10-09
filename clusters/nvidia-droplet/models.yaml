@@ -1,0 +1,20 @@
+---
+# Models served by KServe (InferenceService / LLMInferenceService) on top of the ai-stack
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: models
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./apps/nvidia-droplet
+  prune: true
+  dependsOn:
+    - name: ai-stack
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  postBuild:
+    substitute:
+      domain: nvidia-droplet.shubhamtatvamasi.com
