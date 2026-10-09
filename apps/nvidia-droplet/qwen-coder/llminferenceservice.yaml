@@ -50,8 +50,11 @@ spec:
             # 64k context via static YaRN (factor 2 over the native 32k), ~2 full-length requests in
             # KV cache; agent-mode prompts (tool schemas + files) regularly exceed 32k. The JSON is
             # single-quoted because the llm-d launcher evals this string.
+            # KV cache pinned to 8 GiB (~150k tokens): sized from free memory at startup, it grabs
+            # whatever a neighbour is releasing at that moment (seen: 16 GiB while phi restarted).
             value: >-
               --gpu-memory-utilization=0.5
+              --kv-cache-memory-bytes=8589934592
               --max-model-len=65536
               --hf-overrides='{"rope_scaling":{"rope_type":"yarn","factor":2.0,"original_max_position_embeddings":32768}}'
               --enable-auto-tool-choice
