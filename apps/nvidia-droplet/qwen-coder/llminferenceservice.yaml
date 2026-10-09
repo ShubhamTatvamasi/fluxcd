@@ -26,6 +26,11 @@ spec:
     containers:
       - name: main
         env:
+          # the RHEL-based llm-d image bakes in TRITON_LIBCUDA_PATH=/usr/lib64, but on this Ubuntu node
+          # the NVIDIA toolkit mounts the driver at /usr/lib/x86_64-linux-gnu; without this, Triton's
+          # kernel build fails with "ld: cannot find -l:libcuda.so.1" and vLLM never starts
+          - name: TRITON_LIBCUDA_PATH
+            value: /usr/lib/x86_64-linux-gnu
           - name: VLLM_ADDITIONAL_ARGS
             # 50% of the 48GB card (~24GB): ~15GB bf16 weights, the rest KV cache.
             # Time-slicing doesn't isolate memory; shares on the card must sum to < 1.0.
