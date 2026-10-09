@@ -6,6 +6,7 @@ resources:
 - envoyproxy.yaml
 - gateway.yaml
 - securitypolicy.yaml
+- podmonitor.yaml
 - kserve-api-keys.yaml
 - ingress.yaml
 - kserve-ingress-gateway-tls.yaml

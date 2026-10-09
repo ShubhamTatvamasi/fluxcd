@@ -1,0 +1,18 @@
+---
+# vLLM metrics (vllm:* — TTFT, inter-token latency, queue depth, KV-cache usage, prefix-cache hits)
+# from every model, scraped by kube-prometheus-stack.
+# InferenceService predictors: the HF runtime serves /metrics on 8080 but declares no container
+# port, so scrape through the predictor Service instead of the Pod.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: inferenceservice-vllm
+  namespace: models
+spec:
+  selector:
+    matchLabels:
+      component: predictor
+  endpoints:
+    - targetPort: 8080
+      path: /metrics
+      interval: 15s

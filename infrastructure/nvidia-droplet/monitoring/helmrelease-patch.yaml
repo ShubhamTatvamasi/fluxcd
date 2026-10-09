@@ -1,0 +1,54 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  values:
+    prometheus:
+      prometheusSpec:
+        # pick up every ServiceMonitor/PodMonitor/PrometheusRule, not only ones labelled for this release
+        podMonitorSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+        retention: 15d
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 30Gi
+      ingress:
+        annotations:
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-oauth2-proxy-errors@kubernetescrd,traefik-oauth2-proxy-auth@kubernetescrd
+    grafana:
+      ingress:
+        annotations:
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-oauth2-proxy-errors@kubernetescrd,traefik-oauth2-proxy-auth@kubernetescrd
+      sidecar:
+        dashboards:
+          # dashboards from ConfigMaps in any namespace, filed under the folder in their annotation
+          searchNamespace: ALL
+          folderAnnotation: grafana_folder
+          provider:
+            foldersFromFilesStructure: true
+      # NVIDIA DCGM Exporter dashboard (GPU utilization, memory, temperature, power) from grafana.com
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+            - name: ai
+              orgId: 1
+              folder: AI
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/ai
+      dashboards:
+        ai:
+          nvidia-dcgm:
+            gnetId: 12239
+            revision: 2
+            datasource: Prometheus

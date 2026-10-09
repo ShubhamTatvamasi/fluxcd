@@ -17,8 +17,8 @@ spec:
         name: huggingface
       storageUri: hf://microsoft/Phi-3.5-mini-instruct
       args:
-        # 45% of the 48GB card (~21GB): ~7.6GB weights, the rest KV cache
-        - --gpu-memory-utilization=0.45
+        # 35% of the 48GB card (~17GB): ~7.6GB weights, the rest KV cache (qwen-coder has 0.5)
+        - --gpu-memory-utilization=0.35
         # the 128k default context needs more KV cache than this share holds
         - --max-model-len=8192
       resources:

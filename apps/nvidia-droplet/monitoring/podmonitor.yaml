@@ -1,0 +1,16 @@
+---
+# LLMInferenceService workloads (llm-d vLLM image) declare containerPort 8000
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: llminferenceservice-vllm
+  namespace: models
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: llminferenceservice
+      kserve.io/component: workload
+  podMetricsEndpoints:
+    - portNumber: 8000
+      path: /metrics
+      interval: 15s

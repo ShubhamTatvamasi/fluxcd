@@ -13,15 +13,28 @@ spec:
       kind: Gateway
       name: kserve-ingress-gateway
       namespace: kserve
+  # token usage per request, read from the response "usage" block into Envoy dynamic metadata
+  # (io.envoy.ai_gateway); the base for per-client token quotas / rate limits
+  llmRequestCosts:
+    - metadataKey: llm_input_token
+      type: InputToken
+    - metadataKey: llm_output_token
+      type: OutputToken
+    - metadataKey: llm_total_token
+      type: TotalToken
   rules:
-    - name: qwen
+    # LLMInferenceService: llm-d's endpoint picker (EPP) chooses the vLLM replica behind the
+    # InferencePool (prefix-cache and load aware) instead of a plain Service round-robin
+    - name: qwen-coder
       matches:
         - headers:
             - type: Exact
               name: x-ai-eg-model
-              value: qwen
+              value: qwen-coder
       backendRefs:
-        - name: qwen
+        - group: inference.networking.k8s.io
+          kind: InferencePool
+          name: qwen-coder-inference-pool
       timeouts:
         request: 300s
     - name: phi

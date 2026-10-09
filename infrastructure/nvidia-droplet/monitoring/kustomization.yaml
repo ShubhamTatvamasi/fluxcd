@@ -1,0 +1,18 @@
+---
+# kube-prometheus-stack from base, adjusted for the GPU/model-serving cluster:
+# scrape monitors from every namespace, keep 15d of metrics on a PVC, put Grafana and
+# Prometheus behind the oauth2-proxy (dex) login, and ship the vLLM / llm-d / DCGM dashboards.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base/kube-prometheus-stack
+- dashboards
+patches:
+- target:
+    kind: HelmRelease
+    name: kube-prometheus-stack
+  patch: |-
+    # base only picks up ServiceMonitors from namespaces labelled monitoring=enabled
+    - op: remove
+      path: /spec/values/prometheus/prometheusSpec/serviceMonitorNamespaceSelector
+- path: helmrelease-patch.yaml

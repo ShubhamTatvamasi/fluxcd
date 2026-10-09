@@ -69,6 +69,15 @@ spec:
       dependsOn:
         - "dex"
 
+    # kube-prometheus-stack (Prometheus, Grafana, ServiceMonitor/PodMonitor CRDs) with the vLLM and DCGM
+    # dashboards; Grafana/Prometheus sit behind the oauth2-proxy middlewares from traefik-routes
+    - service: "kube-prometheus-stack"
+      path: "./infrastructure/nvidia-droplet/monitoring"
+      dependsOn:
+        - "traefik-routes"
+        - "local-path-provisioner"
+        - "sealed-secrets"
+
     # portainer is a web UI for managing containers and Kubernetes clusters (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "portainer"
       path: "./infrastructure/base/portainer"
