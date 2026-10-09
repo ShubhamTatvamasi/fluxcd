@@ -1,6 +1,9 @@
 ---
 # Qwen2.5 1.5B Instruct on the Hugging Face runtime (vLLM backend), using the node's single GPU.
-# OpenAI-compatible API: https://api.${domain}/serving/models/qwen/openai/v1/chat/completions
+# OpenAI-compatible API: https://api.${domain}/openai/v1/chat/completions
+# with "Authorization: Bearer <key>" (keys: secrets/sealed-secrets/kserve-api-keys, policy: kserve/gateway)
+# (KServe's catch-all route on api.${domain}; the /serving/<ns>/<name> path route has no prefix
+# rewrite, so it 404s. A second InferenceService would also claim that catch-all.)
 apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:

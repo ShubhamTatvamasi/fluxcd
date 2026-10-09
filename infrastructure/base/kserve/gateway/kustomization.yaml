@@ -5,5 +5,7 @@ resources:
 - gatewayclass.yaml
 - envoyproxy.yaml
 - gateway.yaml
+- securitypolicy.yaml
+- kserve-api-keys.yaml
 - ingress.yaml
 - kserve-ingress-gateway-tls.yaml
