@@ -1,7 +1,8 @@
 ---
+# Envoy Gateway CRDs only; the Gateway API and GIE CRDs come from the gateway-api kustomization.
+# Plain manifests instead of the gateway-crds-helm chart: its Helm release Secret exceeds the 1 MiB limit.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - namespace.yaml
-- ocirepository.yaml
-- helmrelease.yaml
+- https://github.com/envoyproxy/gateway/releases/download/v1.8.5/envoy-gateway-crds.yaml
