@@ -37,11 +37,11 @@ spec:
           - name: TRITON_LIBCUDA_PATH
             value: /usr/lib/x86_64-linux-gnu
           - name: VLLM_ADDITIONAL_ARGS
-            # 35% of the 48GB card (~17GB): ~7.6GB weights, the rest KV cache (qwen-coder has 0.5);
-            # the 128k default context needs more KV cache than this share holds
+            # 35% of the 48GB card (~17GB): ~7.6GB weights, the rest KV cache (~25k tokens, qwen-coder
+            # has 0.5); Phi-3.5 supports 128k but this share holds ~1.5 requests of 16k
             value: >-
               --gpu-memory-utilization=0.35
-              --max-model-len=8192
+              --max-model-len=16384
         resources:
           requests:
             cpu: "1"

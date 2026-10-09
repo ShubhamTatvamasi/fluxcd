@@ -40,11 +40,15 @@ spec:
           - name: TRITON_LIBCUDA_PATH
             value: /usr/lib/x86_64-linux-gnu
           - name: VLLM_ADDITIONAL_ARGS
-            # 50% of the 48GB card (~24GB): ~15GB bf16 weights, the rest KV cache.
+            # 50% of the 48GB card (~24GB): ~15GB bf16 weights, the rest KV cache (~154k tokens).
             # Time-slicing doesn't isolate memory; shares on the card must sum to < 1.0.
+            # 64k context via static YaRN (factor 2 over the native 32k), ~2 full-length requests in
+            # KV cache; agent-mode prompts (tool schemas + files) regularly exceed 32k. The JSON is
+            # single-quoted because the llm-d launcher evals this string.
             value: >-
               --gpu-memory-utilization=0.5
-              --max-model-len=32768
+              --max-model-len=65536
+              --hf-overrides='{"rope_scaling":{"rope_type":"yarn","factor":2.0,"original_max_position_embeddings":32768}}'
               --enable-auto-tool-choice
               --tool-call-parser=hermes
         resources:

@@ -79,17 +79,28 @@ spec:
             api_key: os.environ/GATEWAY_API_KEY
           model_info:
             supports_function_calling: true
-            max_input_tokens: 32768
+            # 65536-token window (--max-model-len) split so prompt + reply always fit
+            max_input_tokens: 57344
+            max_output_tokens: 8192
         - model_name: phi
           litellm_params:
             model: openai/phi
             api_base: http://kserve-ingress-gateway.envoy-gateway-system.svc.cluster.local/v1
             api_key: os.environ/GATEWAY_API_KEY
           model_info:
-            max_input_tokens: 8192
+            # 16384-token window (--max-model-len) split so prompt + reply always fit
+            max_input_tokens: 12288
+            max_output_tokens: 4096
       litellm_settings:
         # drop OpenAI params a backend doesn't support instead of failing the request
         drop_params: true
+        # phi only holds 16k tokens (--max-model-len=16384); longer chats are retried on qwen-coder (64k)
+        context_window_fallbacks:
+          - phi: ["qwen-coder"]
+      router_settings:
+        # check prompt size against model_info.max_input_tokens before calling, so an oversized
+        # request goes straight to the fallback instead of failing on phi first
+        enable_pre_call_checks: true
       general_settings:
         master_key: os.environ/PROXY_MASTER_KEY
         # no UI sign-in with the shared UI_USERNAME/UI_PASSWORD (or master key); admins log in with
