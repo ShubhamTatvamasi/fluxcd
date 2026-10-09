@@ -8,5 +8,7 @@ resources:
 - envoyproxy.yaml
 - gateway.yaml
 - securitypolicy.yaml
+- clienttrafficpolicy.yaml
+- backendtrafficpolicy.yaml
 - podmonitor.yaml
 - kserve-api-keys.yaml

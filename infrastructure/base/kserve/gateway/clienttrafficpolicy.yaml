@@ -1,0 +1,16 @@
+---
+# The AI Gateway buffers the whole request body to read "model", and Envoy's default per-connection
+# buffer is tiny, so any request over a few tens of KB (long chats, IDE agent prompts with tool
+# schemas and files) got "413 Payload Too Large". 50Mi covers a full 64k-token context with room.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: kserve-ingress-gateway-buffer-limit
+  namespace: kserve
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: kserve-ingress-gateway
+  connection:
+    bufferLimit: 50Mi

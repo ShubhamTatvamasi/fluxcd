@@ -1,0 +1,16 @@
+---
+# Upstream side of the same limit as clienttrafficpolicy.yaml: the per-route clusters (AI Gateway
+# "models" route, KServe's llmisvc routes) default to a 32Ki buffer, so bodies above ~64Ki still got
+# "413 Payload Too Large" after the listener limit was raised. Targets the Gateway = every route on it.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: kserve-ingress-gateway-buffer-limit
+  namespace: kserve
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: kserve-ingress-gateway
+  connection:
+    bufferLimit: 50Mi
