@@ -1,6 +1,6 @@
 ---
-# LiteLLM Proxy: the public OpenAI-compatible API (https://api.${domain}/v1) and admin UI
-# (https://api.${domain}/ui). It owns users, teams, virtual keys, budgets, rate limits and spend
+# LiteLLM Proxy: the public OpenAI-compatible API (https://litellm.${domain}/v1) and admin UI
+# (https://litellm.${domain}/ui). It owns users, teams, virtual keys, budgets, rate limits and spend
 # tracking, and forwards every model call to the internal Envoy AI Gateway (kserve-ingress-gateway),
 # which routes by model name to the llm-d InferencePools.
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -57,14 +57,14 @@ spec:
       enabled: true
       className: traefik
       hosts:
-        - host: api.${domain}
+        - host: litellm.${domain}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - secretName: litellm-tls
           hosts:
-            - api.${domain}
+            - litellm.${domain}
     proxy_config:
       # models served by the cluster: the Envoy AI Gateway picks the InferencePool from "model",
       # so every entry only differs in the name. More (incl. external providers) can be added in the UI.

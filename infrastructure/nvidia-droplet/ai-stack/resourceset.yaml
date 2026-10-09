@@ -68,7 +68,7 @@ spec:
       dependsOn:
         - "kserve-crds"
 
-    # KServe Gateway on Envoy (GatewayClass, EnvoyProxy, Gateway) exposed through traefik at api.${domain}
+    # KServe Gateway on Envoy (GatewayClass, EnvoyProxy, Gateway) (internal; LiteLLM is the public entry point)
     - service: "kserve-gateway"
       path: "./infrastructure/base/kserve/gateway"
       dependsOn:
@@ -78,7 +78,7 @@ spec:
         - "traefik"
         - "sealed-secrets"
 
-    # LiteLLM Proxy: public API + admin UI at api.${domain} (users, virtual keys, budgets, rate limits),
+    # LiteLLM Proxy: public API + admin UI at litellm.${domain} (users, virtual keys, budgets, rate limits),
     # forwarding to the internal kserve-ingress-gateway with its own gateway API key
     - service: "litellm"
       path: "./infrastructure/base/litellm"

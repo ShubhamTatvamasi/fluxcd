@@ -2,8 +2,8 @@
 # Qwen2.5-Coder 7B Instruct as an LLMInferenceService: KServe's llmisvc controller runs vLLM
 # (llm-d image) plus llm-d's endpoint picker behind an InferencePool, from the kserve-config-llm-*
 # presets. Tool calling is on, so IDE agent modes (Copilot, Continue, Cline) can use it.
-# Call it through the shared endpoint: POST https://api.${domain}/v1/chat/completions
-#   -H "Authorization: Bearer <key>"  -d '{"model":"qwen-coder", ...}'
+# Call it through the shared endpoint: POST https://litellm.${domain}/v1/chat/completions
+#   -H "Authorization: Bearer <LiteLLM virtual key>"  -d '{"model":"qwen-coder", ...}'
 apiVersion: serving.kserve.io/v1alpha2
 kind: LLMInferenceService
 metadata:

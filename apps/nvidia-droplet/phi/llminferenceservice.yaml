@@ -1,8 +1,8 @@
 ---
 # Phi-3.5 mini Instruct (3.8B) as an LLMInferenceService: vLLM (llm-d image) plus llm-d's endpoint
 # picker behind the InferencePool "phi-inference-pool", on a time-sliced GPU share.
-# Call it through the shared endpoint: POST https://api.${domain}/v1/chat/completions
-#   -H "Authorization: Bearer <key>"  -d '{"model":"phi", ...}'
+# Call it through the shared endpoint: POST https://litellm.${domain}/v1/chat/completions
+#   -H "Authorization: Bearer <LiteLLM virtual key>"  -d '{"model":"phi", ...}'
 apiVersion: serving.kserve.io/v1alpha2
 kind: LLMInferenceService
 metadata:

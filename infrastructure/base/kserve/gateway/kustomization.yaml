@@ -1,6 +1,6 @@
 ---
 # Envoy Gateway for KServe/llm-d models. Internal only: LiteLLM (infrastructure/base/litellm) is the
-# public entry point at api.${domain} and calls this gateway's ClusterIP Service with its API key.
+# public entry point at litellm.${domain} and calls this gateway's ClusterIP Service with its API key.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
