@@ -1,0 +1,24 @@
+---
+# extensionManager.backendResources makes Envoy Gateway watch InferencePools, but the
+# gateway-helm chart doesn't grant that RBAC; without it the controller never turns healthy.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: envoy-gateway-inferencepool-reader
+rules:
+- apiGroups: ["inference.networking.k8s.io"]
+  resources: ["inferencepools"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: envoy-gateway-inferencepool-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: envoy-gateway-inferencepool-reader
+subjects:
+- kind: ServiceAccount
+  name: envoy-gateway
+  namespace: envoy-gateway-system
