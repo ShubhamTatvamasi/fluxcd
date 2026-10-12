@@ -1,0 +1,10 @@
+---
+# public NGC Helm repo (classic HTTP index, no OCI copy, no auth)
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: ai-dynamo
+  namespace: dynamo-system
+spec:
+  interval: 10m
+  url: https://helm.ngc.nvidia.com/nvidia/ai-dynamo

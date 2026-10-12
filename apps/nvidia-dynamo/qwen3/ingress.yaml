@@ -1,0 +1,29 @@
+---
+# Qwen3 frontend at https://qwen3.${domain}/v1 (OpenAI-compatible). The Dynamo frontend has no
+# auth of its own, so it sits behind the oauth2-proxy (dex) login like Grafana/Prometheus.
+# For API keys/budgets put LiteLLM in front instead (api_base: http://qwen3-frontend.dynamo.svc:8000/v1).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: qwen3
+  namespace: dynamo
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-oauth2-proxy-errors@kubernetescrd,traefik-oauth2-proxy-auth@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - secretName: dynamo-tls
+      hosts:
+        - qwen3.${domain}
+  rules:
+    - host: qwen3.${domain}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                # <dgd-name>-frontend, created by the Dynamo operator
+                name: qwen3-frontend
+                port:
+                  number: 8000

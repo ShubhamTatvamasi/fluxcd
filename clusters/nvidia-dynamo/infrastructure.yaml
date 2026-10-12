@@ -1,0 +1,20 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./infrastructure/nvidia-dynamo/resourceset
+  prune: true
+  wait: true
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  postBuild:
+    substitute:
+      domain: nvidia-dynamo.shubhamtatvamasi.com
+      # TODO: node public IP (eth0), handed to traefik via cilium LB-IPAM — set once the cluster exists
+      traefik_lb_ip: 0.0.0.0

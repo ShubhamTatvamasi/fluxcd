@@ -1,0 +1,12 @@
+---
+# Models served by NVIDIA Dynamo, one DynamoGraphDeployment (Frontend + workers) per folder.
+# Each DGD gets an OpenAI-compatible Service <dgd-name>-frontend:8000 in the dynamo namespace.
+# Metrics are scraped by the PodMonitors the dynamo-platform chart creates (no per-model monitors).
+# To add a model: copy qwen3/, rename the DGD, and add an Ingress host or path for its frontend.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- namespace.yaml
+- model-cache.yaml
+- dynamo-tls.yaml
+- qwen3

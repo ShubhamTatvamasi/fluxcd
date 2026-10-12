@@ -1,0 +1,16 @@
+---
+# Shared Hugging Face cache, mounted at HF_HOME by every worker, so a pod restart or rollout
+# doesn't download the weights again. local-path is ReadWriteOnce: fine on a single GPU node
+# (all pods land on it). For multi-node switch to an RWX class (NFS, Longhorn RWX, CephFS).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: model-cache
+  namespace: dynamo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 100Gi

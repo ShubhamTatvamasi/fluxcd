@@ -1,0 +1,58 @@
+---
+# NVIDIA Dynamo platform: the cluster-wide Dynamo operator, which reconciles DynamoGraphDeployments
+# (Frontend + vLLM/SGLang/TensorRT-LLM workers) into Deployments/Services.
+# CRDs (nvidia.com DynamoGraphDeployment, DynamoComponentDeployment, DynamoModel, ...) are not in the
+# chart: since 1.0 the operator's crd-apply init container installs/upgrades them from its image
+# (upgradeCRD: true), so DGDs must wait for this release to be Ready.
+# Admission/conversion webhooks are mandatory; the operator issues and rotates their cert itself.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dynamo-platform
+  namespace: dynamo-system
+spec:
+  interval: 10m
+  timeout: 10m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  chartRef:
+    kind: HelmChart
+    name: dynamo-platform
+    namespace: dynamo-system
+  values:
+    global:
+      # Discovery runs on Kubernetes (EndpointSlices) and the request/event planes on TCP/ZMQ,
+      # so neither etcd nor NATS is needed for single-node aggregated/disaggregated serving.
+      etcd:
+        install: false
+      nats:
+        install: false
+      # Grove (PodCliqueSets) + KAI scheduler are only needed for multinode workers
+      # (one model spanning several nodes). Turn both on together for that; 1.5.x needs
+      # kai-scheduler >= v0.17.0 and Grove >= v0.1.0-alpha.13, which the chart bundles.
+      grove:
+        install: false
+      kai-scheduler:
+        install: false
+    dynamo-operator:
+      # cluster-wide operator (namespace-restricted mode is dev/test only and can't apply CRDs)
+      upgradeCRD: true
+      namespaceRestriction:
+        enabled: false
+      dynamo:
+        metrics:
+          # Planner (SLA autoscaling) reads TTFT/ITL/queue metrics from here
+          prometheusEndpoint: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+          # PodMonitors for frontend/worker/planner/router/epp pods (any namespace). Explicit true:
+          # the null default auto-detects the monitoring.coreos.com CRDs at render time.
+          podMonitors:
+            enabled: true
+      # operator ServiceMonitor; kube-prometheus-stack picks up every monitor, the label is cosmetic
+      metricsService:
+        enabled: true
+        labels:
+          release: kube-prometheus-stack

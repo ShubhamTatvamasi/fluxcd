@@ -1,0 +1,53 @@
+---
+# GPU and model-serving stack: GPU operator and the NVIDIA Dynamo platform (operator).
+# Applied after the "infrastructure" ResourceSet; dependsOn names may point at its Kustomizations.
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: ai-stack
+  namespace: flux-system
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: "10m"
+spec:
+  inputs:
+    # NVIDIA GPU operator: driver (skipped if preinstalled on the host), container toolkit, device plugin, DCGM exporter and NFD
+    - service: "nvidia-gpu-operator"
+      path: "./infrastructure/base/nvidia-gpu-operator"
+
+    # Dynamo platform: cluster-wide operator that installs the nvidia.com Dynamo CRDs itself and
+    # reconciles DynamoGraphDeployments; its PodMonitors need the monitoring.coreos.com CRDs
+    - service: "dynamo-platform"
+      path: "./infrastructure/base/dynamo-platform"
+      dependsOn:
+        - "nvidia-gpu-operator"
+        - "kube-prometheus-stack"
+
+  resourcesTemplate: |
+    apiVersion: kustomize.toolkit.fluxcd.io/v1
+    kind: Kustomization
+    metadata:
+      name: << inputs.service >>
+      namespace: flux-system
+    spec:
+      interval: 10m0s
+      path: << inputs.path >>
+      prune: true
+      wait: true
+      timeout: 10m
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+
+      <<- if index inputs "dependsOn" >>
+      dependsOn:
+        <<- range index inputs "dependsOn" >>
+        - name: << . >>
+        <<- end >>
+      <<- end >>
+
+      postBuild:
+        substitute:
+          domain: "${domain}"
+          gpu_vendor: "${gpu_vendor}"
+          gpu_runtime_class: "${gpu_runtime_class}"

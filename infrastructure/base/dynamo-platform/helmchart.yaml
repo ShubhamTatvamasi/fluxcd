@@ -1,0 +1,13 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: dynamo-platform
+  namespace: dynamo-system
+spec:
+  interval: 10m
+  chart: dynamo-platform
+  version: "1.5.1"
+  sourceRef:
+    name: ai-dynamo
+    kind: HelmRepository

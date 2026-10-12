@@ -1,0 +1,73 @@
+---
+# Qwen3-0.6B with Dynamo, aggregated serving (based on ai-dynamo/dynamo v1.5.1
+# examples/backends/vllm/deploy/agg.yaml): one Frontend (OpenAI HTTP API, KV-aware router,
+# tokenization) and one vLLM worker doing prefill + decode on one GPU.
+# The operator creates Service qwen3-frontend:8000 (/v1/models, /v1/chat/completions); workers
+# register themselves through Kubernetes discovery, so no etcd/NATS.
+# For disaggregated serving, split the worker into type: prefill / type: decode components with
+# --disaggregation-mode prefill|decode and --kv-transfer-config '{"kv_connector":"NixlConnector","kv_role":"kv_both"}'
+# (examples/backends/vllm/deploy/disagg.yaml); each needs its own GPU.
+apiVersion: nvidia.com/v1beta1
+kind: DynamoGraphDeployment
+metadata:
+  name: qwen3
+  namespace: dynamo
+spec:
+  components:
+    - name: Frontend
+      type: frontend
+      replicas: 1
+      podTemplate:
+        spec:
+          containers:
+            - name: main
+              # the operator's webhook requires an image with a semver tag on every component
+              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.5.1
+              resources:
+                requests:
+                  cpu: 250m
+                  memory: 1Gi
+    - name: VllmDecodeWorker
+      type: worker
+      replicas: 1
+      podTemplate:
+        spec:
+          containers:
+            - name: main
+              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.5.1
+              workingDir: /workspace/examples/backends/vllm
+              command:
+                - python3
+                - -m
+                - dynamo.vllm
+              args:
+                - --model
+                - Qwen/Qwen3-0.6B
+                # time-sliced GPU (see nvidia-gpu-operator): leave room for neighbours on the card
+                - --gpu-memory-utilization
+                - "0.5"
+              env:
+                - name: HF_HOME
+                  value: /home/dynamo/.cache/huggingface
+              # HF_TOKEN for gated models; Qwen3 is public, so the secret may be absent:
+              #   kubectl -n dynamo create secret generic hf-token-secret --from-literal=HF_TOKEN=<token>
+              envFrom:
+                - secretRef:
+                    name: hf-token-secret
+                    optional: true
+              volumeMounts:
+                - name: model-cache
+                  mountPath: /home/dynamo/.cache/huggingface
+              resources:
+                requests:
+                  cpu: "1"
+                  memory: 8Gi
+                  ephemeral-storage: 2Gi
+                  nvidia.com/gpu: "1"
+                limits:
+                  memory: 16Gi
+                  nvidia.com/gpu: "1"
+          volumes:
+            - name: model-cache
+              persistentVolumeClaim:
+                claimName: model-cache
