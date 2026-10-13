@@ -46,6 +46,12 @@ spec:
                 # time-sliced GPU (see nvidia-gpu-operator): leave room for neighbours on the card
                 - --gpu-memory-utilization
                 - "0.5"
+                # Qwen3 emits <tool_call>{...}</tool_call> (hermes format) and <think>...</think>: parse them into
+                # OpenAI tool_calls / reasoning_content instead of returning them as plain text
+                - --dyn-tool-call-parser
+                - hermes
+                - --dyn-reasoning-parser
+                - qwen3
               env:
                 - name: HF_HOME
                   value: /home/dynamo/.cache/huggingface
