@@ -63,6 +63,10 @@ spec:
                 - qwen3_coder
                 - --dyn-reasoning-parser
                 - qwen3
+                # answer directly unless a request asks for thinking
+                # (chat_template_kwargs: {"enable_thinking": true}); it spent 1500+ tokens on one-line answers
+                - --dyn-default-thinking-mode
+                - disabled
               env:
                 - name: HF_HOME
                   value: /home/dynamo/.cache/huggingface
