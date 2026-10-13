@@ -3,9 +3,10 @@
 # (OpenAI HTTP API, KV-aware router, tokenization) and one vLLM worker doing prefill + decode on the GPU.
 # The operator creates Service qwen35-frontend:8000 (/v1/models, /v1/chat/completions); workers
 # register themselves through Kubernetes discovery, so no etcd/NATS. LiteLLM serves it as "qwen3.5".
-# Sizing for the 20 GB RTX 4000 Ada (sm_89, native FP8): 14 GB of weights at 0.9 utilization leaves
-# ~3.5 GB of cache, enough for 64k context since 24 of the 32 layers are linear attention.
-# The worker takes ~90% of the GPU, so the operator's rolling update (new worker up before the old one
+# Sizing for the 20 GB RTX 4000 Ada (sm_89, native FP8): text-only weights take 11.9 GiB, CUDA graphs and
+# activations ~4.5 GiB, and the cache gets the rest; one 64k request needs 2.1 GiB (24 of the 32 layers
+# are linear attention, so the cache per token is small).
+# The worker takes ~95% of the GPU, so the operator's rolling update (new worker up before the old one
 # goes) deadlocks on any worker change: remove the DGD from the kustomization first, let Flux prune it,
 # then add the new spec back.
 apiVersion: nvidia.com/v1beta1
@@ -48,9 +49,14 @@ spec:
                 - --language-model-only
                 - --max-model-len
                 - "65536"
-                # the only model on the (time-sliced) GPU
+                # the only model on the (time-sliced) GPU; at 0.9 only 1.21 GiB was left for the cache,
+                # short of the 2.11 GiB one 64k-token request needs
                 - --gpu-memory-utilization
-                - "0.9"
+                - "0.95"
+                # a handful of concurrent requests (coding assistants), not vLLM's default 256: smaller
+                # activation/CUDA-graph workspace leaves more of the GPU for the cache
+                - --max-num-seqs
+                - "16"
                 # Qwen3.5 emits <tool_call><function=...> (qwen3_coder format) and <think>...</think>: parse them
                 # into OpenAI tool_calls / reasoning_content instead of returning them as plain text
                 - --dyn-tool-call-parser
