@@ -74,3 +74,6 @@ spec:
           DCGM_FI_DEV_CORRECTABLE_REMAPPED_ROWS,  counter, Number of remapped rows for correctable errors
           DCGM_FI_DEV_ROW_REMAP_FAILURE,          gauge,   Whether remapping of rows has failed
           DCGM_FI_DRIVER_VERSION,                 label,   Driver Version
+          DCGM_FI_DEV_CLOCKS_EVENT_REASONS,       gauge,   Current clock event reasons (bitmask).
+          DCGM_FI_DEV_ECC_SBE_VOL_TOTAL,          counter, Total number of single-bit volatile ECC errors.
+          DCGM_FI_DEV_ECC_DBE_VOL_TOTAL,          counter, Total number of double-bit volatile ECC errors.
