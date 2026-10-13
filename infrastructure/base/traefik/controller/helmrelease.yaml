@@ -22,6 +22,14 @@ spec:
       fields:
         headers:
           defaultMode: keep
+          # never write credentials to the logs: API keys (LiteLLM sk-..., bearer tokens) and the
+          # oauth2-proxy / app session cookies
+          names:
+            Authorization: drop
+            Proxy-Authorization: drop
+            X-Api-Key: drop
+            Cookie: drop
+            Set-Cookie: drop
     metrics:
       prometheus:
         service:
