@@ -94,6 +94,9 @@ spec:
       litellm_settings:
         # drop OpenAI params a backend doesn't support instead of failing the request
         drop_params: true
+        # Prometheus metrics on /metrics, readable without a key so Portainer can scrape them
+        callbacks: ["prometheus"]
+        require_auth_for_metrics_endpoint: false
         # phi only holds 16k tokens (--max-model-len=16384); longer chats are retried on qwen-coder (64k)
         context_window_fallbacks:
           - phi: ["qwen-coder"]

@@ -32,6 +32,9 @@ patches:
         litellm_settings:
           # drop OpenAI params a backend doesn't support instead of failing the request
           drop_params: true
+          # Prometheus metrics on /metrics, readable without a key so Portainer can scrape them
+          callbacks: ["prometheus"]
+          require_auth_for_metrics_endpoint: false
         router_settings:
           # check prompt size against model_info.max_input_tokens before calling
           enable_pre_call_checks: true
