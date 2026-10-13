@@ -16,5 +16,5 @@ spec:
   postBuild:
     substitute:
       domain: nvidia-dynamo.shubhamtatvamasi.com
-      # TODO: node public IP (eth0), handed to traefik via cilium LB-IPAM — set once the cluster exists
-      traefik_lb_ip: 0.0.0.0
+      # droplet public IP (eth0), handed to traefik via cilium LB-IPAM
+      traefik_lb_ip: 159.203.7.44
