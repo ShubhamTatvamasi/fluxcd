@@ -3,10 +3,12 @@
 # Each DGD gets an OpenAI-compatible Service <dgd-name>-frontend:8000 in the dynamo namespace (in-cluster only);
 # LiteLLM (infrastructure/nvidia-dynamo/litellm) is the public API in front of them.
 # Metrics are scraped by the PodMonitors the dynamo-platform chart creates (no per-model monitors).
-# To add a model: copy qwen3/, rename the DGD, and add a model_list entry for its frontend in the LiteLLM overlay.
+# To add a model: copy qwen35/, rename the DGD, and add a model_list entry for its frontend in the LiteLLM overlay.
+# One GPU: a worker change deadlocks the operator's rolling update, so remove the old DGD (commit, let Flux prune)
+# before adding its replacement.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - namespace.yaml
 - model-cache.yaml
-# - qwen35  (re-added once qwen3 is pruned, so two workers never share the GPU)
+- qwen35

@@ -17,16 +17,17 @@ patches:
         # models served by Dynamo: each DGD's <dgd-name>-frontend:8000 Service, called by its served
         # model name (--model) and exposed here under a short alias. More can be added in the UI.
         model_list:
-          - model_name: qwen3
+          - model_name: qwen3.5
             litellm_params:
-              model: openai/Qwen/Qwen3-0.6B
-              api_base: http://qwen3-frontend.dynamo.svc.cluster.local:8000/v1
+              model: openai/RedHatAI/Qwen3.5-9B-FP8-dynamic
+              api_base: http://qwen35-frontend.dynamo.svc.cluster.local:8000/v1
               # the Dynamo frontend has no auth (only reachable in-cluster); the openai client still wants a key
               api_key: none
             model_info:
               supports_function_calling: true
-              # 40960-token window (Qwen3-0.6B max_seq_len) split so prompt + reply always fit
-              max_input_tokens: 32768
+              supports_reasoning: true
+              # 65536-token window (--max-model-len) split so prompt + reply always fit
+              max_input_tokens: 57344
               max_output_tokens: 8192
         litellm_settings:
           # drop OpenAI params a backend doesn't support instead of failing the request
