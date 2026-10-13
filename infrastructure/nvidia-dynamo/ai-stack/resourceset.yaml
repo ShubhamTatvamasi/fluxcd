@@ -1,5 +1,5 @@
 ---
-# GPU and model-serving stack: GPU operator and the NVIDIA Dynamo platform (operator).
+# GPU and model-serving stack: GPU operator, the NVIDIA Dynamo platform (operator) and LiteLLM.
 # Applied after the "infrastructure" ResourceSet; dependsOn names may point at its Kustomizations.
 apiVersion: fluxcd.controlplane.io/v1
 kind: ResourceSet
@@ -21,6 +21,15 @@ spec:
       dependsOn:
         - "nvidia-gpu-operator"
         - "kube-prometheus-stack"
+
+    # LiteLLM Proxy: public API + admin UI at litellm.${domain} (users, virtual keys, budgets, rate limits),
+    # forwarding to the in-cluster Dynamo frontends (<dgd-name>-frontend.dynamo.svc:8000)
+    - service: "litellm"
+      path: "./infrastructure/nvidia-dynamo/litellm"
+      dependsOn:
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
 
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1

@@ -1,0 +1,43 @@
+---
+# LiteLLM from base as the public API for the Dynamo models (https://litellm.${domain}/v1, UI at /ui):
+# virtual keys, users/teams, budgets, rate limits and spend tracking. The base model list points at the
+# KServe gateway, so replace the whole proxy_config with the Dynamo frontends (one entry per DGD).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base/litellm
+patches:
+- target:
+    kind: HelmRelease
+    name: litellm
+  patch: |-
+    - op: replace
+      path: /spec/values/proxy_config
+      value:
+        # models served by Dynamo: each DGD's <dgd-name>-frontend:8000 Service, called by its served
+        # model name (--model) and exposed here under a short alias. More can be added in the UI.
+        model_list:
+          - model_name: qwen3
+            litellm_params:
+              model: openai/Qwen/Qwen3-0.6B
+              api_base: http://qwen3-frontend.dynamo.svc.cluster.local:8000/v1
+              # the Dynamo frontend has no auth (only reachable in-cluster); the openai client still wants a key
+              api_key: none
+            model_info:
+              supports_function_calling: true
+              # 40960-token window (Qwen3-0.6B max_seq_len) split so prompt + reply always fit
+              max_input_tokens: 32768
+              max_output_tokens: 8192
+        litellm_settings:
+          # drop OpenAI params a backend doesn't support instead of failing the request
+          drop_params: true
+        router_settings:
+          # check prompt size against model_info.max_input_tokens before calling
+          enable_pre_call_checks: true
+        general_settings:
+          master_key: os.environ/PROXY_MASTER_KEY
+          # no UI sign-in with the shared UI_USERNAME/UI_PASSWORD (or master key); admins log in with
+          # their own accounts (invited via /invitation/new). The master key still works for the API.
+          disable_env_credential_login: true
+          # models added in the UI are stored in Postgres alongside the ones above
+          store_model_in_db: true
