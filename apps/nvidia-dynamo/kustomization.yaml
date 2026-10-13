@@ -9,4 +9,4 @@ kind: Kustomization
 resources:
 - namespace.yaml
 - model-cache.yaml
-- qwen3
+# - qwen35  (re-added once qwen3 is pruned, so two workers never share the GPU)
