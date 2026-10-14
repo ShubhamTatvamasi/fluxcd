@@ -9,4 +9,4 @@ resources:
 - namespace.yaml
 - monitoring
 - route
-- qwen3
+- qwen25

@@ -25,15 +25,15 @@ spec:
   # every rule targets an LLMInferenceService's InferencePool: llm-d's endpoint picker (EPP) chooses
   # the vLLM replica (prefix-cache and load aware) instead of a plain Service round-robin
   rules:
-    - name: qwen3-0.6b
+    - name: qwen2.5-1.5b
       matches:
         - headers:
             - type: Exact
               name: x-ai-eg-model
-              value: qwen3-0.6b
+              value: qwen2.5-1.5b
       backendRefs:
         - group: inference.networking.k8s.io
           kind: InferencePool
-          name: qwen3-inference-pool
+          name: qwen25-inference-pool
       timeouts:
         request: 300s

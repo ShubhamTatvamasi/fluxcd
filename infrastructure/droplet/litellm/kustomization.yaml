@@ -17,12 +17,13 @@ patches:
       value:
         # models served by KServe: the Envoy AI Gateway picks the InferencePool from "model"
         model_list:
-          - model_name: qwen3-0.6b
+          - model_name: qwen2.5-1.5b
             litellm_params:
-              model: openai/qwen3-0.6b
+              model: openai/qwen2.5-1.5b
               api_base: http://kserve-ingress-gateway.envoy-gateway-system.svc.cluster.local/v1
               api_key: os.environ/GATEWAY_API_KEY
             model_info:
+              supports_function_calling: true
               # 8192-token window (--max-model-len) split so prompt + reply always fit
               max_input_tokens: 6144
               max_output_tokens: 2048

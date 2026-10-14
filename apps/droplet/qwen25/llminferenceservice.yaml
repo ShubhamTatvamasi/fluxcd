@@ -1,19 +1,19 @@
 ---
-# Qwen3-0.6B as an LLMInferenceService: vLLM (llm-d image) plus llm-d's endpoint picker behind the
-# InferencePool "qwen3-inference-pool". A deliberately tiny model: the card is shared with Ollama
-# (and its qwen3:0.6b), so this only takes a small slice of the GPU.
+# Qwen2.5-1.5B-Instruct as an LLMInferenceService: vLLM (llm-d image) plus llm-d's endpoint picker behind the
+# InferencePool "qwen25-inference-pool". A deliberately small model (no thinking mode, native tool calling): the card is shared
+# with Ollama (qwen3:0.6b), so this only takes a small slice of the GPU.
 # Call it through the shared endpoint: POST https://litellm.${domain}/v1/chat/completions
-#   -H "Authorization: Bearer <LiteLLM virtual key>"  -d '{"model":"qwen3-0.6b", ...}'
+#   -H "Authorization: Bearer <LiteLLM virtual key>"  -d '{"model":"qwen2.5-1.5b", ...}'
 apiVersion: serving.kserve.io/v1alpha2
 kind: LLMInferenceService
 metadata:
-  name: qwen3
+  name: qwen25
   namespace: models
 spec:
   model:
     # served name (vLLM --served-model-name); must match the AIGatewayRoute rule value
-    name: qwen3-0.6b
-    uri: hf://Qwen/Qwen3-0.6B
+    name: qwen2.5-1.5b
+    uri: hf://Qwen/Qwen2.5-1.5B-Instruct
   replicas: 1
   # one shared GPU: the old vLLM pod must release its memory before the new one starts,
   # otherwise the new pod finds too little free memory and crash-loops
@@ -31,7 +31,7 @@ spec:
               requests:
                 cpu: 100m
                 memory: 256Mi
-    # KServe's own path routes (/models/qwen3/v1/...); clients use the AIGatewayRoute instead
+    # KServe's own path routes (/models/qwen25/v1/...); clients use the AIGatewayRoute instead
     route: {}
     gateway: {}
   template:
@@ -43,12 +43,15 @@ spec:
           - name: TRITON_LIBCUDA_PATH
             value: /usr/lib/x86_64-linux-gnu
           - name: VLLM_ADDITIONAL_ARGS
-            # 25% of the 20GB RTX 4000 Ada (~5GB): ~1.2GB weights, KV cache pinned to 2 GiB so it
-            # doesn't depend on what Ollama holds at startup; 8k context is plenty for 0.6B
+            # 35% of the 20GB RTX 4000 Ada (~7GB): ~3GB weights, KV cache pinned to 2 GiB so it
+            # doesn't depend on what Ollama holds at startup; 8k context is plenty for 1.5B;
+            # Qwen2.5 emits hermes-style <tool_call> JSON, so clients sending tool_choice=auto work
             value: >-
-              --gpu-memory-utilization=0.25
+              --gpu-memory-utilization=0.35
               --kv-cache-memory-bytes=2147483648
               --max-model-len=8192
+              --enable-auto-tool-choice
+              --tool-call-parser=hermes
         resources:
           requests:
             cpu: "1"
