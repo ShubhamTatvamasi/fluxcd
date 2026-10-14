@@ -15,14 +15,14 @@ spec:
     - service: "nvidia-gpu-operator"
       path: "./infrastructure/base/nvidia-gpu-operator"
 
-    # GPUStack — GPU cluster manager for serving models (needs NFD labels from the GPU operator, traefik, local-path-provisioner, and sealed-secrets)
-    - service: "gpustack"
-      path: "./infrastructure/base/gpustack"
-      dependsOn:
-        - "nvidia-gpu-operator"
-        - "traefik"
-        - "local-path-provisioner"
-        - "sealed-secrets"
+    # GPUStack — GPU cluster manager for serving models (needs NFD labels from the GPU operator, traefik, local-path-provisioner, and sealed-secrets) (off: its device manager takes over nvidia.com/gpu and breaks the operator's time-slicing)
+    # - service: "gpustack"
+    #   path: "./infrastructure/base/gpustack"
+    #   dependsOn:
+    #     - "nvidia-gpu-operator"
+    #     - "traefik"
+    #     - "local-path-provisioner"
+    #     - "sealed-secrets"
 
     # Open WebUI — chat UI with a bundled Ollama running on the node's GPU (needs the GPU operator, traefik, local-path-provisioner, and sealed-secrets)
     - service: "open-webui"
