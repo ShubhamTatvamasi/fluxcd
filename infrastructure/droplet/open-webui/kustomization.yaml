@@ -1,0 +1,16 @@
+---
+# Open WebUI from base, with Ollama on the NVIDIA GPU operator's time-sliced nvidia.com/gpu.
+# Base swaps the chart's GPU limit for <vendor>.com/gpu.shared, which only GPUStack's device manager
+# serves (its CDI names don't resolve against the operator's CDI spec), so drop that post-renderer
+# and keep the chart's own nvidia.com/gpu: 1 request.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base/open-webui
+patches:
+- target:
+    kind: HelmRelease
+    name: open-webui
+  patch: |-
+    - op: remove
+      path: /spec/postRenderers

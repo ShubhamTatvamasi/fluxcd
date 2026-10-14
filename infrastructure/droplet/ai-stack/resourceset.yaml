@@ -26,7 +26,7 @@ spec:
 
     # Open WebUI — chat UI with a bundled Ollama running on the node's GPU (needs the GPU operator, traefik, local-path-provisioner, and sealed-secrets)
     - service: "open-webui"
-      path: "./infrastructure/base/open-webui"
+      path: "./infrastructure/droplet/open-webui"
       dependsOn:
         - "nvidia-gpu-operator"
         - "traefik"
