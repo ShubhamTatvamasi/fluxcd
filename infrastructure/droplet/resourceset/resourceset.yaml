@@ -69,9 +69,10 @@ spec:
       dependsOn:
         - "dex"
 
-    # kube-prometheus-stack (Prometheus, Grafana, ServiceMonitor/PodMonitor CRDs)
+    # kube-prometheus-stack (Prometheus, Grafana, ServiceMonitor/PodMonitor CRDs); Grafana/Prometheus sit behind the
+    # oauth2-proxy middlewares from traefik-routes
     - service: "kube-prometheus-stack"
-      path: "./infrastructure/base/kube-prometheus-stack"
+      path: "./infrastructure/droplet/monitoring"
       dependsOn:
         - "traefik-routes"
         - "local-path-provisioner"

@@ -1,0 +1,8 @@
+---
+# kube-prometheus-stack from base, with Grafana and Prometheus behind the oauth2-proxy (dex) login.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base/kube-prometheus-stack
+patches:
+- path: helmrelease-patch.yaml

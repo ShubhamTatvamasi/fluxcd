@@ -1,0 +1,33 @@
+---
+# LiteLLM from base as the public API for the Dynamo models (https://litellm.${domain}/v1, UI at /ui).
+# The base model list points at the KServe gateway, so replace the whole proxy_config; no models are
+# defined yet, add one entry per Dynamo frontend (<dgd-name>-frontend.dynamo.svc:8000) or in the UI.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base/litellm
+patches:
+- target:
+    kind: HelmRelease
+    name: litellm
+  patch: |-
+    - op: replace
+      path: /spec/values/proxy_config
+      value:
+        model_list: []
+        litellm_settings:
+          # drop OpenAI params a backend doesn't support instead of failing the request
+          drop_params: true
+          # Prometheus metrics on /metrics, readable without a key so Portainer can scrape them
+          callbacks: ["prometheus"]
+          require_auth_for_metrics_endpoint: false
+        router_settings:
+          # check prompt size against model_info.max_input_tokens before calling
+          enable_pre_call_checks: true
+        general_settings:
+          master_key: os.environ/PROXY_MASTER_KEY
+          # no UI sign-in with the shared UI_USERNAME/UI_PASSWORD (or master key); admins log in with
+          # their own accounts (invited via /invitation/new). The master key still works for the API.
+          disable_env_credential_login: true
+          # models added in the UI are stored in Postgres
+          store_model_in_db: true
