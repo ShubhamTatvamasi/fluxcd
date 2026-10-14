@@ -1,0 +1,18 @@
+---
+# Single-IP pool holding the droplet's public address, so traefik's LoadBalancer
+# service is served directly on the node by cilium's kube-proxy replacement.
+# No L2 announcement policy: the IP already lives on eth0, nothing to ARP for.
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: ip-pool-static
+spec:
+  blocks:
+  - start: ${traefik_lb_ip}
+    stop: ${traefik_lb_ip}
+  serviceSelector:
+    matchExpressions:
+    - key: io.kubernetes.service.namespace
+      operator: In
+      values:
+      - traefik
