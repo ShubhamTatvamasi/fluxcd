@@ -1,0 +1,23 @@
+---
+# Models served by KServe (InferenceService / LLMInferenceService) on top of the ai-stack
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: models
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./apps/droplet
+  prune: true
+  # ai-stack (the ResourceSet) is Ready as soon as it has created its Kustomizations, so also wait on
+  # kserve-runtimes, which comes last in the KServe chain (CRDs, controllers, webhooks)
+  dependsOn:
+    - name: ai-stack
+    - name: kserve-runtimes
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  postBuild:
+    substitute:
+      domain: droplet.shubhamtatvamasi.com

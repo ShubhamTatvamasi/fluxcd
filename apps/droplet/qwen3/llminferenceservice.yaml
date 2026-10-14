@@ -1,0 +1,60 @@
+---
+# Qwen3-0.6B as an LLMInferenceService: vLLM (llm-d image) plus llm-d's endpoint picker behind the
+# InferencePool "qwen3-inference-pool". A deliberately tiny model: the card is shared with Ollama
+# (and its qwen3:0.6b), so this only takes a small slice of the GPU.
+# Call it through the shared endpoint: POST https://litellm.${domain}/v1/chat/completions
+#   -H "Authorization: Bearer <LiteLLM virtual key>"  -d '{"model":"qwen3-0.6b", ...}'
+apiVersion: serving.kserve.io/v1alpha2
+kind: LLMInferenceService
+metadata:
+  name: qwen3
+  namespace: models
+spec:
+  model:
+    # served name (vLLM --served-model-name); must match the AIGatewayRoute rule value
+    name: qwen3-0.6b
+    uri: hf://Qwen/Qwen3-0.6B
+  replicas: 1
+  # one shared GPU: the old vLLM pod must release its memory before the new one starts,
+  # otherwise the new pod finds too little free memory and crash-loops
+  rolloutStrategy:
+    maxSurge: 0
+    maxUnavailable: 1
+  router:
+    # llm-d endpoint picker + InferencePool (kserve-config-llm-scheduler)
+    scheduler:
+      template:
+        containers:
+          - name: main
+            # the preset requests 1 CPU / 2Gi per picker; one model replica needs far less
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+    # KServe's own path routes (/models/qwen3/v1/...); clients use the AIGatewayRoute instead
+    route: {}
+    gateway: {}
+  template:
+    containers:
+      - name: main
+        env:
+          # the RHEL-based llm-d image bakes in TRITON_LIBCUDA_PATH=/usr/lib64, but on this Ubuntu node
+          # the NVIDIA toolkit mounts the driver at /usr/lib/x86_64-linux-gnu
+          - name: TRITON_LIBCUDA_PATH
+            value: /usr/lib/x86_64-linux-gnu
+          - name: VLLM_ADDITIONAL_ARGS
+            # 25% of the 20GB RTX 4000 Ada (~5GB): ~1.2GB weights, KV cache pinned to 2 GiB so it
+            # doesn't depend on what Ollama holds at startup; 8k context is plenty for 0.6B
+            value: >-
+              --gpu-memory-utilization=0.25
+              --kv-cache-memory-bytes=2147483648
+              --max-model-len=8192
+        resources:
+          requests:
+            cpu: "1"
+            memory: 4Gi
+            nvidia.com/gpu: "1"
+          limits:
+            cpu: "2"
+            memory: 8Gi
+            nvidia.com/gpu: "1"

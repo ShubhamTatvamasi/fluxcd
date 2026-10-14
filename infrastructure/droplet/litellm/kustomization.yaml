@@ -1,7 +1,8 @@
 ---
-# LiteLLM from base as the public API for the Dynamo models (https://litellm.${domain}/v1, UI at /ui).
-# The base model list points at the KServe gateway, so replace the whole proxy_config; no models are
-# defined yet, add one entry per Dynamo frontend (<dgd-name>-frontend.dynamo.svc:8000) or in the UI.
+# LiteLLM from base as the public API for the models (https://litellm.${domain}/v1, UI at /ui).
+# The base model list is for another cluster, so replace the whole proxy_config. Models are served by
+# KServe behind its gateway (see apps/droplet); Dynamo frontends (<dgd-name>-frontend.dynamo.svc:8000)
+# or models added in the UI work too.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
@@ -14,7 +15,17 @@ patches:
     - op: replace
       path: /spec/values/proxy_config
       value:
-        model_list: []
+        # models served by KServe: the Envoy AI Gateway picks the InferencePool from "model"
+        model_list:
+          - model_name: qwen3-0.6b
+            litellm_params:
+              model: openai/qwen3-0.6b
+              api_base: http://kserve-ingress-gateway.envoy-gateway-system.svc.cluster.local/v1
+              api_key: os.environ/GATEWAY_API_KEY
+            model_info:
+              # 8192-token window (--max-model-len) split so prompt + reply always fit
+              max_input_tokens: 6144
+              max_output_tokens: 2048
         litellm_settings:
           # drop OpenAI params a backend doesn't support instead of failing the request
           drop_params: true

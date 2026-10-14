@@ -1,0 +1,39 @@
+---
+# One endpoint for every model: Envoy AI Gateway reads "model" from the request body into the
+# x-ai-eg-model header and routes on it. GET /v1/models lists the rule values below.
+# Auth (API key) is the SecurityPolicy on the Gateway, so it covers every rule.
+apiVersion: aigateway.envoyproxy.io/v1beta1
+kind: AIGatewayRoute
+metadata:
+  name: models
+  namespace: models
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: kserve-ingress-gateway
+      namespace: kserve
+  # token usage per request, read from the response "usage" block into Envoy dynamic metadata
+  # (io.envoy.ai_gateway); the base for per-client token quotas / rate limits
+  llmRequestCosts:
+    - metadataKey: llm_input_token
+      type: InputToken
+    - metadataKey: llm_output_token
+      type: OutputToken
+    - metadataKey: llm_total_token
+      type: TotalToken
+  # every rule targets an LLMInferenceService's InferencePool: llm-d's endpoint picker (EPP) chooses
+  # the vLLM replica (prefix-cache and load aware) instead of a plain Service round-robin
+  rules:
+    - name: qwen3-0.6b
+      matches:
+        - headers:
+            - type: Exact
+              name: x-ai-eg-model
+              value: qwen3-0.6b
+      backendRefs:
+        - group: inference.networking.k8s.io
+          kind: InferencePool
+          name: qwen3-inference-pool
+      timeouts:
+        request: 300s
