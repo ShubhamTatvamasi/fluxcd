@@ -92,12 +92,12 @@ spec:
         - "dex"
 
     # portainer is a web UI for managing containers and Kubernetes clusters (needs traefik, local-path-provisioner, and sealed-secrets)
-    - service: "portainer"
-      path: "./infrastructure/base/portainer"
-      dependsOn:
-        - "traefik"
-        - "local-path-provisioner"
-        - "sealed-secrets"
+    # - service: "portainer"
+    #   path: "./infrastructure/base/portainer"
+    #   dependsOn:
+    #     - "traefik"
+    #     - "local-path-provisioner"
+    #     - "sealed-secrets"
 
     # portainer-run is a companion to portainer that runs the portainer agent on each node, so that portainer can manage the nodes and containers.
     # - service: "portainer-run"
@@ -262,12 +262,12 @@ spec:
     #     - "sealed-secrets"
 
     # RustFS — self-hosted file storage and sharing platform (needs traefik, local-path-provisioner, and sealed-secrets)
-    - service: "rustfs"
-      path: "./infrastructure/base/rustfs"
-      dependsOn:
-        - "local-path-provisioner"
-        - "traefik"
-        - "sealed-secrets"
+    # - service: "rustfs"
+    #   path: "./infrastructure/base/rustfs"
+    #   dependsOn:
+    #     - "local-path-provisioner"
+    #     - "traefik"
+    #     - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
