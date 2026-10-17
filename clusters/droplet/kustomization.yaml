@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
 - infrastructure.yaml
 - ai-stack.yaml
-- models.yaml
+# - models.yaml
