@@ -28,3 +28,10 @@ spec:
     featureGates:
       TimeSlicingSettings: true
       MPSSupport: true
+      # Watches NVML for XID/health events and drops a failing GPU from the ResourceSlice.
+      NVMLDeviceHealthCheck: true
+      # Off: MIG partitioning on demand; needs a MIG-capable GPU (A100/A30/H100/...), the RTX 4000 Ada isn't.
+      # DynamicMIG: true
+      # Off: hands GPUs to VMs (KubeVirt) via vfio-pci; needs IOMMU, which the droplet doesn't expose,
+      # and mounts host /, /sys and /proc into the plugin.
+      # PassthroughSupport: true
