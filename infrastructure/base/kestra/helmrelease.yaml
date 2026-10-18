@@ -1,0 +1,59 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kestra
+  namespace: kestra
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: kestra
+    namespace: kestra
+  values:
+    # single standalone pod backed by a file-based H2 database + local storage on a PVC
+    configurations:
+      application:
+        datasources:
+          h2:
+            url: jdbc:h2:file:/app/data/db/kestra;DB_CLOSE_ON_EXIT=FALSE
+            username: kestra
+            password: ""
+            driverClassName: org.h2.Driver
+        kestra:
+          url: https://kestra.${domain}
+          queue:
+            type: h2
+          repository:
+            type: h2
+          storage:
+            type: local
+            local:
+              basePath: /app/data/storage
+    common:
+      # RWO PVC + H2 file lock: never run two pods at once
+      strategy:
+        type: Recreate
+      configmapReloader:
+        enabled: true
+      podSecurityContext:
+        fsGroup: 1000
+      extraVolumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: kestra-data
+      extraVolumeMounts:
+        - name: data
+          mountPath: /app/data
+    ingress:
+      enabled: true
+      className: traefik
+      hosts:
+        - host: kestra.${domain}
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - kestra.${domain}
+          secretName: kestra-tls

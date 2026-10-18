@@ -268,6 +268,14 @@ spec:
     #     - "local-path-provisioner"
     #     - "traefik"
     #     - "sealed-secrets"
+
+    # Kestra — event-driven workflow orchestration, standalone on H2 + local storage (needs traefik, local-path-provisioner, and sealed-secrets)
+    - service: "kestra"
+      path: "./infrastructure/base/kestra"
+      dependsOn:
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization

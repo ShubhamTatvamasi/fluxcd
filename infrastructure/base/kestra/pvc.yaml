@@ -1,0 +1,13 @@
+---
+# holds the H2 database file and Kestra's local internal storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kestra-data
+  namespace: kestra
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
