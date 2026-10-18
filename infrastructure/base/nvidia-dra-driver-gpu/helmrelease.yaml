@@ -23,3 +23,8 @@ spec:
       # ComputeDomains are for multi-node NVLink (IMEX); not needed on single-GPU nodes.
       computeDomains:
         enabled: false
+    # Alpha GPU sharing settings, picked per ResourceClaim through a GpuConfig (sharing.strategy):
+    # TimeSlicing with a custom interval, or MPS (the plugin runs an MPS control daemon per claim).
+    featureGates:
+      TimeSlicingSettings: true
+      MPSSupport: true
