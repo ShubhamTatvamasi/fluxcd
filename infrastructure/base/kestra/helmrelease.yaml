@@ -45,6 +45,14 @@ spec:
       extraVolumeMounts:
         - name: data
           mountPath: /app/data
+    # rootless dind fails on Ubuntu 26.04 nodes (AppArmor restricts unprivileged user namespaces:
+    # "rootlesskit: fork/exec /proc/self/exe: operation not permitted"), so run the privileged dind image
+    dind:
+      mode: insecure
+      base:
+        insecure:
+          image:
+            tag: dind
     ingress:
       enabled: true
       className: traefik
