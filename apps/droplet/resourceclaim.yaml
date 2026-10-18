@@ -1,0 +1,15 @@
+---
+# The droplet's one GPU, claimed once and shared: every model pod lists this claim (resourceClaimName),
+# so they all land on the same card instead of each needing a device of its own. No memory isolation:
+# each vLLM pod must cap itself with --gpu-memory-utilization so the shares add up to < 1.0 of the card.
+apiVersion: resource.k8s.io/v1
+kind: ResourceClaim
+metadata:
+  name: gpu
+  namespace: models
+spec:
+  devices:
+    requests:
+      - name: gpu
+        exactly:
+          deviceClassName: gpu.nvidia.com

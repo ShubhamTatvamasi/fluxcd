@@ -11,9 +11,11 @@ metadata:
     fluxcd.controlplane.io/reconcileEvery: "10m"
 spec:
   inputs:
-    # NVIDIA GPU operator: driver (skipped if preinstalled on the host), container toolkit, device plugin, DCGM exporter and NFD
+    # NVIDIA GPU operator: driver (skipped if preinstalled on the host), container toolkit, DCGM exporter and NFD;
+    # device plugin off here, GPUs are allocated through DRA (nvidia-dra-driver-gpu)
     - service: "nvidia-gpu-operator"
-      path: "./infrastructure/base/nvidia-gpu-operator"
+      # path: "./infrastructure/base/nvidia-gpu-operator"
+      path: "./infrastructure/droplet/nvidia-gpu-operator"
 
     # NVIDIA DRA driver: publishes the GPU as gpu.nvidia.com ResourceSlices so ResourceClaims (e.g. Portainer GPU claim templates) can use it (needs the operator's driver and toolkit)
     - service: "nvidia-dra-driver-gpu"

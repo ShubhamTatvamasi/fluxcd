@@ -1,0 +1,18 @@
+---
+# GPU operator from base, without the device plugin: on this cluster GPUs are allocated through DRA
+# (nvidia-dra-driver-gpu, gpu.nvidia.com ResourceClaims), and running both would advertise the same card
+# twice (nvidia.com/gpu and gpu.nvidia.com) with neither side seeing the other's allocations.
+# Driver, toolkit, GFD, DCGM exporter and NFD stay on.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base/nvidia-gpu-operator
+patches:
+- target:
+    kind: HelmRelease
+    name: gpu-operator
+  patch: |-
+    - op: replace
+      path: /spec/values/devicePlugin
+      value:
+        enabled: false

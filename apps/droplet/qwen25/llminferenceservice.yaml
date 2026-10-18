@@ -56,8 +56,15 @@ spec:
           requests:
             cpu: "1"
             memory: 4Gi
-            nvidia.com/gpu: "1"
+            # device plugin (time-sliced) GPU; replaced by the DRA claim below
+            # nvidia.com/gpu: "1"
           limits:
             cpu: "2"
             memory: 8Gi
-            nvidia.com/gpu: "1"
+            # nvidia.com/gpu: "1"
+          # the shared GPU claim (apps/droplet/resourceclaim.yaml), via DRA
+          claims:
+            - name: gpu
+    resourceClaims:
+      - name: gpu
+        resourceClaimName: gpu
