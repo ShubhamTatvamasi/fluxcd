@@ -1,0 +1,25 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nvidia-dra-driver-gpu
+  namespace: nvidia-dra-driver-gpu
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: nvidia-dra-driver-gpu
+    namespace: nvidia-dra-driver-gpu
+  values:
+    # The GPU operator's driver container installs the driver under /run/nvidia/driver.
+    # Use "/" on clusters where the driver is preinstalled on the host.
+    nvidiaDriverRoot: /run/nvidia/driver
+    # The GPU kubelet plugin stays off unless this is set; without it only ComputeDomains
+    # are published and there are no gpu.nvidia.com ResourceSlices.
+    gpuResourcesEnabledOverride: true
+    resources:
+      gpus:
+        enabled: true
+      # ComputeDomains are for multi-node NVLink (IMEX); not needed on single-GPU nodes.
+      computeDomains:
+        enabled: false

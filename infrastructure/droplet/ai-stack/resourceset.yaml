@@ -15,6 +15,12 @@ spec:
     - service: "nvidia-gpu-operator"
       path: "./infrastructure/base/nvidia-gpu-operator"
 
+    # NVIDIA DRA driver: publishes the GPU as gpu.nvidia.com ResourceSlices so ResourceClaims (e.g. Portainer GPU claim templates) can use it (needs the operator's driver and toolkit)
+    - service: "nvidia-dra-driver-gpu"
+      path: "./infrastructure/base/nvidia-dra-driver-gpu"
+      dependsOn:
+        - "nvidia-gpu-operator"
+
     # GPUStack — GPU cluster manager for serving models (needs NFD labels from the GPU operator, traefik, local-path-provisioner, and sealed-secrets) (off: its device manager takes over nvidia.com/gpu and breaks the operator's time-slicing)
     # - service: "gpustack"
     #   path: "./infrastructure/base/gpustack"
