@@ -15,14 +15,14 @@ spec:
       enabled: true
       image:
         # Development - Public CI image
-        repository: portainerci/portainer-ee
+        # repository: portainerci/portainer-ee
         # tag: develop
-        tag: pr-3800
+        # tag: pr-3800
         # Development - Private image
         # repository: harbor.${domain}/portainer/portainer-ee
         # Development - Public image
-        # repository: shubhamtatvamasi/portainer-ee
-        # tag: gpu-metrics
+        repository: shubhamtatvamasi/portainer-ee
+        tag: gpu-metrics
     trusted_origins:
       enabled: true
       domains: https://portainer.${domain},https://edge-portainer.${domain}
