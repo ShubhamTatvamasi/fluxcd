@@ -2,7 +2,7 @@
 # Qwen2.5-3B-Instruct as a NIMService: the NIM Operator owns the Deployment, Service, PVC, DRA claim wiring and
 # ServiceMonitor. The container is upstream vLLM, not a NIM image: the NGC account isn't entitled to nvcr.io/nim/*
 # yet ("insufficient_scope"). Once it is, swap image to a NIM (e.g. nvcr.io/nim/nvidia/llm-nim) and drop
-# command/args/probes. authSecret is required by the CRD; vLLM ignores NGC_API_KEY.
+# command/args/probes/sidecarContainers. authSecret is required by the CRD; vLLM ignores NGC_API_KEY.
 #   kubectl -n nim port-forward svc/qwen25-3b 8000:8000
 #   curl localhost:8000/v1/chat/completions -H 'Content-Type: application/json' \
 #     -d '{"model":"qwen2.5-3b","messages":[{"role":"user","content":"hi"}]}'
@@ -32,7 +32,8 @@ spec:
     - Qwen/Qwen2.5-3B-Instruct
     # name clients put in "model"
     - --served-model-name=qwen2.5-3b
-    - --port=8000
+    # behind the nim-compat sidecar, which owns :8000
+    - --port=8001
     # ~17GB of the 20GB RTX 4000 Ada: ~6GB bf16 weights, the rest KV cache; 32k is the model's native context
     - --gpu-memory-utilization=0.85
     - --max-model-len=32768
@@ -77,7 +78,33 @@ spec:
         path: /health
         port: 8000
       periodSeconds: 30
-  # off: the operator's ServiceMonitor scrapes NIM's /v1/metrics (path not configurable), vLLM serves /metrics;
-  # servicemonitor.yaml scrapes that instead. Turn back on with a NIM image.
+  # the operator's ServiceMonitor (and Portainer's NIM view) read NIM's /v1/metrics, served by the sidecar below
   metrics:
-    enabled: false
+    enabled: true
+    serviceMonitor:
+      interval: 15s
+  # NIM-compatible front for vLLM: owns :8000 (the operator's Service/probe port), proxies everything to vLLM on
+  # :8001 and maps NIM's /v1/metrics to vLLM's /metrics. Drop it (and --port=8001) with a real NIM image.
+  sidecarContainers:
+    - name: nim-compat
+      image:
+        repository: nginx
+        tag: 1.30.6-alpine
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          cat > /etc/nginx/conf.d/default.conf <<'CONF'
+          server {
+            listen 8000;
+            location = /v1/metrics { proxy_pass http://127.0.0.1:8001/metrics; }
+            location / {
+              proxy_pass http://127.0.0.1:8001;
+              proxy_http_version 1.1;
+              # stream tokens (SSE) as they're generated
+              proxy_buffering off;
+              proxy_read_timeout 300s;
+              client_max_body_size 32m;
+            }
+          }
+          CONF
+          exec nginx -g 'daemon off;'
