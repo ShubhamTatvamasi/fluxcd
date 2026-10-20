@@ -1,0 +1,13 @@
+---
+# Hugging Face cache (/root/.cache/huggingface): weights download once, survive pod restarts
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qwen25-3b-hf-cache
+  namespace: nim
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 20Gi

@@ -1,0 +1,81 @@
+---
+# Qwen2.5-3B-Instruct on upstream vLLM (OpenAI-compatible API on :8000). Stand-in until the NGC account can pull
+# nvcr.io/nim/* images: no NGC key needed (Docker Hub image, Hugging Face weights). Same GPU as the NIMs: the
+# shared nim/gpu DRA claim (../resourceclaim.yaml).
+#   kubectl -n nim port-forward svc/qwen25-3b 8000:8000
+#   curl localhost:8000/v1/chat/completions -H 'Content-Type: application/json' \
+#     -d '{"model":"qwen2.5-3b","messages":[{"role":"user","content":"hi"}]}'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qwen25-3b
+  namespace: nim
+spec:
+  replicas: 1
+  # one GPU: the old vLLM pod must release its memory before the new one starts
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: qwen25-3b
+  template:
+    metadata:
+      labels:
+        app: qwen25-3b
+    spec:
+      containers:
+        - name: vllm
+          image: vllm/vllm-openai:v0.32.0
+          args:
+            - --model=Qwen/Qwen2.5-3B-Instruct
+            # name clients put in "model"
+            - --served-model-name=qwen2.5-3b
+            - --port=8000
+            # ~17GB of the 20GB RTX 4000 Ada: ~6GB bf16 weights, the rest KV cache; 32k is the model's native context
+            - --gpu-memory-utilization=0.85
+            - --max-model-len=32768
+            # Qwen2.5 emits hermes-style <tool_call> JSON, so clients sending tool_choice=auto work
+            - --enable-auto-tool-choice
+            - --tool-call-parser=hermes
+          ports:
+            - name: http
+              containerPort: 8000
+          resources:
+            requests:
+              cpu: "1"
+              memory: 6Gi
+            limits:
+              cpu: "4"
+              memory: 16Gi
+            # the shared GPU claim, via DRA
+            claims:
+              - name: gpu
+          # first start downloads ~6GB of weights and compiles CUDA graphs
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            failureThreshold: 90
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+          volumeMounts:
+            - name: hf-cache
+              mountPath: /root/.cache/huggingface
+            # vLLM workers share tensors through /dev/shm; the container default is 64Mi
+            - name: shm
+              mountPath: /dev/shm
+      resourceClaims:
+        - name: gpu
+          resourceClaimName: gpu
+      volumes:
+        - name: hf-cache
+          persistentVolumeClaim:
+            claimName: qwen25-3b-hf-cache
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi

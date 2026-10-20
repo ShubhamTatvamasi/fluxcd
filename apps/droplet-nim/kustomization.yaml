@@ -9,3 +9,5 @@ resources:
 - resourceclaim.yaml
 # off until the NGC account is entitled to pull nvcr.io/nim/* (key currently gets "PAYMENT_REQUIRED") and the tag is pinned
 # - llama32-3b
+# upstream vLLM (no NGC needed) until then
+- qwen25-3b
