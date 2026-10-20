@@ -7,4 +7,5 @@ resources:
 - namespace.yaml
 - ../../secrets/sealed-secrets/ngc
 - resourceclaim.yaml
-- llama32-3b
+# off until the NGC account is entitled to pull nvcr.io/nim/* (key currently gets "PAYMENT_REQUIRED") and the tag is pinned
+# - llama32-3b
