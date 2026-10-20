@@ -1,0 +1,83 @@
+---
+# Qwen2.5-3B-Instruct as a NIMService: the NIM Operator owns the Deployment, Service, PVC, DRA claim wiring and
+# ServiceMonitor. The container is upstream vLLM, not a NIM image: the NGC account isn't entitled to nvcr.io/nim/*
+# yet ("insufficient_scope"). Once it is, swap image to a NIM (e.g. nvcr.io/nim/nvidia/llm-nim) and drop
+# command/args/probes. authSecret is required by the CRD; vLLM ignores NGC_API_KEY.
+#   kubectl -n nim port-forward svc/qwen25-3b 8000:8000
+#   curl localhost:8000/v1/chat/completions -H 'Content-Type: application/json' \
+#     -d '{"model":"qwen2.5-3b","messages":[{"role":"user","content":"hi"}]}'
+apiVersion: apps.nvidia.com/v1alpha1
+kind: NIMService
+metadata:
+  name: qwen25-3b
+  namespace: nim
+spec:
+  image:
+    repository: vllm/vllm-openai
+    tag: v0.32.0
+    pullPolicy: IfNotPresent
+  authSecret: ngc-api-secret
+  # model cache, mounted by the operator at /model-store; HF_HOME points vLLM's downloads there
+  storage:
+    pvc:
+      create: true
+      storageClass: local-path
+      size: 20Gi
+      volumeAccessMode: ReadWriteOnce
+  env:
+    - name: HF_HOME
+      value: /model-store/huggingface
+  command: ["vllm", "serve"]
+  args:
+    - Qwen/Qwen2.5-3B-Instruct
+    # name clients put in "model"
+    - --served-model-name=qwen2.5-3b
+    - --port=8000
+    # ~17GB of the 20GB RTX 4000 Ada: ~6GB bf16 weights, the rest KV cache; 32k is the model's native context
+    - --gpu-memory-utilization=0.85
+    - --max-model-len=32768
+    # Qwen2.5 emits hermes-style <tool_call> JSON, so clients sending tool_choice=auto work
+    - --enable-auto-tool-choice
+    - --tool-call-parser=hermes
+  replicas: 1
+  resources:
+    requests:
+      cpu: "1"
+      memory: 6Gi
+    limits:
+      cpu: "4"
+      memory: 16Gi
+  # the shared GPU claim (../resourceclaim.yaml), via DRA
+  draResources:
+    - resourceClaimName: gpu
+  expose:
+    service:
+      type: ClusterIP
+      port: 8000
+  # the operator's default probes hit NIM's /v1/health/{live,ready}; vLLM serves /health
+  startupProbe:
+    enabled: true
+    probe:
+      httpGet:
+        path: /health
+        port: 8000
+      periodSeconds: 10
+      failureThreshold: 90
+  readinessProbe:
+    enabled: true
+    probe:
+      httpGet:
+        path: /health
+        port: 8000
+      periodSeconds: 10
+  livenessProbe:
+    enabled: true
+    probe:
+      httpGet:
+        path: /health
+        port: 8000
+      periodSeconds: 30
+  metrics:
+    enabled: true
+    serviceMonitor:
+      interval: 15s
