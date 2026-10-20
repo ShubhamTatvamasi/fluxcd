@@ -77,7 +77,7 @@ spec:
         path: /health
         port: 8000
       periodSeconds: 30
+  # off: the operator's ServiceMonitor scrapes NIM's /v1/metrics (path not configurable), vLLM serves /metrics;
+  # servicemonitor.yaml scrapes that instead. Turn back on with a NIM image.
   metrics:
-    enabled: true
-    serviceMonitor:
-      interval: 15s
+    enabled: false

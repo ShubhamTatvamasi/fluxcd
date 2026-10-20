@@ -1,0 +1,16 @@
+---
+# vLLM metrics (vllm:* — TTFT, inter-token latency, queue depth, KV-cache usage) from the operator-made Service
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: qwen25-3b-vllm
+  namespace: nim
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: qwen25-3b
+      app.kubernetes.io/managed-by: k8s-nim-operator
+  endpoints:
+    - port: api
+      path: /metrics
+      interval: 15s
