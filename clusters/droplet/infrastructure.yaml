@@ -17,4 +17,4 @@ spec:
     substitute:
       domain: droplet.shubhamtatvamasi.com
       # droplet public IP (eth0), handed to traefik via cilium LB-IPAM
-      traefik_lb_ip: 201.79.52.0
+      traefik_lb_ip: 201.79.48.186
