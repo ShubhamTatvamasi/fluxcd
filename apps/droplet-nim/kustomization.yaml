@@ -1,0 +1,10 @@
+---
+# Models served by the NVIDIA NIM Operator (NIMService). To add a model: new folder with a NIMService pointing at
+# ngc-secret / ngc-api-secret and draResources → resourceClaimName: gpu, then list it here.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- namespace.yaml
+- ../../secrets/sealed-secrets/ngc
+- resourceclaim.yaml
+- llama32-3b

@@ -1,0 +1,53 @@
+---
+# Llama 3.2 3B Instruct as a NIM: OpenAI-compatible API on the "llama32-3b" Service, port 8000 (in-cluster only).
+# The RTX 4000 Ada has no TensorRT-LLM engine profile in this NIM, so it falls back to the generic vLLM profile
+# and builds from the downloaded weights (~6.5GB bf16) on first start; both are cached on the PVC.
+#   kubectl -n nim port-forward svc/llama32-3b 8000:8000
+#   curl localhost:8000/v1/chat/completions -H 'Content-Type: application/json' \
+#     -d '{"model":"meta/llama-3.2-3b-instruct","messages":[{"role":"user","content":"hi"}]}'
+apiVersion: apps.nvidia.com/v1alpha1
+kind: NIMService
+metadata:
+  name: llama32-3b
+  namespace: nim
+spec:
+  image:
+    repository: nvcr.io/nim/meta/llama-3.2-3b-instruct
+    tag: "TBD"
+    pullPolicy: IfNotPresent
+    # docker-registry secret for nvcr.io (user $oauthtoken, password = NGC API key)
+    pullSecrets:
+      - ngc-secret
+  # secret with NGC_API_KEY, used by the NIM to download the model profile from NGC
+  authSecret: ngc-api-secret
+  storage:
+    # model cache (/model-store); survives pod restarts so only the first start downloads
+    pvc:
+      create: true
+      storageClass: local-path
+      size: 30Gi
+      volumeAccessMode: ReadWriteOnce
+  env:
+    # 128k native context needs ~15GB of KV cache on top of the weights; 32k fits the 20GB card
+    - name: NIM_MAX_MODEL_LEN
+      value: "32768"
+  replicas: 1
+  resources:
+    requests:
+      cpu: "1"
+      memory: 8Gi
+    limits:
+      cpu: "4"
+      memory: 16Gi
+  # the shared GPU claim (../resourceclaim.yaml), via DRA; the device plugin (nvidia.com/gpu) is off on this cluster
+  draResources:
+    - resourceClaimName: gpu
+  expose:
+    service:
+      type: ClusterIP
+      port: 8000
+  # vLLM/NIM metrics on /v1/metrics, scraped by kube-prometheus-stack
+  metrics:
+    enabled: true
+    serviceMonitor:
+      interval: 15s

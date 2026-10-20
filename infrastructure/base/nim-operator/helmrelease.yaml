@@ -1,0 +1,27 @@
+---
+# NVIDIA NIM Operator: reconciles NIMService / NIMCache (apps.nvidia.com CRDs, shipped in the chart's crds/)
+# into Deployments + Services running NIM containers from nvcr.io. Each NIMService brings its own
+# NGC pull secret and NGC_API_KEY secret in its namespace; the operator itself pulls from public nvcr.io.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nim-operator
+  namespace: nim-operator
+spec:
+  interval: 10m
+  chartRef:
+    kind: HelmChart
+    name: k8s-nim-operator
+    namespace: nim-operator
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    operator:
+      # Off (chart default): validating webhook for NIMService/NIMCache specs; needs cert-manager.
+      admissionController:
+        enabled: false
+    # Off (chart default): the bundled Dynamo platform subchart
+    dynamo:
+      enabled: false

@@ -1,0 +1,27 @@
+---
+# The droplet's one GPU for NIM, claimed once and shared by every NIMService in this namespace (draResources →
+# resourceClaimName) instead of each pod needing a device of its own. A claim is namespaced and the card can only
+# be allocated to one claim at a time, so this and apps/droplet's "models/gpu" claim can't both be bound.
+# No memory isolation: each NIM must cap itself (vLLM backend: NIM_MAX_MODEL_LEN / KV-cache size).
+apiVersion: resource.k8s.io/v1
+kind: ResourceClaim
+metadata:
+  name: gpu
+  namespace: nim
+spec:
+  devices:
+    requests:
+      - name: gpu
+        exactly:
+          deviceClassName: gpu.nvidia.com
+    config:
+      - requests: ["gpu"]
+        opaque:
+          driver: gpu.nvidia.com
+          parameters:
+            apiVersion: resource.nvidia.com/v1beta1
+            kind: GpuConfig
+            sharing:
+              strategy: TimeSlicing
+              timeSlicingConfig:
+                interval: Long # Default | Short | Medium | Long

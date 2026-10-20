@@ -1,0 +1,21 @@
+---
+# Models served by the NVIDIA NIM Operator (NIMService) on top of the ai-stack
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: nim-models
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./apps/droplet-nim
+  prune: true
+  # ai-stack (the ResourceSet) is Ready as soon as it has created its Kustomizations, so also wait on
+  # nim-operator for the NIMService CRD and sealed-secrets for the NGC secrets
+  dependsOn:
+    - name: ai-stack
+    - name: nim-operator
+    - name: sealed-secrets
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
