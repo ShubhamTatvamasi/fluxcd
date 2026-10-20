@@ -25,10 +25,10 @@ spec:
 
     # NVIDIA NIM Operator: NIMService/NIMCache CRDs + controller; NIMServices get the GPU through a DRA claim
     # (apps/droplet-nim), so the operator needs the DRA driver up first
-    - service: "nim-operator"
-      path: "./infrastructure/base/nim-operator"
-      dependsOn:
-        - "nvidia-dra-driver-gpu"
+    # - service: "nim-operator"
+    #   path: "./infrastructure/base/nim-operator"
+    #   dependsOn:
+    #     - "nvidia-dra-driver-gpu"
 
     # GPUStack — GPU cluster manager for serving models (needs NFD labels from the GPU operator, traefik, local-path-provisioner, and sealed-secrets) (off: its device manager takes over nvidia.com/gpu and breaks the operator's time-slicing)
     # - service: "gpustack"
