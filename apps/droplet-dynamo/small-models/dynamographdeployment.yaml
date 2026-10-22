@@ -1,0 +1,199 @@
+---
+# Three small models behind one Dynamo Frontend, aggregated serving (each vLLM worker does prefill + decode):
+#   qwen3-1.7b         Qwen/Qwen3-1.7B-FP8                 general chat, tool calls, optional thinking
+#   qwen2.5-coder-1.5b Qwen/Qwen2.5-Coder-1.5B-Instruct    code
+#   smollm2-1.7b       HuggingFaceTB/SmolLM2-1.7B-Instruct small general chat
+# Service small-models-frontend:8000 (/v1/models, /v1/chat/completions) routes on the request's "model".
+# Each worker registers on its own endpoint (<namespace>.<model>.generate), so the three never share instances.
+#
+# GPU: every worker uses the dynamo/gpu claim (MPS, 6Gi and 33% of the SMs per process); --gpu-memory-utilization
+# 0.9 assumes CUDA reports the 6Gi MPS cap as the device's total memory (if it reports the full 20Gi, use ~0.27).
+# Scheduling: the operator only injects KAI settings for Grove (multinode) workloads, so every pod sets
+# schedulerName and the KAI queue label itself.
+# Rollouts: a new worker can't fit next to the old one (the card is fully split), so a worker change needs the
+# old pod deleted by hand, or the DGD removed and re-added.
+apiVersion: nvidia.com/v1beta1
+kind: DynamoGraphDeployment
+metadata:
+  name: small-models
+  namespace: dynamo
+spec:
+  components:
+    - name: Frontend
+      type: frontend
+      replicas: 1
+      podTemplate:
+        metadata:
+          labels:
+            kai.scheduler/queue: inference
+        spec:
+          schedulerName: kai-scheduler
+          containers:
+            - name: main
+              # the operator's webhook requires an image with a semver tag on every component
+              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.5.1
+              resources:
+                requests:
+                  cpu: 250m
+                  memory: 1Gi
+
+    - name: Qwen3Worker
+      type: worker
+      replicas: 1
+      podTemplate:
+        metadata:
+          labels:
+            kai.scheduler/queue: inference
+        spec:
+          schedulerName: kai-scheduler
+          resourceClaims:
+            - name: gpu
+              resourceClaimName: gpu
+          containers:
+            - name: main
+              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.5.1
+              workingDir: /workspace/examples/backends/vllm
+              command: ["python3", "-m", "dynamo.vllm"]
+              args:
+                - --model
+                - Qwen/Qwen3-1.7B-FP8
+                - --served-model-name
+                - qwen3-1.7b
+                # $(DYN_NAMESPACE) is set by the operator and expanded by the kubelet
+                - --endpoint
+                - dyn://$(DYN_NAMESPACE).qwen3.generate
+                # ~2.3 GB of FP8 weights; the cache gets ~2.5Gi, ~22k tokens at 112 KiB/token
+                - --gpu-memory-utilization
+                - "0.9"
+                - --max-model-len
+                - "16384"
+                - --max-num-seqs
+                - "8"
+                - --dyn-tool-call-parser
+                - hermes
+                - --dyn-reasoning-parser
+                - qwen3
+                # answer directly unless a request asks for thinking (chat_template_kwargs: {"enable_thinking": true})
+                - --dyn-default-thinking-mode
+                - disabled
+              env:
+                - name: HF_HOME
+                  value: /home/dynamo/.cache/huggingface
+              volumeMounts:
+                - name: model-cache
+                  mountPath: /home/dynamo/.cache/huggingface
+              resources:
+                claims:
+                  - name: gpu
+                requests:
+                  cpu: 500m
+                  memory: 3Gi
+                limits:
+                  memory: 8Gi
+          volumes:
+            - name: model-cache
+              persistentVolumeClaim:
+                claimName: model-cache
+
+    - name: CoderWorker
+      type: worker
+      replicas: 1
+      podTemplate:
+        metadata:
+          labels:
+            kai.scheduler/queue: inference
+        spec:
+          schedulerName: kai-scheduler
+          resourceClaims:
+            - name: gpu
+              resourceClaimName: gpu
+          containers:
+            - name: main
+              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.5.1
+              workingDir: /workspace/examples/backends/vllm
+              command: ["python3", "-m", "dynamo.vllm"]
+              args:
+                - --model
+                - Qwen/Qwen2.5-Coder-1.5B-Instruct
+                - --served-model-name
+                - qwen2.5-coder-1.5b
+                - --endpoint
+                - dyn://$(DYN_NAMESPACE).coder.generate
+                # ~3.1 GB of BF16 weights; the cache gets ~1.6Gi, ~60k tokens at 28 KiB/token
+                - --gpu-memory-utilization
+                - "0.9"
+                - --max-model-len
+                - "32768"
+                - --max-num-seqs
+                - "8"
+                - --dyn-tool-call-parser
+                - hermes
+              env:
+                - name: HF_HOME
+                  value: /home/dynamo/.cache/huggingface
+              volumeMounts:
+                - name: model-cache
+                  mountPath: /home/dynamo/.cache/huggingface
+              resources:
+                claims:
+                  - name: gpu
+                requests:
+                  cpu: 500m
+                  memory: 3Gi
+                limits:
+                  memory: 8Gi
+          volumes:
+            - name: model-cache
+              persistentVolumeClaim:
+                claimName: model-cache
+
+    - name: SmolLMWorker
+      type: worker
+      replicas: 1
+      podTemplate:
+        metadata:
+          labels:
+            kai.scheduler/queue: inference
+        spec:
+          schedulerName: kai-scheduler
+          resourceClaims:
+            - name: gpu
+              resourceClaimName: gpu
+          containers:
+            - name: main
+              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.5.1
+              workingDir: /workspace/examples/backends/vllm
+              command: ["python3", "-m", "dynamo.vllm"]
+              args:
+                - --model
+                - HuggingFaceTB/SmolLM2-1.7B-Instruct
+                - --served-model-name
+                - smollm2-1.7b
+                - --endpoint
+                - dyn://$(DYN_NAMESPACE).smollm2.generate
+                # ~3.4 GB of BF16 weights and no GQA (192 KiB/token): the cache gets ~1.3Gi, ~7k tokens,
+                # so stay under the model's 8k context
+                - --gpu-memory-utilization
+                - "0.9"
+                - --max-model-len
+                - "4096"
+                - --max-num-seqs
+                - "4"
+              env:
+                - name: HF_HOME
+                  value: /home/dynamo/.cache/huggingface
+              volumeMounts:
+                - name: model-cache
+                  mountPath: /home/dynamo/.cache/huggingface
+              resources:
+                claims:
+                  - name: gpu
+                requests:
+                  cpu: 500m
+                  memory: 3Gi
+                limits:
+                  memory: 8Gi
+          volumes:
+            - name: model-cache
+              persistentVolumeClaim:
+                claimName: model-cache

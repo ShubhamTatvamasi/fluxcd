@@ -103,11 +103,13 @@ spec:
 
     # Dynamo platform: cluster-wide operator that installs the nvidia.com Dynamo CRDs itself and
     # reconciles DynamoGraphDeployments; its PodMonitors need the monitoring.coreos.com CRDs
-    # - service: "dynamo-platform"
-    #   path: "./infrastructure/base/dynamo-platform"
-    #   dependsOn:
-    #     - "nvidia-gpu-operator"
-    #     - "kube-prometheus-stack"
+    # (no Grove: everything runs on one node, so the operator's KAI integration, which only applies to Grove
+    # workloads, stays off and DGD pods set schedulerName: kai-scheduler themselves; apps/droplet-dynamo)
+    - service: "dynamo-platform"
+      path: "./infrastructure/base/dynamo-platform"
+      dependsOn:
+        - "nvidia-gpu-operator"
+        - "kube-prometheus-stack"
 
     # LiteLLM Proxy: public API + admin UI at litellm.${domain} (users, virtual keys, budgets, rate limits),
     # forwarding to the Dynamo frontends (<dgd-name>-frontend.dynamo.svc:8000) or the KServe gateway; no models defined yet

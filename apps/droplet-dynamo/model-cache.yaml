@@ -1,0 +1,15 @@
+---
+# Shared Hugging Face cache, mounted at HF_HOME by every worker, so a pod restart doesn't download the
+# weights again. local-path is ReadWriteOnce, which is fine here: every pod lands on the one GPU node.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: model-cache
+  namespace: dynamo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 30Gi

@@ -1,0 +1,22 @@
+---
+# KAI queue for the Dynamo pods (label kai.scheduler/queue: inference). Only leaf queues take jobs, so it sits
+# under the chart's default-parent-queue. No quota or limit yet: it's the only GPU consumer on the node.
+apiVersion: scheduling.run.ai/v2
+kind: Queue
+metadata:
+  name: inference
+spec:
+  parentQueue: default-parent-queue
+  resources:
+    cpu:
+      quota: 0
+      limit: -1
+      overQuotaWeight: 1
+    gpu:
+      quota: 0
+      limit: -1
+      overQuotaWeight: 1
+    memory:
+      quota: 0
+      limit: -1
+      overQuotaWeight: 1

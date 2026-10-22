@@ -1,0 +1,28 @@
+---
+# The droplet's one GPU, claimed once and shared by the three model workers (resourceClaimName), split with MPS:
+# each worker process gets a pinned device-memory cap and a third of the SMs, enforced by the per-claim MPS
+# control daemon the DRA driver starts. 3 x 6Gi leaves ~2Gi of the 20Gi card for the MPS server and headroom.
+# The card can only be allocated to one claim at a time, so this can't be bound together with nim/gpu or models/gpu.
+apiVersion: resource.k8s.io/v1
+kind: ResourceClaim
+metadata:
+  name: gpu
+  namespace: dynamo
+spec:
+  devices:
+    requests:
+      - name: gpu
+        exactly:
+          deviceClassName: gpu.nvidia.com
+    config:
+      - requests: ["gpu"]
+        opaque:
+          driver: gpu.nvidia.com
+          parameters:
+            apiVersion: resource.nvidia.com/v1beta1
+            kind: GpuConfig
+            sharing:
+              strategy: MPS
+              mpsConfig:
+                defaultActiveThreadPercentage: 33
+                defaultPinnedDeviceMemoryLimit: 6Gi
