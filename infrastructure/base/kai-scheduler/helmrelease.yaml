@@ -1,0 +1,28 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kai-scheduler
+  namespace: kai-scheduler
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: kai-scheduler
+    namespace: kai-scheduler
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    global:
+      # Off: KAI's fractional GPU sharing reserves whole nvidia.com/gpu devices through its own
+      # reservation pods, which needs the device plugin; GPUs here come from DRA ResourceClaims.
+      gpuSharing: false
+    admission:
+      # RuntimeClass the admission webhook sets on GPU pods scheduled by KAI
+      gpuPodRuntimeClassName: "${gpu_runtime_class}"
+    # Pods opt in with schedulerName: kai-scheduler and a kai.scheduler/queue label;
+    # the chart's default-parent-queue/default-queue pair is unlimited (quota 0, limit -1).
+    defaultQueue:
+      createDefaultQueue: true

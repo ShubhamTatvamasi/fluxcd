@@ -1,0 +1,14 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: kai-scheduler
+  namespace: kai-scheduler
+spec:
+  interval: 10m
+  url: oci://ghcr.io/nvidia/kai-scheduler/kai-scheduler
+  layerSelector:
+    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
+    operation: copy
+  ref:
+    tag: "v0.20.1"

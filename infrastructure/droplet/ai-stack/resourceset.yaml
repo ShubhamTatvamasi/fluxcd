@@ -1,5 +1,5 @@
 ---
-# GPU and model-serving stack: GPU operator, NIM Operator, GPUStack, Open WebUI (Ollama), Envoy (AI) Gateway, KServe,
+# GPU and model-serving stack: GPU operator, KAI Scheduler, NIM Operator, GPUStack, Open WebUI (Ollama), Envoy (AI) Gateway, KServe,
 # the NVIDIA Dynamo platform (operator) and LiteLLM.
 # Applied after the "infrastructure" ResourceSet; dependsOn names may point at its Kustomizations.
 apiVersion: fluxcd.controlplane.io/v1
@@ -22,6 +22,13 @@ spec:
       path: "./infrastructure/base/nvidia-dra-driver-gpu"
       dependsOn:
         - "nvidia-gpu-operator"
+
+    # NVIDIA KAI Scheduler: GPU-aware batch scheduler (queues, gang scheduling, fair-share); pods opt in with
+    # schedulerName: kai-scheduler and allocate GPUs through DRA claims, so it waits for the DRA driver
+    - service: "kai-scheduler"
+      path: "./infrastructure/base/kai-scheduler"
+      dependsOn:
+        - "nvidia-dra-driver-gpu"
 
     # NVIDIA NIM Operator: NIMService/NIMCache CRDs + controller; NIMServices get the GPU through a DRA claim
     # (apps/droplet-nim), so the operator needs the DRA driver up first
