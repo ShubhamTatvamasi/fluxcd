@@ -26,7 +26,22 @@ spec:
     admission:
       # RuntimeClass the admission webhook sets on GPU pods scheduled by KAI
       gpuPodRuntimeClassName: "${gpu_runtime_class}"
-    # Pods opt in with schedulerName: kai-scheduler and a kai.scheduler/queue label;
-    # the chart's default-parent-queue/default-queue pair is unlimited (quota 0, limit -1).
+    # Pods opt in with schedulerName: kai-scheduler and a kai.scheduler/queue label.
+    # Non-preemptible pods (priority >= 100, e.g. "inference", KAI's default for Deployments) only run
+    # within quota, and the chart's quota 0 guarantees nothing, so the parent queue gets quota -1 (unlimited)
+    # for its child queues to use.
     defaultQueue:
       createDefaultQueue: true
+      parentResources:
+        cpu:
+          quota: -1
+          limit: -1
+          overQuotaWeight: 1
+        gpu:
+          quota: -1
+          limit: -1
+          overQuotaWeight: 1
+        memory:
+          quota: -1
+          limit: -1
+          overQuotaWeight: 1
