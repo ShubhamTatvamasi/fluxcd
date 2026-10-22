@@ -26,22 +26,23 @@ spec:
     admission:
       # RuntimeClass the admission webhook sets on GPU pods scheduled by KAI
       gpuPodRuntimeClassName: "${gpu_runtime_class}"
-    # Pods opt in with schedulerName: kai-scheduler and a kai.scheduler/queue label.
-    # Non-preemptible pods (priority >= 100, e.g. "inference", KAI's default for Deployments) only run
-    # within quota, and the chart's quota 0 guarantees nothing, so the parent queue gets quota -1 (unlimited)
-    # for its child queues to use.
+    # Pods opt in with schedulerName: kai-scheduler and a kai.scheduler/queue label. The chart creates
+    # default-parent-queue/default-queue on first install only (quota 0); queues for real workloads live with
+    # those workloads (e.g. apps/droplet-dynamo/queue.yaml).
     defaultQueue:
       createDefaultQueue: true
-      parentResources:
-        cpu:
-          quota: -1
-          limit: -1
-          overQuotaWeight: 1
-        gpu:
-          quota: -1
-          limit: -1
-          overQuotaWeight: 1
-        memory:
-          quota: -1
-          limit: -1
-          overQuotaWeight: 1
+  # The chart ships kai-config as a pre-install/pre-upgrade hook, so every upgrade deletes and recreates it; that
+  # garbage-collects the ServiceAccounts the operator owns under it and the scheduler pod (owned by the
+  # SchedulingShard, not restarted) is left with a token for a deleted ServiceAccount: Unauthorized on every call.
+  # As a plain release resource it is patched in place instead.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Config
+              name: kai-config
+            patch: |
+              - op: remove
+                path: /metadata/annotations/helm.sh~1hook
+              - op: remove
+                path: /metadata/annotations/helm.sh~1hook-weight
