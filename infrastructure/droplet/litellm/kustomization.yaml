@@ -1,8 +1,7 @@
 ---
-# LiteLLM from base as the public API for the models (https://litellm.${domain}/v1, UI at /ui).
-# The base model list is for another cluster, so replace the whole proxy_config. Models are served by
-# KServe behind its gateway (see apps/droplet); Dynamo frontends (<dgd-name>-frontend.dynamo.svc:8000)
-# or models added in the UI work too.
+# LiteLLM from base as the public API for the Dynamo models (https://litellm.${domain}/v1, UI at /ui):
+# virtual keys, users/teams, budgets, rate limits and spend tracking. The base model list points at the
+# KServe gateway, so replace the whole proxy_config with the Dynamo frontend (apps/droplet-dynamo).
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
@@ -15,26 +14,52 @@ patches:
     - op: replace
       path: /spec/values/proxy_config
       value:
-        # models served by KServe: the Envoy AI Gateway picks the InferencePool from "model"
+        # all three models are served by one DynamoGraphDeployment behind the small-models-frontend:8000
+        # Service, which routes on the request's "model" (the --served-model-name of each worker)
         model_list:
-          - model_name: qwen2.5-1.5b
+          - model_name: qwen3-1.7b
             litellm_params:
-              model: openai/qwen2.5-1.5b
-              api_base: http://kserve-ingress-gateway.envoy-gateway-system.svc.cluster.local/v1
-              api_key: os.environ/GATEWAY_API_KEY
+              model: openai/qwen3-1.7b
+              api_base: http://small-models-frontend.dynamo.svc.cluster.local:8000/v1
+              # the Dynamo frontend has no auth (only reachable in-cluster); the openai client still wants a key
+              api_key: none
             model_info:
               supports_function_calling: true
-              # 8192-token window (--max-model-len) split so prompt + reply always fit
-              max_input_tokens: 6144
-              max_output_tokens: 2048
+              supports_reasoning: true
+              # 16384-token window (--max-model-len) split so prompt + reply always fit
+              max_input_tokens: 12288
+              max_output_tokens: 4096
+          - model_name: qwen2.5-coder-1.5b
+            litellm_params:
+              model: openai/qwen2.5-coder-1.5b
+              api_base: http://small-models-frontend.dynamo.svc.cluster.local:8000/v1
+              api_key: none
+            model_info:
+              supports_function_calling: true
+              # 32768-token window (--max-model-len) split so prompt + reply always fit
+              max_input_tokens: 28672
+              max_output_tokens: 4096
+          - model_name: smollm2-1.7b
+            litellm_params:
+              model: openai/smollm2-1.7b
+              api_base: http://small-models-frontend.dynamo.svc.cluster.local:8000/v1
+              api_key: none
+            model_info:
+              # 4096-token window (--max-model-len) split so prompt + reply always fit
+              max_input_tokens: 3072
+              max_output_tokens: 1024
         litellm_settings:
           # drop OpenAI params a backend doesn't support instead of failing the request
           drop_params: true
           # Prometheus metrics on /metrics, readable without a key so Portainer can scrape them
           callbacks: ["prometheus"]
           require_auth_for_metrics_endpoint: false
+          # smollm2 only holds 4k tokens (--max-model-len=4096); longer chats are retried on qwen3-1.7b (16k)
+          context_window_fallbacks:
+            - smollm2-1.7b: ["qwen3-1.7b"]
         router_settings:
-          # check prompt size against model_info.max_input_tokens before calling
+          # check prompt size against model_info.max_input_tokens before calling, so an oversized
+          # request goes straight to the fallback instead of failing on smollm2 first
           enable_pre_call_checks: true
         general_settings:
           master_key: os.environ/PROXY_MASTER_KEY

@@ -112,14 +112,13 @@ spec:
         - "kube-prometheus-stack"
 
     # LiteLLM Proxy: public API + admin UI at litellm.${domain} (users, virtual keys, budgets, rate limits),
-    # forwarding to the Dynamo frontends (<dgd-name>-frontend.dynamo.svc:8000) or the KServe gateway; no models defined yet
-    # - service: "litellm"
-    #   path: "./infrastructure/droplet/litellm"
-    #   dependsOn:
-    #     - "kserve-gateway"
-    #     - "traefik"
-    #     - "local-path-provisioner"
-    #     - "sealed-secrets"
+    # forwarding to the Dynamo frontend (small-models-frontend.dynamo.svc:8000) that serves all three models
+    - service: "litellm"
+      path: "./infrastructure/droplet/litellm"
+      dependsOn:
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
 
     # KServe controller for InferenceService in Standard mode (needs cert-manager for webhook certs)
     # - service: "kserve-controller"
