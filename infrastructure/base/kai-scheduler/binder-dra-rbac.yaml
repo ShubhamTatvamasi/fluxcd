@@ -1,0 +1,25 @@
+---
+# On current Kubernetes (the droplet runs 1.37) writing a ResourceClaim's status.allocation/reservedFor also needs update on the
+# resourceclaims/binding subresource (system:kube-scheduler has it); KAI v0.20.1's kai-binder ClusterRole
+# predates that, so binding a pod with a DRA claim fails in PreBind. Same grant as the default scheduler.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kai-binder-dra-binding
+rules:
+  - apiGroups: ["resource.k8s.io"]
+    resources: ["resourceclaims/binding"]
+    verbs: ["patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kai-binder-dra-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kai-binder-dra-binding
+subjects:
+  - kind: ServiceAccount
+    name: binder
+    namespace: kai-scheduler
