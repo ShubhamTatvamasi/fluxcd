@@ -19,7 +19,7 @@ patches:
         model_list:
           - model_name: qwen3-1.7b
             litellm_params:
-              model: openai/qwen3-1.7b
+              model: qwen3-1.7b
               api_base: http://small-models-frontend.dynamo.svc.cluster.local:8000/v1
               # the Dynamo frontend has no auth (only reachable in-cluster); the openai client still wants a key
               api_key: none
@@ -31,7 +31,7 @@ patches:
               max_output_tokens: 4096
           - model_name: qwen2.5-coder-1.5b
             litellm_params:
-              model: openai/qwen2.5-coder-1.5b
+              model: qwen2.5-coder-1.5b
               api_base: http://small-models-frontend.dynamo.svc.cluster.local:8000/v1
               api_key: none
             model_info:
@@ -41,7 +41,7 @@ patches:
               max_output_tokens: 4096
           - model_name: smollm2-1.7b
             litellm_params:
-              model: openai/smollm2-1.7b
+              model: smollm2-1.7b
               api_base: http://small-models-frontend.dynamo.svc.cluster.local:8000/v1
               api_key: none
             model_info:
