@@ -10,10 +10,14 @@ spec:
     kind: OCIRepository
     name: kai-scheduler
     namespace: kai-scheduler
+  # No Helm wait: the KAI operator keeps a "Reconciling: True" condition on the Config and SchedulingShard
+  # once reconciled, which kstatus reads as InProgress forever, so the install times out.
   install:
     crds: CreateReplace
+    disableWait: true
   upgrade:
     crds: CreateReplace
+    disableWait: true
   values:
     global:
       # Off: KAI's fractional GPU sharing reserves whole nvidia.com/gpu devices through its own
