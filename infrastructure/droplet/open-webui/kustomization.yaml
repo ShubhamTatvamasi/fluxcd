@@ -1,12 +1,11 @@
----
-# Open WebUI from base, with Ollama on the NVIDIA GPU operator's time-sliced nvidia.com/gpu.
-# Base swaps the chart's GPU limit for <vendor>.com/gpu.shared, which only GPUStack's device manager
-# serves (its CDI names don't resolve against the operator's CDI spec), so drop that post-renderer
-# and keep the chart's own nvidia.com/gpu: 1 request.
+# Open WebUI from base as a chat UI over LiteLLM (https://openwebui.${domain}), without the bundled Ollama:
+# the models come from the Dynamo frontend through LiteLLM's OpenAI-compatible API (infrastructure/droplet/litellm),
+# so the chart's Ollama subchart and its GPU post-renderer go, and so does Pipelines (it would sit in front of LiteLLM).
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - ../../base/open-webui
+- open-webui-secrets.yaml
 patches:
 - target:
     kind: HelmRelease
@@ -14,3 +13,27 @@ patches:
   patch: |-
     - op: remove
       path: /spec/postRenderers
+    - op: replace
+      path: /spec/values/ollama
+      value:
+        enabled: false
+    - op: add
+      path: /spec/values/pipelines
+      value:
+        enabled: false
+    - op: add
+      path: /spec/values/openaiBaseApiUrl
+      value: http://litellm.litellm.svc.cluster.local:4000/v1
+    # no chart default key ("0p3n-w3bu!"); the LiteLLM virtual key comes from open-webui-secrets/litellm-api-key
+    # (open-webui-secrets.yaml), so the pod waits for that Secret instead of starting without a key
+    - op: add
+      path: /spec/values/openaiApiKey
+      value: ""
+    - op: add
+      path: /spec/values/extraEnvVars
+      value:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: open-webui-secrets
+              key: litellm-api-key

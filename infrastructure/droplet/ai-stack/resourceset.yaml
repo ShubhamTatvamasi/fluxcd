@@ -1,5 +1,5 @@
 ---
-# GPU and model-serving stack: GPU operator, KAI Scheduler, NIM Operator, GPUStack, Open WebUI (Ollama), Envoy (AI) Gateway, KServe,
+# GPU and model-serving stack: GPU operator, KAI Scheduler, NIM Operator, GPUStack, Open WebUI (on LiteLLM), Envoy (AI) Gateway, KServe,
 # the NVIDIA Dynamo platform (operator) and LiteLLM.
 # Applied after the "infrastructure" ResourceSet; dependsOn names may point at its Kustomizations.
 apiVersion: fluxcd.controlplane.io/v1
@@ -46,14 +46,6 @@ spec:
     #     - "local-path-provisioner"
     #     - "sealed-secrets"
 
-    # Open WebUI — chat UI with a bundled Ollama running on the node's GPU (needs the GPU operator, traefik, local-path-provisioner, and sealed-secrets)
-    # - service: "open-webui"
-    #   path: "./infrastructure/droplet/open-webui"
-    #   dependsOn:
-    #     - "nvidia-gpu-operator"
-    #     - "traefik"
-    #     - "local-path-provisioner"
-    #     - "sealed-secrets"
 
     # Envoy Gateway CRDs (EnvoyProxy, BackendTrafficPolicy, ...); Gateway API + GIE CRDs come from gateway-api
     # - service: "envoy-gateway-crds"
@@ -116,6 +108,16 @@ spec:
     - service: "litellm"
       path: "./infrastructure/droplet/litellm"
       dependsOn:
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
+
+    # Open WebUI — chat UI at openwebui.${domain} over LiteLLM's OpenAI API (no Ollama, no GPU); the LiteLLM
+    # virtual key comes from open-webui-secrets (sealed) (needs traefik, local-path-provisioner, and sealed-secrets)
+    - service: "open-webui"
+      path: "./infrastructure/droplet/open-webui"
+      dependsOn:
+        - "litellm"
         - "traefik"
         - "local-path-provisioner"
         - "sealed-secrets"
