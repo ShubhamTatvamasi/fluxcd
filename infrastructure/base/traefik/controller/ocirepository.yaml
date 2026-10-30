@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: traefik
-  namespace: traefik
 spec:
   interval: 10m
   url: oci://ghcr.io/traefik/helm/traefik

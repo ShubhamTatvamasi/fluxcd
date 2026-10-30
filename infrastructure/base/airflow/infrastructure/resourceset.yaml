@@ -12,6 +12,7 @@ spec:
     # node/admin Certificates use it, via internal-ca-issuer
     - service: "cert-manager"
       path: "./infrastructure/base/cert-manager/controller"
+      namespace: "cert-manager"
 
     # self-signed internal CA + ClusterIssuer, built from cert-manager's CRDs
     - service: "cert-manager-config"
@@ -31,12 +32,14 @@ spec:
     # grafana dashboard for airflow (ConfigMap picked up by kube-prometheus-stack)
     - service: "airflow-dashboard"
       path: "./infrastructure/base/airflow/airflow-dashboard"
+      namespace: "monitoring"
       dependsOn:
         - "kube-prometheus-stack"
 
     # cnpg operator (installs the postgresql.cnpg.io CRDs)
     - service: "cnpg-operator"
       path: "./infrastructure/base/cnpg/operator"
+      namespace: "cnpg-system"
 
     # basic-auth credentials for the cnpg cluster. Two interchangeable backends
     # live side by side under secrets/ — swap the path to
@@ -44,12 +47,14 @@ spec:
     # instead of "vault-store") to source it from a SealedSecret instead.
     - service: "airflow-basic-auth"
       path: "./secrets/external-secrets/airflow/cnpg-system"
+      namespace: "cnpg-system"
       dependsOn:
         - "vault-store"
 
     # cnpg cluster + pooler + database (needs the operator CRDs and the secret)
     - service: "cnpg-cluster"
       path: "./infrastructure/base/cnpg/cluster"
+      namespace: "cnpg-system"
       dependsOn:
         - "cnpg-operator"
         - "airflow-basic-auth"
@@ -58,17 +63,20 @@ spec:
     # Airflow's Celery worker ScaledObject to scale workers on queued task count
     - service: "keda"
       path: "./infrastructure/base/keda"
+      namespace: "keda"
 
     # reloader restarts Airflow pods when the airflow-connections Secret or
     # airflow-variables ConfigMap change (see reloader annotations in the HelmRelease)
     - service: "reloader"
       path: "./infrastructure/base/reloader"
+      namespace: "reloader"
 
     # Airflow's metadata DB connection string + KEDA connection variant. Swap
     # to "./secrets/sealed-secrets/airflow/airflow-metadata-connection"
     # (dependsOn "sealed-secrets" instead of "vault-store") to source from a SealedSecret.
     - service: "airflow-metadata-connection"
       path: "./secrets/external-secrets/airflow/airflow-metadata-connection"
+      namespace: "airflow"
       dependsOn:
         - "vault-store"
 
@@ -77,6 +85,7 @@ spec:
     # "sealed-secrets" instead of "vault-store") to source from a SealedSecret.
     - service: "airflow-fernet-key"
       path: "./secrets/external-secrets/airflow/airflow-fernet-key"
+      namespace: "airflow"
       dependsOn:
         - "vault-store"
 
@@ -85,6 +94,7 @@ spec:
     # (dependsOn "sealed-secrets" instead of "vault-store") to source from a SealedSecret.
     - service: "airflow-opensearch-connection"
       path: "./secrets/external-secrets/airflow/airflow-opensearch-connection"
+      namespace: "airflow"
       dependsOn:
         - "vault-store"
 
@@ -94,6 +104,7 @@ spec:
     # "sealed-secrets" instead of "vault-store") to source from a SealedSecret.
     - service: "airflow-connections-import"
       path: "./secrets/external-secrets/airflow/airflow-import"
+      namespace: "airflow"
       dependsOn:
         - "vault-store"
 
@@ -102,6 +113,7 @@ spec:
     # "sealed-secrets" instead of "vault-store") to source from a SealedSecret.
     - service: "airflow-connections"
       path: "./secrets/external-secrets/airflow/airflow-connections"
+      namespace: "airflow"
       dependsOn:
         - "vault-store"
   resourcesTemplate: |
@@ -113,6 +125,9 @@ spec:
     spec:
       interval: 10m0s
       path: << inputs.path >>
+      <<- if index inputs "namespace" >>
+      targetNamespace: << inputs.namespace >>
+      <<- end >>
       prune: true
       wait: true
       timeout: 10m

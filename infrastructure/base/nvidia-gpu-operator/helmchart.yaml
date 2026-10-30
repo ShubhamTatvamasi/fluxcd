@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: gpu-operator
-  namespace: gpu-operator
 spec:
   interval: 10m
   chart: gpu-operator

@@ -8,7 +8,6 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: inferenceservice-vllm
-  namespace: models
 spec:
   selector:
     matchLabels:

@@ -8,6 +8,7 @@ metadata:
 spec:
   interval: 10m0s
   path: ./apps/nvidia-dynamo
+  targetNamespace: dynamo
   prune: true
   # ai-stack (the ResourceSet) is Ready as soon as it has created its Kustomizations, so also wait on
   # dynamo-platform itself: its operator's crd-apply init container installs the DynamoGraphDeployment CRD

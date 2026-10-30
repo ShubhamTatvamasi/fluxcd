@@ -3,7 +3,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: portainer-run-tls
-  namespace: portainer-run
 spec:
   dependsOn:
   - name: sealed-secrets
@@ -11,10 +10,10 @@ spec:
   force: false
   interval: 10m0s
   path: ./secrets/sealed-secrets/tls/shubhamtatvamasi-tls
+  targetNamespace: portainer-run
   postBuild:
     substitute:
       tls_secret_name: portainer-run-tls
-      namespace: portainer-run
   prune: true
   sourceRef:
     kind: GitRepository

@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: stirling-pdf
-  namespace: stirling-pdf
 spec:
   interval: 10m
   chart: stirling-pdf-chart

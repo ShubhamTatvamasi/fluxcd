@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: minio-operator
-  namespace: minio-operator
 spec:
   interval: 10m
   # Upstream operator.min.io archived March 2026; this endpoint still

@@ -9,7 +9,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: dynamo-platform
-  namespace: dynamo-system
 spec:
   interval: 10m
   timeout: 10m
@@ -22,7 +21,6 @@ spec:
   chartRef:
     kind: HelmChart
     name: dynamo-platform
-    namespace: dynamo-system
   values:
     global:
       # Discovery runs on Kubernetes (EndpointSlices) and the request/event planes on TCP/ZMQ,

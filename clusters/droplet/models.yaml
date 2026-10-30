@@ -8,6 +8,7 @@ metadata:
 spec:
   interval: 10m0s
   path: ./apps/droplet
+  targetNamespace: models
   prune: true
   # ai-stack (the ResourceSet) is Ready as soon as it has created its Kustomizations, so also wait on
   # kserve-runtimes, which comes last in the KServe chain (CRDs, controllers, webhooks)

@@ -6,7 +6,6 @@ apiVersion: aigateway.envoyproxy.io/v1beta1
 kind: AIGatewayRoute
 metadata:
   name: models
-  namespace: models
 spec:
   parentRefs:
     - group: gateway.networking.k8s.io

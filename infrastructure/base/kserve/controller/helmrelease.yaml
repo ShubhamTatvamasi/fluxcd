@@ -4,13 +4,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: kserve-resources
-  namespace: kserve
 spec:
   interval: 10m
   chartRef:
     kind: OCIRepository
     name: kserve-resources
-    namespace: kserve
   values:
     kserve:
       version: v0.21.0

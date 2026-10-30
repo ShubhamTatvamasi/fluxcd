@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: external-secrets
-  namespace: external-secrets
 spec:
   interval: 10m
   chart: external-secrets

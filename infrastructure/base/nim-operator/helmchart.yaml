@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: k8s-nim-operator
-  namespace: nim-operator
 spec:
   interval: 10m
   chart: k8s-nim-operator

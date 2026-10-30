@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: nvidia
-  namespace: nvidia-dra-driver-gpu
 spec:
   interval: 10m
   url: https://helm.ngc.nvidia.com/nvidia

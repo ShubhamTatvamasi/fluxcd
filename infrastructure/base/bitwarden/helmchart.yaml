@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: bitwarden
-  namespace: bitwarden
 spec:
   interval: 10m
   chart: self-host

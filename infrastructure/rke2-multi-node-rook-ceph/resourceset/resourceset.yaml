@@ -11,10 +11,12 @@ spec:
     # metallb provides load balancer services for the cluster
     - service: "metallb"
       path: "./infrastructure/base/metallb"
+      namespace: "metallb-system"
 
     # Sealed Secrets controller (needs to be installed before any sealed secrets can be decrypted)
     - service: "sealed-secrets"
       path: "./infrastructure/base/sealed-secrets"
+      namespace: "sealed-secrets"
 
     # flux web UI TLS (sealed secret decrypted by sealed-secrets)
     - service: "flux-tls"
@@ -27,6 +29,7 @@ spec:
     # metallb config (needs the metallb controller CRDs first)
     - service: "metallb-config"
       path: "./infrastructure/rke2-multi-node-rook-ceph/metallb-system"
+      namespace: "metallb-system"
       dependsOn:
         - "metallb"
 
@@ -37,6 +40,7 @@ spec:
     # Traefik — ingress controller (needs metallb and sealed-secrets to be installed first)
     - service: "traefik"
       path: "./infrastructure/base/traefik/controller"
+      namespace: "traefik"
       dependsOn:
         - "metallb-config"
         - "sealed-secrets"
@@ -45,12 +49,14 @@ spec:
     # traefik IngressRoute/Middleware CRs (need the traefik.io CRDs installed by the HelmRelease first)
     - service: "traefik-routes"
       path: "./infrastructure/base/traefik/routes"
+      namespace: "traefik"
       dependsOn:
         - "traefik"
 
     # dex OIDC provider (needs traefik and sealed-secrets)
     - service: "dex"
       path: "./infrastructure/base/dex"
+      namespace: "dex"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -58,12 +64,14 @@ spec:
     # oauth2-proxy needs dex to be up first, so it can configure the OIDC provider
     - service: "oauth2-proxy"
       path: "./infrastructure/base/oauth2-proxy"
+      namespace: "oauth2-proxy"
       dependsOn:
         - "dex"
 
     # Rook — Ceph storage operator
     - service: "rook-ceph"
       path: "./infrastructure/base/rook-ceph/operator"
+      namespace: "rook-ceph"
 
     # CSI-Addons CRDs + controller (vendored from csi-addons/kubernetes-csi-addons).
     # Required by the RBD driver's deployCsiAddons/enableFencing settings —
@@ -71,6 +79,7 @@ spec:
     # crash-loop with "no matches for csiaddons.openshift.io/v1alpha1".
     - service: "csi-addons"
       path: "./infrastructure/base/csi-addons"
+      namespace: "csi-addons-system"
 
     # ceph-csi-drivers chart — creates the RBD/CephFS Driver CRs and their
     # ServiceAccounts/RBAC. rook-ceph's chart only vendors the ceph-csi-operator
@@ -79,6 +88,7 @@ spec:
     # ceph-filesystem stay Pending with no CSI plugin pods ever scheduled.
     - service: "ceph-csi-operator"
       path: "./infrastructure/base/rook-ceph/ceph-csi-operator"
+      namespace: "rook-ceph"
       dependsOn:
         - "rook-ceph"
         - "csi-addons"
@@ -95,6 +105,7 @@ spec:
     # other direction.
     - service: "kube-prometheus-stack"
       path: "./infrastructure/base/kube-prometheus-stack"
+      namespace: "monitoring"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -104,6 +115,7 @@ spec:
     # must be up too; needs kube-prometheus-stack for the PrometheusRule CRD, see above)
     - service: "rook-ceph-cluster"
       path: "./infrastructure/base/rook-ceph/rook-ceph-cluster"
+      namespace: "rook-ceph"
       dependsOn:
         - "rook-ceph"
         - "ceph-csi-operator"
@@ -120,6 +132,7 @@ spec:
     # the domain being hardcoded in the Job instead of using ${domain}.
     - service: "grafana-dashboard-url"
       path: "./infrastructure/base/rook-ceph/grafana-dashboard-url"
+      namespace: "rook-ceph"
       skipSubstitute: true
       dependsOn:
         - "rook-ceph-cluster"
@@ -134,6 +147,7 @@ spec:
     # envsubst tries to resolve as postBuild substitutions and fails on.
     - service: "rook-ceph-dashboards"
       path: "./infrastructure/base/rook-ceph/rook-ceph-dashboards"
+      namespace: "monitoring"
       skipSubstitute: true
       dependsOn:
         - "kube-prometheus-stack"
@@ -144,6 +158,7 @@ spec:
     # default StorageClass for its PVC)
     - service: "portainer"
       path: "./infrastructure/base/portainer"
+      namespace: "portainer"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -152,6 +167,7 @@ spec:
     # Rancher — cluster management UI
     - service: "rancher"
       path: "./infrastructure/base/rancher"
+      namespace: "cattle-system"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -200,6 +216,7 @@ spec:
     # from rook-ceph-cluster.
     - service: "vault"
       path: "./infrastructure/base/vault"
+      namespace: "vault"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -219,6 +236,7 @@ spec:
 
     - service: "harbor"
       path: "./infrastructure/base/harbor"
+      namespace: "harbor"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -229,6 +247,7 @@ spec:
     # Injector natively, so this is the supported integration path for both.
     - service: "external-secrets"
       path: "./infrastructure/base/external-secrets/operator"
+      namespace: "external-secrets"
       dependsOn:
         - "vault"
 
@@ -247,6 +266,7 @@ spec:
     # cluster's default StorageClass from rook-ceph-cluster.
     - service: "openbao"
       path: "./infrastructure/base/openbao"
+      namespace: "openbao"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -260,6 +280,9 @@ spec:
     spec:
       interval: 10m0s
       path: << inputs.path >>
+      <<- if index inputs "namespace" >>
+      targetNamespace: << inputs.namespace >>
+      <<- end >>
       prune: true
       wait: true
       timeout: 10m
@@ -281,6 +304,5 @@ spec:
           domain: "${domain}"
           <<- if index inputs "tls_secret_name" >>
           tls_secret_name: "<< index inputs "tls_secret_name" >>"
-          namespace: "<< index inputs "namespace" >>"
           <<- end >>
       <<- end >>

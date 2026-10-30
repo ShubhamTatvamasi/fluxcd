@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: keycloak
-  namespace: keycloak
 spec:
   interval: 10m
   url: oci://registry-1.docker.io/cloudpirates/keycloak

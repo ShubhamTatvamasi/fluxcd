@@ -16,10 +16,12 @@ spec:
     - service: "nvidia-gpu-operator"
       # path: "./infrastructure/base/nvidia-gpu-operator"
       path: "./infrastructure/droplet/nvidia-gpu-operator"
+      namespace: "gpu-operator"
 
     # NVIDIA DRA driver: publishes the GPU as gpu.nvidia.com ResourceSlices so ResourceClaims (e.g. Portainer GPU claim templates) can use it (needs the operator's driver and toolkit)
     - service: "nvidia-dra-driver-gpu"
       path: "./infrastructure/base/nvidia-dra-driver-gpu"
+      namespace: "nvidia-dra-driver-gpu"
       dependsOn:
         - "nvidia-gpu-operator"
 
@@ -27,6 +29,7 @@ spec:
     # schedulerName: kai-scheduler and allocate GPUs through DRA claims, so it waits for the DRA driver
     - service: "kai-scheduler"
       path: "./infrastructure/base/kai-scheduler"
+      namespace: "kai-scheduler"
       dependsOn:
         - "nvidia-dra-driver-gpu"
 
@@ -99,6 +102,7 @@ spec:
     # workloads, stays off and DGD pods set schedulerName: kai-scheduler themselves; apps/droplet-dynamo)
     - service: "dynamo-platform"
       path: "./infrastructure/base/dynamo-platform"
+      namespace: "dynamo-system"
       dependsOn:
         - "nvidia-gpu-operator"
         - "kube-prometheus-stack"
@@ -107,6 +111,7 @@ spec:
     # forwarding to the Dynamo frontend (small-models-frontend.dynamo.svc:8000) that serves all three models
     - service: "litellm"
       path: "./infrastructure/droplet/litellm"
+      namespace: "litellm"
       dependsOn:
         - "traefik"
         - "local-path-provisioner"
@@ -116,6 +121,7 @@ spec:
     # virtual key comes from open-webui-secrets (sealed) (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "open-webui"
       path: "./infrastructure/droplet/open-webui"
+      namespace: "open-webui"
       dependsOn:
         - "litellm"
         - "traefik"
@@ -154,6 +160,9 @@ spec:
     spec:
       interval: 10m0s
       path: << inputs.path >>
+      <<- if index inputs "namespace" >>
+      targetNamespace: << inputs.namespace >>
+      <<- end >>
       prune: true
       wait: true
       timeout: 10m

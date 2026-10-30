@@ -3,13 +3,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: traefik
-  namespace: traefik
 spec:
   interval: 10m
   chartRef:
     kind: OCIRepository
     name: traefik
-    namespace: traefik
   values:
     service:
       annotations:

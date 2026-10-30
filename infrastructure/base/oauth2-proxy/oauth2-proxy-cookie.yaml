@@ -3,7 +3,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: oauth2-proxy-cookie
-  namespace: oauth2-proxy
 spec:
   dependsOn:
   - name: sealed-secrets

@@ -11,10 +11,10 @@ spec:
   force: false
   interval: 10m0s
   path: ./secrets/sealed-secrets/tls/shubhamtatvamasi-tls
+  targetNamespace: opensearch
   postBuild:
     substitute:
       tls_secret_name: opensearch-dashboards-tls
-      namespace: opensearch
   prune: true
   sourceRef:
     kind: GitRepository

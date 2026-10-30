@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: kestra
-  namespace: kestra
 spec:
   interval: 10m
   chart: kestra

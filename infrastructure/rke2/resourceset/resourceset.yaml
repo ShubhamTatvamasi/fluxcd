@@ -19,10 +19,12 @@ spec:
     # local-path-provisioner provides a default storage class for the cluster
     - service: "local-path-provisioner"
       path: "./infrastructure/base/local-path-provisioner"
+      namespace: "local-path-storage"
 
     # sealed-secrets encrypts secrets so they can be stored in Git safely
     - service: "sealed-secrets"
       path: "./infrastructure/base/sealed-secrets"
+      namespace: "sealed-secrets"
 
     # flux web UI TLS (sealed secret decrypted by sealed-secrets)
     - service: "flux-tls"
@@ -35,6 +37,7 @@ spec:
     # cert-manager issues and renews TLS certificates (installs its own CRDs)
     - service: "cert-manager"
       path: "./infrastructure/base/cert-manager/controller"
+      namespace: "cert-manager"
 
     # cert-manager ClusterIssuers + internal CA (need the cert-manager.io CRDs first)
     - service: "cert-manager-config"
@@ -59,6 +62,7 @@ spec:
     # traefik ingress controller (needs the cilium LB config first)
     - service: "traefik"
       path: "./infrastructure/base/traefik/controller"
+      namespace: "traefik"
       dependsOn:
         - "cilium-lb-config"
         - "sealed-secrets"
@@ -67,6 +71,7 @@ spec:
     # traefik IngressRoute/Middleware CRs (need the traefik.io CRDs installed by the HelmRelease first)
     - service: "traefik-routes"
       path: "./infrastructure/base/traefik/routes"
+      namespace: "traefik"
       dependsOn:
         - "traefik"
 
@@ -81,6 +86,7 @@ spec:
     # dex OIDC provider (needs traefik and sealed-secrets)
     - service: "dex"
       path: "./infrastructure/base/dex"
+      namespace: "dex"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -88,6 +94,7 @@ spec:
     # oauth2-proxy needs dex to be up first, so it can configure the OIDC provider
     - service: "oauth2-proxy"
       path: "./infrastructure/base/oauth2-proxy"
+      namespace: "oauth2-proxy"
       dependsOn:
         - "dex"
 
@@ -110,6 +117,7 @@ spec:
     # kube-prometheus-stack provides monitoring and alerting for the cluster (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "kube-prometheus-stack"
       path: "./infrastructure/base/kube-prometheus-stack"
+      namespace: "monitoring"
       dependsOn:
         - "traefik"
         - "local-path-provisioner"
@@ -119,6 +127,7 @@ spec:
     # which itself depends on traefik — so this can't live in the traefik HelmRelease values)
     - service: "traefik-monitoring"
       path: "./infrastructure/base/traefik/monitoring"
+      namespace: "traefik"
       dependsOn:
         - "traefik"
         - "kube-prometheus-stack"
@@ -220,6 +229,7 @@ spec:
     # Vault — HashiCorp Vault chart (self-contained; no longer needs vault-operator)
     - service: "vault"
       path: "./infrastructure/base/vault"
+      namespace: "vault"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -285,6 +295,9 @@ spec:
     spec:
       interval: 10m0s
       path: << inputs.path >>
+      <<- if index inputs "namespace" >>
+      targetNamespace: << inputs.namespace >>
+      <<- end >>
       prune: true
       wait: true
       timeout: 10m
@@ -305,5 +318,4 @@ spec:
           domain: "${domain}"
           <<- if index inputs "tls_secret_name" >>
           tls_secret_name: "<< index inputs "tls_secret_name" >>"
-          namespace: "<< index inputs "namespace" >>"
           <<- end >>

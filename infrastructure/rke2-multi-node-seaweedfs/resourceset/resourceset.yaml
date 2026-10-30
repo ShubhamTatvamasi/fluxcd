@@ -11,6 +11,7 @@ spec:
     # SeaweedFS — distributed object store (S3-compatible), all-in-one mode for testing
     - service: "seaweedfs"
       path: "./infrastructure/base/seaweedfs"
+      namespace: "seaweedfs"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization
@@ -20,6 +21,9 @@ spec:
     spec:
       interval: 10m0s
       path: << inputs.path >>
+      <<- if index inputs "namespace" >>
+      targetNamespace: << inputs.namespace >>
+      <<- end >>
       prune: true
       wait: true
       timeout: 10m
@@ -40,5 +44,4 @@ spec:
           domain: "${domain}"
           <<- if index inputs "tls_secret_name" >>
           tls_secret_name: "<< index inputs "tls_secret_name" >>"
-          namespace: "<< index inputs "namespace" >>"
           <<- end >>

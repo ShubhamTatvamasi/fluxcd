@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: amd-gpu-operator
-  namespace: kube-amd-gpu
 spec:
   interval: 10m
   chart: gpu-operator-charts

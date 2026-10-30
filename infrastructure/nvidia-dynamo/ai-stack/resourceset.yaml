@@ -13,11 +13,13 @@ spec:
     # NVIDIA GPU operator: driver (skipped if preinstalled on the host), container toolkit, device plugin, DCGM exporter and NFD
     - service: "nvidia-gpu-operator"
       path: "./infrastructure/base/nvidia-gpu-operator"
+      namespace: "gpu-operator"
 
     # Dynamo platform: cluster-wide operator that installs the nvidia.com Dynamo CRDs itself and
     # reconciles DynamoGraphDeployments; its PodMonitors need the monitoring.coreos.com CRDs
     - service: "dynamo-platform"
       path: "./infrastructure/base/dynamo-platform"
+      namespace: "dynamo-system"
       dependsOn:
         - "nvidia-gpu-operator"
         - "kube-prometheus-stack"
@@ -26,6 +28,7 @@ spec:
     # forwarding to the in-cluster Dynamo frontends (<dgd-name>-frontend.dynamo.svc:8000)
     - service: "litellm"
       path: "./infrastructure/nvidia-dynamo/litellm"
+      namespace: "litellm"
       dependsOn:
         - "traefik"
         - "local-path-provisioner"
@@ -40,6 +43,9 @@ spec:
     spec:
       interval: 10m0s
       path: << inputs.path >>
+      <<- if index inputs "namespace" >>
+      targetNamespace: << inputs.namespace >>
+      <<- end >>
       prune: true
       wait: true
       timeout: 10m

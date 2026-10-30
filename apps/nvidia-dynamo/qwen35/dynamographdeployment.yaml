@@ -13,7 +13,6 @@ apiVersion: nvidia.com/v1beta1
 kind: DynamoGraphDeployment
 metadata:
   name: qwen35
-  namespace: dynamo
 spec:
   components:
     - name: Frontend

@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: nvidia-dra-driver-gpu
-  namespace: nvidia-dra-driver-gpu
 spec:
   interval: 10m
   chart: nvidia-dra-driver-gpu

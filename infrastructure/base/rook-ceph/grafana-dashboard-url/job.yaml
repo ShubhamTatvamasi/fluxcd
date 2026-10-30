@@ -34,7 +34,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: grafana-dashboard-url
-  namespace: rook-ceph
 spec:
   # No backoffLimit: retries happen inside the container's own loop instead,
   # so a single pod keeps waiting out key rotation rather than the Job

@@ -3,13 +3,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: kestra
-  namespace: kestra
 spec:
   interval: 10m
   chartRef:
     kind: HelmChart
     name: kestra
-    namespace: kestra
   values:
     # single standalone pod backed by a file-based H2 database + local storage on a PVC
     configurations:

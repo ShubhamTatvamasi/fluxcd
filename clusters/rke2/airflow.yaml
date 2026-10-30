@@ -7,6 +7,7 @@ metadata:
 spec:
   interval: 10m0s
   path: ./infrastructure/base/airflow/resourceset
+  targetNamespace: airflow
   prune: true
   dependsOn:
     - name: airflow-infrastructure

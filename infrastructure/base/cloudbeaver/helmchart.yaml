@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: cloudbeaver
-  namespace: cloudbeaver
 spec:
   interval: 10m
   chart: cloudbeaver

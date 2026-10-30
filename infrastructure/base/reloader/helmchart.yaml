@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: reloader
-  namespace: reloader
 spec:
   interval: 10m
   chart: reloader

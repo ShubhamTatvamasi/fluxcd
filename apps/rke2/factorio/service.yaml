@@ -3,7 +3,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: factorio
-  namespace: factorio
 spec:
   selector:
     app: factorio

@@ -3,13 +3,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: argo-cd
-  namespace: argocd
 spec:
   interval: 10m
   chartRef:
     kind: HelmChart
     name: argo-cd
-    namespace: argocd
   values:
     configs:
       params:

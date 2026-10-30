@@ -5,7 +5,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mistershell
-  namespace: mistershell
   labels:
     app.kubernetes.io/name: mistershell
 spec:

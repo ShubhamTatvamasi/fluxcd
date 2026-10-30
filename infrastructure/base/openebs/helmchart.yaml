@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
   name: openebs
-  namespace: openebs
 spec:
   interval: 10m
   chart: openebs

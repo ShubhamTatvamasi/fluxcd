@@ -3,13 +3,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: oauth2-proxy
-  namespace: oauth2-proxy
 spec:
   interval: 10m
   chartRef:
     kind: HelmChart
     name: oauth2-proxy
-    namespace: oauth2-proxy
   values:
     config:
       clientID: traefik-dashboard

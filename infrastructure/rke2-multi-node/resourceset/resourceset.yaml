@@ -11,14 +11,17 @@ spec:
     # infrastructure
     - service: "metallb"
       path: "./infrastructure/base/metallb"
+      namespace: "metallb-system"
 
     # storage controllers
     - service: "longhorn"
       path: "./infrastructure/base/longhorn"
+      namespace: "longhorn-system"
 
     # Sealed Secrets controller (needs to be installed before any sealed secrets can be decrypted)
     - service: "sealed-secrets"
       path: "./infrastructure/base/sealed-secrets"
+      namespace: "sealed-secrets"
 
     # flux web UI TLS (sealed secret decrypted by sealed-secrets)
     - service: "flux-tls"
@@ -31,6 +34,7 @@ spec:
     # metallb config (needs the metallb controller CRDs first)
     - service: "metallb-config"
       path: "./infrastructure/rke2-multi-node/metallb-system"
+      namespace: "metallb-system"
       dependsOn:
         - "metallb"
 
@@ -41,6 +45,7 @@ spec:
     # Traefik — ingress controller (needs metallb and sealed-secrets to be installed first)
     - service: "traefik"
       path: "./infrastructure/base/traefik/controller"
+      namespace: "traefik"
       dependsOn:
         - "metallb-config"
         - "sealed-secrets"
@@ -49,12 +54,14 @@ spec:
     # traefik IngressRoute/Middleware CRs (need the traefik.io CRDs installed by the HelmRelease first)
     - service: "traefik-routes"
       path: "./infrastructure/base/traefik/routes"
+      namespace: "traefik"
       dependsOn:
         - "traefik"
 
     # Portainer — container management UI (needs traefik and longhorn to be installed first)
     - service: "portainer"
       path: "./infrastructure/base/portainer"
+      namespace: "portainer"
       dependsOn:
         - "traefik"
         - "longhorn"
@@ -63,6 +70,7 @@ spec:
     # portainer-run (needs portainer to be installed first)
     - service: "portainer-run"
       path: "./infrastructure/base/portainer-run"
+      namespace: "portainer-run"
       dependsOn:
         - "portainer"
         - "traefik"
@@ -72,6 +80,7 @@ spec:
     # Rancher — cluster management UI
     - service: "rancher"
       path: "./infrastructure/base/rancher"
+      namespace: "cattle-system"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -84,6 +93,9 @@ spec:
     spec:
       interval: 10m0s
       path: << inputs.path >>
+      <<- if index inputs "namespace" >>
+      targetNamespace: << inputs.namespace >>
+      <<- end >>
       prune: true
       wait: true
       timeout: 10m
@@ -104,5 +116,4 @@ spec:
           domain: "${domain}"
           <<- if index inputs "tls_secret_name" >>
           tls_secret_name: "<< index inputs "tls_secret_name" >>"
-          namespace: "<< index inputs "namespace" >>"
           <<- end >>

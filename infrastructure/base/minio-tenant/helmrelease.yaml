@@ -3,13 +3,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: minio-tenant
-  namespace: minio-tenant
 spec:
   interval: 10m
   chartRef:
     kind: HelmChart
     name: minio-tenant
-    namespace: minio-tenant
   values:
     tenant:
       name: minio

@@ -6,13 +6,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: nim-operator
-  namespace: nim-operator
 spec:
   interval: 10m
   chartRef:
     kind: HelmChart
     name: k8s-nim-operator
-    namespace: nim-operator
   install:
     crds: CreateReplace
   upgrade:

@@ -3,7 +3,6 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: airflow-import
-  namespace: ${namespace}
 spec:
   schedule: "*/10 * * * *"
   concurrencyPolicy: Forbid

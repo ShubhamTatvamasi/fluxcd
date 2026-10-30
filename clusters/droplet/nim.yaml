@@ -8,6 +8,7 @@ metadata:
 spec:
   interval: 10m0s
   path: ./apps/droplet-nim
+  targetNamespace: nim
   prune: true
   # ai-stack (the ResourceSet) is Ready as soon as it has created its Kustomizations, so also wait on
   # nim-operator for the NIMService CRD and sealed-secrets for the NGC secrets

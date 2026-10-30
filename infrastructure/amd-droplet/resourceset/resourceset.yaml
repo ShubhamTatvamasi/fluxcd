@@ -11,10 +11,12 @@ spec:
     # local-path-provisioner provides a default storage class for the cluster
     - service: "local-path-provisioner"
       path: "./infrastructure/base/local-path-provisioner"
+      namespace: "local-path-storage"
 
     # sealed-secrets encrypts secrets so they can be stored in Git safely
     - service: "sealed-secrets"
       path: "./infrastructure/base/sealed-secrets"
+      namespace: "sealed-secrets"
 
     # flux web UI TLS (sealed secret decrypted by sealed-secrets)
     - service: "flux-tls"
@@ -27,6 +29,7 @@ spec:
     # cert-manager issues and renews TLS certificates (installs its own CRDs); the AMD GPU operator needs it for its webhooks
     - service: "cert-manager"
       path: "./infrastructure/base/cert-manager/controller"
+      namespace: "cert-manager"
 
     # cert-manager ClusterIssuers + internal CA (need the cert-manager.io CRDs first)
     - service: "cert-manager-config"
@@ -45,6 +48,7 @@ spec:
     # traefik ingress controller (needs the cilium LB config first)
     - service: "traefik"
       path: "./infrastructure/base/traefik/controller"
+      namespace: "traefik"
       dependsOn:
         - "cilium-lb-config"
         - "sealed-secrets"
@@ -53,12 +57,14 @@ spec:
     # traefik IngressRoute/Middleware CRs (need the traefik.io CRDs installed by the HelmRelease first)
     - service: "traefik-routes"
       path: "./infrastructure/base/traefik/routes"
+      namespace: "traefik"
       dependsOn:
         - "traefik"
 
     # dex OIDC provider (needs traefik and sealed-secrets)
     - service: "dex"
       path: "./infrastructure/base/dex"
+      namespace: "dex"
       dependsOn:
         - "traefik"
         - "sealed-secrets"
@@ -66,12 +72,14 @@ spec:
     # oauth2-proxy guards the traefik dashboard; needs dex up first to configure the OIDC provider
     - service: "oauth2-proxy"
       path: "./infrastructure/base/oauth2-proxy"
+      namespace: "oauth2-proxy"
       dependsOn:
         - "dex"
 
     # portainer is a web UI for managing containers and Kubernetes clusters (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "portainer"
       path: "./infrastructure/base/portainer"
+      namespace: "portainer"
       dependsOn:
         - "traefik"
         - "local-path-provisioner"
@@ -80,6 +88,7 @@ spec:
     # AMD GPU operator: device plugin, node labeller and metrics exporter for the droplet's Instinct GPU (host driver, no driver build)
     - service: "amd-gpu-operator"
       path: "./infrastructure/base/amd-gpu-operator"
+      namespace: "kube-amd-gpu"
       dependsOn:
         - "cert-manager"
 
@@ -90,6 +99,7 @@ spec:
     # GPUStack — GPU cluster manager for serving models (needs NFD labels from the GPU operator, traefik, local-path-provisioner, and sealed-secrets)
     - service: "gpustack"
       path: "./infrastructure/base/gpustack"
+      namespace: "gpustack-system"
       dependsOn:
         - "amd-gpu-operator"
         - "traefik"
@@ -99,6 +109,7 @@ spec:
     # Open WebUI — chat UI with a bundled Ollama running on the node's GPU (needs the GPU operator, traefik, local-path-provisioner, and sealed-secrets)
     - service: "open-webui"
       path: "./infrastructure/base/open-webui"
+      namespace: "open-webui"
       dependsOn:
         - "amd-gpu-operator"
         - "traefik"
@@ -113,6 +124,9 @@ spec:
     spec:
       interval: 10m0s
       path: << inputs.path >>
+      <<- if index inputs "namespace" >>
+      targetNamespace: << inputs.namespace >>
+      <<- end >>
       prune: true
       wait: true
       timeout: 10m
@@ -136,5 +150,4 @@ spec:
           gpu_runtime_class: "${gpu_runtime_class}"
           <<- if index inputs "tls_secret_name" >>
           tls_secret_name: "<< index inputs "tls_secret_name" >>"
-          namespace: "<< index inputs "namespace" >>"
           <<- end >>

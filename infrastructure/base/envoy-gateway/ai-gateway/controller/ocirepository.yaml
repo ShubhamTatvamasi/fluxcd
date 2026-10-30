@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: envoy-ai-gateway
-  namespace: envoy-ai-gateway-system
 spec:
   interval: 10m
   url: oci://docker.io/envoyproxy/ai-gateway-helm

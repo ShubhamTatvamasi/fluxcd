@@ -13,6 +13,7 @@ spec:
     # NVIDIA GPU operator: driver (skipped if preinstalled on the host), container toolkit, device plugin, DCGM exporter and NFD
     - service: "nvidia-gpu-operator"
       path: "./infrastructure/base/nvidia-gpu-operator"
+      namespace: "gpu-operator"
 
     # GPUStack — GPU cluster manager for serving models (needs NFD labels from the GPU operator, traefik, local-path-provisioner, and sealed-secrets)
     # - service: "gpustack"
@@ -41,18 +42,21 @@ spec:
     # Envoy Gateway controller, wired to the AI Gateway extension server for InferencePool backends
     - service: "envoy-gateway"
       path: "./infrastructure/base/envoy-gateway/controller"
+      namespace: "envoy-gateway-system"
       dependsOn:
         - "envoy-gateway-crds"
 
     # Envoy AI Gateway CRDs (AIGatewayRoute, AIServiceBackend, QuotaPolicy, ...)
     - service: "envoy-ai-gateway-crds"
       path: "./infrastructure/base/envoy-gateway/ai-gateway/crds"
+      namespace: "envoy-ai-gateway-system"
       dependsOn:
         - "envoy-gateway-crds"
 
     # Envoy AI Gateway controller (needs cert-manager for its webhook cert)
     - service: "envoy-ai-gateway"
       path: "./infrastructure/base/envoy-gateway/ai-gateway/controller"
+      namespace: "envoy-ai-gateway-system"
       dependsOn:
         - "envoy-ai-gateway-crds"
         - "envoy-gateway"
@@ -61,10 +65,12 @@ spec:
     # KServe CRDs (InferenceService, ServingRuntime, InferenceGraph, ClusterStorageContainer) and the kserve namespace
     - service: "kserve-crds"
       path: "./infrastructure/base/kserve/crds/kserve"
+      namespace: "kserve"
 
     # KServe LLMInferenceService CRDs (after kserve-crds so ClusterStorageContainer stays owned by kserve-crd)
     - service: "kserve-llmisvc-crds"
       path: "./infrastructure/base/kserve/crds/llmisvc"
+      namespace: "kserve"
       dependsOn:
         - "kserve-crds"
 
@@ -82,6 +88,7 @@ spec:
     # forwarding to the internal kserve-ingress-gateway with its own gateway API key
     - service: "litellm"
       path: "./infrastructure/base/litellm"
+      namespace: "litellm"
       dependsOn:
         - "kserve-gateway"
         - "traefik"
@@ -91,6 +98,7 @@ spec:
     # KServe controller for InferenceService in Standard mode (needs cert-manager for webhook certs)
     - service: "kserve-controller"
       path: "./infrastructure/base/kserve/controller"
+      namespace: "kserve"
       dependsOn:
         - "kserve-crds"
         - "cert-manager"
@@ -99,6 +107,7 @@ spec:
     # KServe LLMInferenceService controller (needs the shared config from kserve-controller and the gateway-api/GIE CRDs)
     - service: "kserve-llmisvc"
       path: "./infrastructure/base/kserve/llmisvc"
+      namespace: "kserve"
       dependsOn:
         - "kserve-llmisvc-crds"
         - "kserve-controller"
@@ -107,6 +116,7 @@ spec:
     # KServe ClusterServingRuntimes and LLMInferenceServiceConfig presets (validated by both controllers' webhooks)
     - service: "kserve-runtimes"
       path: "./infrastructure/base/kserve/runtimes"
+      namespace: "kserve"
       dependsOn:
         - "kserve-controller"
         - "kserve-llmisvc"
@@ -120,6 +130,9 @@ spec:
     spec:
       interval: 10m0s
       path: << inputs.path >>
+      <<- if index inputs "namespace" >>
+      targetNamespace: << inputs.namespace >>
+      <<- end >>
       prune: true
       wait: true
       timeout: 10m

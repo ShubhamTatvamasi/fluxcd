@@ -8,6 +8,7 @@ metadata:
 spec:
   interval: 10m0s
   path: ./apps/nvidia-droplet
+  targetNamespace: models
   prune: true
   dependsOn:
     - name: ai-stack

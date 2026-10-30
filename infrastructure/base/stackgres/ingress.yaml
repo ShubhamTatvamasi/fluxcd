@@ -3,7 +3,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: stackgres
-  namespace: stackgres
 spec:
   ingressClassName: traefik
   rules:

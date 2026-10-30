@@ -3,13 +3,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: infisical
-  namespace: infisical
 spec:
   interval: 10m
   chartRef:
     kind: HelmChart
     name: infisical
-    namespace: infisical
   values:
     infisical:
       replicaCount: 1

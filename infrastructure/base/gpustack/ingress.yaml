@@ -6,7 +6,6 @@ kind: Ingress
 # uses to route that host to the server; sharing the name makes helm and flux fight over it.
 metadata:
   name: gpustack-traefik
-  namespace: gpustack-system
 spec:
   ingressClassName: traefik
   rules:

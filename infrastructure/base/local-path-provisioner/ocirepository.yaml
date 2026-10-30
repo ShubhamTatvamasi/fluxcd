@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: local-path-provisioner
-  namespace: local-path-storage
 spec:
   interval: 10m
   url: oci://ghcr.io/rancher/local-path-provisioner/charts/local-path-provisioner

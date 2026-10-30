@@ -8,7 +8,6 @@ apiVersion: serving.kserve.io/v1alpha2
 kind: LLMInferenceService
 metadata:
   name: qwen25
-  namespace: models
 spec:
   model:
     # served name (vLLM --served-model-name); must match the AIGatewayRoute rule value

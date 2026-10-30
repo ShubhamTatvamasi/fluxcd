@@ -3,7 +3,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: kai-scheduler
-  namespace: kai-scheduler
 spec:
   interval: 10m
   url: oci://ghcr.io/nvidia/kai-scheduler/kai-scheduler
