@@ -8,7 +8,10 @@
 #
 # GPU: every worker uses the dynamo/gpu claim (MPS, 6Gi and 33% of the SMs per process). Under MPS CUDA still
 # reports the whole card as total (19.55 GiB) and only the cap as free (5.94 GiB), and vLLM sizes from total,
-# so --gpu-memory-utilization 0.27 (~5.3 GiB) keeps each worker inside its 6Gi with room for the CUDA context.
+# so --gpu-memory-utilization 0.27 (~5.3 GiB) passes vLLM's startup check against the free memory. The KV cache
+# is pinned with --kv-cache-memory-bytes rather than left to that fraction of the card, so each worker takes
+# ~5.3 GiB of its 5.94 GiB whatever the card's size: weights + CUDA context + peak activations + CUDA graphs + KV
+# cache, as each worker's startup log (and Portainer's model Internals tab) itemizes it.
 # Scheduling: the operator only injects KAI settings for Grove (multinode) workloads, so every pod sets
 # schedulerName and the KAI queue label itself.
 # Rollouts: a new worker can't fit next to the old one (the card is fully split), so a worker change needs the
@@ -63,9 +66,12 @@ spec:
                 # $(DYN_NAMESPACE) is set by the operator and expanded by the kubelet
                 - --endpoint
                 - dyn://$(DYN_NAMESPACE).qwen3.generate
-                # ~2.3 GB of FP8 weights; the cache gets ~2.5Gi, ~22k tokens at 112 KiB/token
+                # 1.9 GiB of FP8 weights (the output layer is tied to the embeddings, so loaded once);
+                # a 2.68 GiB cache holds 25,072 tokens at 112 KiB/token, 1.5 requests of the full 16k
                 - --gpu-memory-utilization
                 - "0.27"
+                - --kv-cache-memory-bytes
+                - "2877628088"
                 - --max-model-len
                 - "16384"
                 - --max-num-seqs
@@ -88,7 +94,8 @@ spec:
                   - name: gpu
                 requests:
                   cpu: 500m
-                  memory: 3Gi
+                  # each worker holds ~3.4-4.1 GiB of host memory once loaded
+                  memory: 4608Mi
                 limits:
                   memory: 8Gi
           volumes:
@@ -120,9 +127,12 @@ spec:
                 - qwen2.5-coder-1.5b
                 - --endpoint
                 - dyn://$(DYN_NAMESPACE).coder.generate
-                # ~3.1 GB of BF16 weights; the cache gets ~1.6Gi, ~60k tokens at 28 KiB/token
+                # 2.98 GiB of BF16 weights; a 1.33 GiB cache holds 49,824 tokens at 28 KiB/token,
+                # 1.5 requests of the full 32k
                 - --gpu-memory-utilization
                 - "0.27"
+                - --kv-cache-memory-bytes
+                - "1428076625"
                 - --max-model-len
                 - "32768"
                 - --max-num-seqs
@@ -140,7 +150,8 @@ spec:
                   - name: gpu
                 requests:
                   cpu: 500m
-                  memory: 3Gi
+                  # each worker holds ~3.4-4.1 GiB of host memory once loaded
+                  memory: 4608Mi
                 limits:
                   memory: 8Gi
           volumes:
@@ -172,10 +183,12 @@ spec:
                 - smollm2-1.7b
                 - --endpoint
                 - dyn://$(DYN_NAMESPACE).smollm2.generate
-                # ~3.4 GB of BF16 weights and no GQA (192 KiB/token): the cache gets ~1.3Gi, ~7k tokens,
-                # so stay under the model's 8k context
+                # 3.19 GiB of BF16 weights and no GQA (192 KiB/token): a 1.61 GiB cache holds 8,800 tokens,
+                # barely one request of the model's full 8k, so stay at 4k (2 at once)
                 - --gpu-memory-utilization
                 - "0.27"
+                - --kv-cache-memory-bytes
+                - "1728724336"
                 - --max-model-len
                 - "4096"
                 - --max-num-seqs
@@ -191,7 +204,8 @@ spec:
                   - name: gpu
                 requests:
                   cpu: 500m
-                  memory: 3Gi
+                  # each worker holds ~3.4-4.1 GiB of host memory once loaded
+                  memory: 4608Mi
                 limits:
                   memory: 8Gi
           volumes:
