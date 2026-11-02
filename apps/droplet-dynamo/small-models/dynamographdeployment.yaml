@@ -8,10 +8,11 @@
 #
 # GPU: every worker uses the dynamo/gpu claim (MPS, 6Gi and 33% of the SMs per process). Under MPS CUDA still
 # reports the whole card as total (19.55 GiB) and only the cap as free (5.94 GiB), and vLLM sizes from total,
-# so --gpu-memory-utilization 0.27 (~5.3 GiB) passes vLLM's startup check against the free memory. The KV cache
-# is pinned with --kv-cache-memory-bytes rather than left to that fraction of the card, so each worker takes
-# ~5.3 GiB of its 5.94 GiB whatever the card's size: weights + CUDA context + peak activations + CUDA graphs + KV
-# cache, as each worker's startup log (and Portainer's model Internals tab) itemizes it.
+# so --gpu-memory-utilization 0.27 (~5.3 GiB) keeps each worker inside its 6Gi with room for the CUDA context.
+# vLLM measures its peak activations at startup and gives the KV cache what is left of that budget, logging the
+# split (weights + CUDA context + peak activations + CUDA graphs + KV cache), which Portainer's model Internals tab
+# shows. Don't pin the cache with --kv-cache-memory-bytes: vLLM then skips that measurement, so nothing checks the
+# activations still fit under the MPS cap.
 # Scheduling: the operator only injects KAI settings for Grove (multinode) workloads, so every pod sets
 # schedulerName and the KAI queue label itself.
 # Rollouts: a new worker can't fit next to the old one (the card is fully split), so a worker change needs the
@@ -70,8 +71,6 @@ spec:
                 # a 2.68 GiB cache holds 25,072 tokens at 112 KiB/token, 1.5 requests of the full 16k
                 - --gpu-memory-utilization
                 - "0.27"
-                - --kv-cache-memory-bytes
-                - "2877628088"
                 - --max-model-len
                 - "16384"
                 - --max-num-seqs
@@ -131,8 +130,6 @@ spec:
                 # 1.5 requests of the full 32k
                 - --gpu-memory-utilization
                 - "0.27"
-                - --kv-cache-memory-bytes
-                - "1428076625"
                 - --max-model-len
                 - "32768"
                 - --max-num-seqs
@@ -187,8 +184,6 @@ spec:
                 # barely one request of the model's full 8k, so stay at 4k (2 at once)
                 - --gpu-memory-utilization
                 - "0.27"
-                - --kv-cache-memory-bytes
-                - "1728724336"
                 - --max-model-len
                 - "4096"
                 - --max-num-seqs
