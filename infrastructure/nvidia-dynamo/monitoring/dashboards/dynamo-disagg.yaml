@@ -1,5 +1,5 @@
 ---
-# from ai-dynamo/dynamo v1.5.1 deploy/observability/grafana-disagg-dashboard-configmap.yaml (annotations added: AI folder, no Flux substitution)
+# from ai-dynamo/dynamo v1.6.1 deploy/observability/grafana-disagg-dashboard-configmap.yaml (annotations added: AI folder, no Flux substitution)
 apiVersion: v1
 kind: ConfigMap
 metadata:

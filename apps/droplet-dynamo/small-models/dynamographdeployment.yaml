@@ -35,7 +35,7 @@ spec:
           containers:
             - name: main
               # the operator's webhook requires an image with a semver tag on every component
-              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.5.1
+              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.6.1
               resources:
                 requests:
                   cpu: 250m
@@ -55,7 +55,7 @@ spec:
               resourceClaimName: gpu
           containers:
             - name: main
-              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.5.1
+              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.6.1
               workingDir: /workspace/examples/backends/vllm
               command: ["python3", "-m", "dynamo.vllm"]
               args:
@@ -117,7 +117,7 @@ spec:
               resourceClaimName: gpu
           containers:
             - name: main
-              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.5.1
+              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.6.1
               workingDir: /workspace/examples/backends/vllm
               command: ["python3", "-m", "dynamo.vllm"]
               args:
@@ -173,7 +173,7 @@ spec:
               resourceClaimName: gpu
           containers:
             - name: main
-              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.5.1
+              image: nvcr.io/nvidia/ai-dynamo/vllm-runtime:1.6.1
               workingDir: /workspace/examples/backends/vllm
               command: ["python3", "-m", "dynamo.vllm"]
               args:

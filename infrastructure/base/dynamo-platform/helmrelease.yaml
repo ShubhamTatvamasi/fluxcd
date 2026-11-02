@@ -30,8 +30,8 @@ spec:
       nats:
         install: false
       # Grove (PodCliqueSets) + KAI scheduler are only needed for multinode workers
-      # (one model spanning several nodes). Turn both on together for that; 1.5.x needs
-      # kai-scheduler >= v0.17.0 and Grove >= v0.1.0-alpha.13, which the chart bundles.
+      # (one model spanning several nodes). Turn both on together for that; 1.6.x needs
+      # kai-scheduler >= v0.17.0 and Grove >= v0.1.0-alpha.14, which the chart bundles.
       grove:
         install: false
       kai-scheduler:

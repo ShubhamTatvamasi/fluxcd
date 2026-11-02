@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 10m
   chart: dynamo-platform
-  version: "1.5.1"
+  version: "1.6.1"
   sourceRef:
     name: ai-dynamo
     kind: HelmRepository
