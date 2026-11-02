@@ -29,15 +29,15 @@ patches:
               # 16384-token window (--max-model-len) split so prompt + reply always fit
               max_input_tokens: 12288
               max_output_tokens: 4096
-          - model_name: qwen2.5-coder-1.5b
+          - model_name: granite-4.0-1b
             litellm_params:
-              model: openai/qwen2.5-coder-1.5b
+              model: openai/granite-4.0-1b
               api_base: http://small-models-frontend.dynamo.svc.cluster.local:8000/v1
               api_key: none
             model_info:
               supports_function_calling: true
-              # 32768-token window (--max-model-len) split so prompt + reply always fit
-              max_input_tokens: 28672
+              # 16384-token window (--max-model-len) split so prompt + reply always fit
+              max_input_tokens: 12288
               max_output_tokens: 4096
           - model_name: smollm2-1.7b
             litellm_params:
