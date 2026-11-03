@@ -101,6 +101,7 @@ spec:
     # portainer is a web UI for managing containers and Kubernetes clusters (needs traefik, local-path-provisioner, and sealed-secrets)
     - service: "portainer"
       path: "./infrastructure/base/portainer"
+      namespace: "portainer"
       dependsOn:
         - "traefik"
         - "local-path-provisioner"
