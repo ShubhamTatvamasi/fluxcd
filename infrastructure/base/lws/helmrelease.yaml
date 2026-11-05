@@ -1,0 +1,25 @@
+---
+# LeaderWorkerSet (LWS): deploys a group of pods (one leader + N workers) as a single replica unit, for
+# multi-node / multi-host distributed inference. https://lws.sigs.k8s.io
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: lws
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: lws
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    # ServiceMonitor for the controller metrics (kube-prometheus-stack picks up all ServiceMonitors;
+    # its Prometheus ClusterRole already grants get on /metrics)
+    enablePrometheus: true
+    # chart default requests a full CPU and 1Gi; the controller is idle most of the time on a single node
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi

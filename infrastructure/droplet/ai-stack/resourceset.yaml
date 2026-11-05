@@ -1,6 +1,6 @@
 ---
 # GPU and model-serving stack: GPU operator, KAI Scheduler, NIM Operator, GPUStack, Open WebUI (on LiteLLM), Envoy (AI) Gateway, KServe,
-# the NVIDIA Dynamo platform (operator) and LiteLLM.
+# the NVIDIA Dynamo platform (operator), LeaderWorkerSet and LiteLLM.
 # Applied after the "infrastructure" ResourceSet; dependsOn names may point at its Kustomizations.
 apiVersion: fluxcd.controlplane.io/v1
 kind: ResourceSet
@@ -105,6 +105,14 @@ spec:
       namespace: "dynamo-system"
       dependsOn:
         - "nvidia-gpu-operator"
+        - "kube-prometheus-stack"
+
+    # LeaderWorkerSet (LWS): leader + workers pod groups for distributed (multi-host) inference; its
+    # ServiceMonitor needs the monitoring.coreos.com CRDs
+    - service: "lws"
+      path: "./infrastructure/base/lws"
+      namespace: "lws-system"
+      dependsOn:
         - "kube-prometheus-stack"
 
     # LiteLLM Proxy: public API + admin UI at litellm.${domain} (users, virtual keys, budgets, rate limits),
