@@ -16,3 +16,14 @@ patches:
       path: /spec/values/devicePlugin
       value:
         enabled: false
+    # The dynamo/gpu claim runs the card under MPS, which puts it in Exclusive_Process compute mode: only the
+    # MPS server may open a context, so the validator's vectorAdd (not an MPS client) fails with "CUDA-capable
+    # device(s) is/are busy or unavailable" whenever the operator re-validates (upgrades, driver restarts) and
+    # the release never gets Ready. Skip that workload test; the driver and toolkit validations still run.
+    - op: add
+      path: /spec/values/validator
+      value:
+        cuda:
+          env:
+            - name: WITH_WORKLOAD
+              value: "false"
