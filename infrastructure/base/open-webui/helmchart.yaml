@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 10m
   chart: open-webui
-  version: "17.0.0"
+  version: "18.0.0"
   sourceRef:
     name: open-webui
     kind: HelmRepository
