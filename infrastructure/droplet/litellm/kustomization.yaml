@@ -23,6 +23,16 @@ patches:
               api_base: http://small-models-frontend.dynamo.svc.cluster.local:8000/v1
               # the Dynamo frontend has no auth (only reachable in-cluster); the openai client still wants a key
               api_key: none
+              # shadow price per token ($0.10 / $0.40 per 1M): self-hosted models aren't in LiteLLM's cost map,
+              # so without it every request is logged as $0 and no budget ever triggers
+              input_cost_per_token: 0.0000001
+              output_cost_per_token: 0.0000004
+              # model-wide rate limits across all keys (enforced via enforce_model_rate_limits below)
+              rpm: 60
+              tpm: 100000
+              # model-wide spend cap across all keys, reset every budget_duration
+              max_budget: 10
+              budget_duration: 30d
             model_info:
               supports_function_calling: true
               supports_reasoning: true
@@ -34,6 +44,12 @@ patches:
               model: openai/granite-4.0-1b
               api_base: http://small-models-frontend.dynamo.svc.cluster.local:8000/v1
               api_key: none
+              input_cost_per_token: 0.0000001
+              output_cost_per_token: 0.0000004
+              rpm: 60
+              tpm: 100000
+              max_budget: 10
+              budget_duration: 30d
             model_info:
               supports_function_calling: true
               # 16384-token window (--max-model-len) split so prompt + reply always fit
@@ -44,6 +60,12 @@ patches:
               model: openai/smollm2-1.7b
               api_base: http://small-models-frontend.dynamo.svc.cluster.local:8000/v1
               api_key: none
+              input_cost_per_token: 0.0000001
+              output_cost_per_token: 0.0000004
+              rpm: 60
+              tpm: 100000
+              max_budget: 10
+              budget_duration: 30d
             model_info:
               # 4096-token window (--max-model-len) split so prompt + reply always fit
               max_input_tokens: 3072
@@ -61,6 +83,9 @@ patches:
           # check prompt size against model_info.max_input_tokens before calling, so an oversized
           # request goes straight to the fallback instead of failing on smollm2 first
           enable_pre_call_checks: true
+          # without this the per-model rpm/tpm above are only routing hints, not enforced limits
+          # (the per-model max_budget check turns itself on)
+          optional_pre_call_checks: ["enforce_model_rate_limits"]
         general_settings:
           master_key: os.environ/PROXY_MASTER_KEY
           # no UI sign-in with the shared UI_USERNAME/UI_PASSWORD (or master key); admins log in with
