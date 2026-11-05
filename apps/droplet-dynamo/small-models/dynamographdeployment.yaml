@@ -8,7 +8,8 @@
 #
 # GPU: every worker uses the dynamo/gpu claim (MPS, 6Gi and 33% of the SMs per process). Under MPS CUDA still
 # reports the whole card as total (19.55 GiB) and only the cap as free (5.94 GiB), and vLLM sizes from total,
-# so --gpu-memory-utilization 0.27 (~5.3 GiB) keeps each worker inside its 6Gi with room for the CUDA context.
+# so --gpu-memory-utilization 0.30 (~5.87 GiB) keeps each worker inside its 6Gi: vLLM refuses to start unless
+# that budget is below the 5.94 GiB free, so 0.30 is the ceiling (~75 MiB spare).
 # vLLM measures its peak activations at startup and gives the KV cache what is left of that budget, logging the
 # split (weights + CUDA context + peak activations + CUDA graphs + KV cache), which Portainer's model Internals tab
 # shows. Don't pin the cache with --kv-cache-memory-bytes: vLLM then skips that measurement, so nothing checks the
@@ -68,9 +69,9 @@ spec:
                 - --endpoint
                 - dyn://$(DYN_NAMESPACE).qwen3.generate
                 # 1.9 GiB of FP8 weights (the output layer is tied to the embeddings, so loaded once);
-                # a 2.68 GiB cache holds 25,072 tokens at 112 KiB/token, 1.5 requests of the full 16k
+                # a ~3.2 GiB cache holds ~30k tokens at 112 KiB/token, ~1.8 requests of the full 16k
                 - --gpu-memory-utilization
-                - "0.27"
+                - "0.30"
                 - --max-model-len
                 - "16384"
                 - --max-num-seqs
@@ -127,9 +128,9 @@ spec:
                 - --endpoint
                 - dyn://$(DYN_NAMESPACE).granite.generate
                 # 3.04 GiB of BF16 weights (embeddings tied) and 80 KiB/token (40 layers, 4 KV heads), so the
-                # ~1.3 GiB cache holds ~16k tokens: stay at 16k although the model takes 128k
+                # ~2.3 GiB cache holds ~30k tokens: stay at 16k although the model takes 128k
                 - --gpu-memory-utilization
-                - "0.27"
+                - "0.30"
                 - --max-model-len
                 - "16384"
                 - --max-num-seqs
@@ -181,10 +182,10 @@ spec:
                 - smollm2-1.7b
                 - --endpoint
                 - dyn://$(DYN_NAMESPACE).smollm2.generate
-                # 3.19 GiB of BF16 weights and no GQA (192 KiB/token): a 1.61 GiB cache holds 8,800 tokens,
-                # barely one request of the model's full 8k, so stay at 4k (2 at once)
+                # 3.19 GiB of BF16 weights and no GQA (192 KiB/token): a ~2.3 GiB cache holds ~12.7k tokens,
+                # ~1.5 requests of the model's full 8k, so stay at 4k (3 at once)
                 - --gpu-memory-utilization
-                - "0.27"
+                - "0.30"
                 - --max-model-len
                 - "4096"
                 - --max-num-seqs
