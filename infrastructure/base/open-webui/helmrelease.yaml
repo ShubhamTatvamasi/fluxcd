@@ -9,6 +9,9 @@ spec:
     kind: HelmChart
     name: open-webui
   values:
+    # chart 18.0.0 ships app 0.13.0; pin the newer upstream release until the chart catches up
+    image:
+      tag: "0.13.3"
     ingress:
       enabled: true
       class: traefik
