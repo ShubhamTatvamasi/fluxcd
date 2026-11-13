@@ -1,0 +1,54 @@
+---
+# Pushes the Open WebUI tools in this directory (code + admin valves + public access) through the
+# Open WebUI API, so they live in git instead of only in the Open WebUI database.
+#
+# Auth: an admin's Open WebUI API key (sk-...) in open-webui-secrets/admin-api-key. Until that key exists
+# the pod sits in CreateContainerConfigError and starts by itself once it shows up; until API keys are
+# enabled (Admin Panel > Settings > General > Enable API Keys) the script keeps retrying.
+#
+# Re-runs: the ConfigMap name carries a content hash, so editing web_search.py / valves.json / provision.py
+# changes the (immutable) pod template; the force annotation lets Flux delete and recreate the Job, which
+# runs it again. No ttlSecondsAfterFinished on purpose: a self-deleting Job would be recreated (and re-run)
+# by Flux on every reconcile.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: open-webui-tools
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: enabled
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+        - name: provision
+          # the Open WebUI image itself (already on the node; has python + requests)
+          image: ghcr.io/open-webui/open-webui:0.13.3
+          command: ["python3", "/config/provision.py"]
+          env:
+            - name: OPEN_WEBUI_URL
+              value: http://open-webui.open-webui.svc.cluster.local
+            - name: OPEN_WEBUI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: open-webui-secrets
+                  key: admin-api-key
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: config
+          configMap:
+            name: open-webui-tools

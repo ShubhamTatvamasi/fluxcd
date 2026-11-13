@@ -1,0 +1,29 @@
+# SearXNG settings, layered over the image's defaults (use_default_settings), for an in-cluster
+# metasearch backend used by Open WebUI tools: no ingress, so the bot limiter (and its Valkey) is off,
+# and the JSON API (format=json) is enabled, which the defaults leave off (403 on format=json).
+use_default_settings: true
+
+general:
+  instance_name: searxng
+  enable_metrics: false
+
+server:
+  # overridden by SEARXNG_SECRET (searxng-secrets) at startup
+  secret_key: "set-from-env"
+  limiter: false
+  public_instance: false
+  image_proxy: false
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  formats:
+    - html
+    - json
+
+valkey:
+  url: false
+
+outgoing:
+  request_timeout: 5.0
+  max_request_timeout: 10.0

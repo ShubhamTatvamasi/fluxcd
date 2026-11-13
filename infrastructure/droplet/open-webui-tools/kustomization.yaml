@@ -1,0 +1,15 @@
+---
+# Open WebUI tools managed from git, applied by the open-webui-tools Job through the Open WebUI API:
+#   web_search: "Web Search using SearXNG and Scrape first N Pages" (openwebui.com/posts/web_search_238777c6,
+#   v0.1.14) against the in-cluster SearXNG (infrastructure/base/searxng). Valves in valves.json;
+#   PAGE_CONTENT_WORDS_LIMIT is 1000 (not the tool's 5000) so 3 scraped pages fit the models' 12k-token input.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- job.yaml
+configMapGenerator:
+- name: open-webui-tools
+  files:
+  - provision.py
+  - web_search.py
+  - valves.json

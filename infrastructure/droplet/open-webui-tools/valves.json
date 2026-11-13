@@ -1,0 +1,9 @@
+{
+  "SEARXNG_ENGINE_API_BASE_URL": "http://searxng.searxng.svc.cluster.local:8080/search",
+  "IGNORED_WEBSITES": "",
+  "RETURNED_SCRAPPED_PAGES_NO": 3,
+  "SCRAPPED_PAGES_NO": 5,
+  "PAGE_CONTENT_WORDS_LIMIT": 1000,
+  "EVENT_EMITTER": true,
+  "CITATION_LINKS": true
+}

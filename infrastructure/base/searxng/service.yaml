@@ -1,0 +1,15 @@
+---
+# in-cluster only: http://searxng.searxng.svc.cluster.local:8080/search?q=...&format=json
+apiVersion: v1
+kind: Service
+metadata:
+  name: searxng
+  labels:
+    app.kubernetes.io/name: searxng
+spec:
+  selector:
+    app.kubernetes.io/name: searxng
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

@@ -1,0 +1,22 @@
+# open-webui-tools: Open WebUI tools (code + valves) from git, pushed by a Job through the Open WebUI API
+# (infrastructure/droplet/open-webui-tools). wait: false so a Job still waiting for the admin API key
+# (open-webui-secrets/admin-api-key) doesn't hold the open-webui Kustomization unready.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: open-webui-tools
+spec:
+  dependsOn:
+  - name: open-webui-secrets
+  - name: searxng
+    namespace: flux-system
+  interval: 10m0s
+  path: ./infrastructure/droplet/open-webui-tools
+  targetNamespace: open-webui
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  timeout: 10m
+  wait: false
