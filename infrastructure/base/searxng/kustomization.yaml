@@ -1,6 +1,6 @@
 ---
 # SearXNG metasearch engine as an internal search API (no ingress) for Open WebUI's
-# "Web Search using SearXNG" tool (infrastructure/droplet/open-webui-tools)
+# "Web Search using SearXNG" tool (infrastructure/droplet/open-webui/tools)
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:

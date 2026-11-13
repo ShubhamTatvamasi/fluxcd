@@ -1,0 +1,9 @@
+[
+  {
+    "id": "web_search",
+    "name": "Web Search",
+    "description": "Web Search using SearXNG and Scrap first N Pages",
+    "file": "web_search.py",
+    "valves": "valves.json"
+  }
+]

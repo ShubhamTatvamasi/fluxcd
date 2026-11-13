@@ -1,0 +1,7 @@
+# Lets kustomize rewrite the open-webui-tools ConfigMap's hashed name inside the HelmRelease values
+# (it only knows the built-in workload fields), so a tool change rolls the Open WebUI pod.
+nameReference:
+- kind: ConfigMap
+  fieldSpecs:
+  - kind: HelmRelease
+    path: spec/values/volumes/configMap/name

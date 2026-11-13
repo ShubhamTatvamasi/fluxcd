@@ -1,12 +1,24 @@
 # Open WebUI from base as a chat UI over LiteLLM (https://openwebui.${domain}), without the bundled Ollama:
 # the models come from the Dynamo frontend through LiteLLM's OpenAI-compatible API (infrastructure/droplet/litellm),
 # so the chart's Ollama subchart and its GPU post-renderer go, and so does Pipelines (it would sit in front of LiteLLM).
+# Tools (tools/: the SearXNG web search tool, over infrastructure/base/searxng) are seeded into the Open WebUI DB by
+# a seed-tools init container on every pod start, so they need no manual install, admin login or API key.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - ../../base/open-webui
 - open-webui-secrets.yaml
-- open-webui-tools.yaml
+# tools/ files as a ConfigMap; its content-hash name is rewritten into the HelmRelease's volumes too
+# (configurations), so editing a tool changes the pod template and restarts Open WebUI, which re-seeds
+configMapGenerator:
+- name: open-webui-tools
+  files:
+  - tools/tools.json
+  - tools/seed_tools.py
+  - tools/web_search.py
+  - tools/valves.json
+configurations:
+- kustomizeconfig.yaml
 patches:
 - target:
     kind: HelmRelease
@@ -38,3 +50,41 @@ patches:
             secretKeyRef:
               name: open-webui-secrets
               key: litellm-api-key
+        # fixed secret key (sessions/JWTs, encrypted settings); without it start.sh generates a new one in the
+        # container on every start, logging everyone out on each restart
+        - name: WEBUI_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: open-webui-secrets
+              key: webui-secret-key
+    - op: add
+      path: /spec/values/volumes
+      value:
+        - name: tools
+          configMap:
+            name: open-webui-tools
+    - op: add
+      path: /spec/values/extraInitContainers
+      value:
+        - name: seed-tools
+          # keep in step with the main image (base helmrelease image.tag)
+          image: ghcr.io/open-webui/open-webui:0.13.3
+          command: ["python3", "/tools/seed_tools.py"]
+          env:
+            - name: PYTHONPATH
+              value: /app/backend
+            - name: TOOLS_DIR
+              value: /tools
+            - name: GLOBAL_LOG_LEVEL
+              value: WARNING
+            - name: WEBUI_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: open-webui-secrets
+                  key: webui-secret-key
+          volumeMounts:
+            - name: data
+              mountPath: /app/backend/data
+            - name: tools
+              mountPath: /tools
+              readOnly: true
