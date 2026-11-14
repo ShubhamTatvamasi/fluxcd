@@ -5,6 +5,11 @@ API key or admin login and works on a brand-new (empty) database: importing open
 DB migrations first. For every entry in tools.json it creates the tool (or updates its code when
 the file changed), makes it readable by all users, and sets its admin valves. Valves from git
 overwrite the same keys set in the UI; keys only set in the UI are kept.
+
+Tools marked "default": true are also put in the default model metadata (models.default_metadata.toolIds,
+Admin > Settings > Models > default settings), so they are enabled on every model that has no tool list
+of its own, without attaching them model by model. Tools from tools.json without "default" are taken out
+of that list again; tools added there in the UI are kept.
 """
 
 import asyncio
@@ -13,6 +18,7 @@ import os
 import sys
 
 from open_webui.models.access_grants import AccessGrants
+from open_webui.models.config import Config
 from open_webui.models.tools import ToolForm, ToolMeta, Tools
 from open_webui.utils.plugin import load_tool_module_by_id
 from open_webui.utils.tools import get_tool_specs
@@ -70,14 +76,31 @@ async def seed(t):
         print(f"{tid}: valves {json.dumps(wanted)}", flush=True)
 
 
+async def set_default_tools(tools):
+    meta = dict(await Config.get("models.default_metadata") or {})
+    seeded = {t["id"] for t in tools}
+    keep = [i for i in meta.get("toolIds") or [] if i not in seeded]
+    tool_ids = keep + [t["id"] for t in tools if t.get("default")]
+    if meta.get("toolIds") != tool_ids:
+        meta["toolIds"] = tool_ids
+        await Config.upsert({"models.default_metadata": meta})
+    print(f"default model toolIds: {json.dumps(tool_ids)}", flush=True)
+
+
 async def main():
     failed = 0
-    for t in json.loads(read("tools.json")):
+    tools = json.loads(read("tools.json"))
+    for t in tools:
         try:
             await seed(t)
         except Exception as e:  # noqa: BLE001 - one broken tool must not keep Open WebUI down
             failed += 1
             print(f"{t.get('id')}: FAILED: {e!r}", file=sys.stderr, flush=True)
+    try:
+        await set_default_tools(tools)
+    except Exception as e:  # noqa: BLE001
+        failed += 1
+        print(f"default tools: FAILED: {e!r}", file=sys.stderr, flush=True)
     return failed
 
 
