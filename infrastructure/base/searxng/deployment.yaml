@@ -18,7 +18,8 @@ spec:
       containers:
         - name: searxng
           # date-based tags only (no semver releases); bump to a newer one from hub.docker.com/r/searxng/searxng/tags
-          image: docker.io/searxng/searxng:2026.11.9-57ff753ad
+          # image: docker.io/searxng/searxng:2026.11.9-57ff753ad
+          image: docker.io/searxng/searxng:latest
           ports:
             - name: http
               containerPort: 8080
