@@ -287,6 +287,14 @@ spec:
     #     - "traefik"
     #     - "local-path-provisioner"
     #     - "sealed-secrets"
+    # Penpot — open-source design & prototyping tool, with its own postgres + valkey (needs traefik, local-path-provisioner, and sealed-secrets)
+    - service: "penpot"
+      path: "./infrastructure/base/penpot"
+      namespace: "penpot"
+      dependsOn:
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
   resourcesTemplate: |
     apiVersion: kustomize.toolkit.fluxcd.io/v1
     kind: Kustomization

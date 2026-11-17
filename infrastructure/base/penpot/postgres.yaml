@@ -1,0 +1,22 @@
+---
+# Postgres for Penpot from the shared postgres base:
+# Service postgres.penpot.svc, database "penpot", admin password from penpot-secrets/postgres-password
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: penpot-postgres
+spec:
+  interval: 10m0s
+  path: ./infrastructure/base/postgres
+  targetNamespace: penpot
+  postBuild:
+    substitute:
+      postgres_existing_secret: penpot-secrets
+      postgres_database: penpot
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  timeout: 10m
+  wait: true
