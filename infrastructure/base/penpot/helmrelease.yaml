@@ -15,7 +15,7 @@ spec:
   values:
     config:
       publicUri: https://penpot.${domain}
-      flags: "enable-registration enable-login-with-password disable-email-verification disable-smtp enable-mcp"
+      flags: "enable-registration enable-login-with-password disable-email-verification disable-smtp enable-mcp enable-prepl-server"
       telemetryEnabled: false
       existingSecret: penpot-secrets
       secretKeys:
