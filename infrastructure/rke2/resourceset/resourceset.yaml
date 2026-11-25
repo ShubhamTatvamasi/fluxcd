@@ -76,12 +76,13 @@ spec:
         - "traefik"
 
     # harbor container registry (needs traefik, local-path-provisioner, and sealed-secrets)
-    # - service: "harbor"
-    #   path: "./infrastructure/base/harbor"
-    #   dependsOn:
-    #     - "traefik"
-    #     - "local-path-provisioner"
-    #     - "sealed-secrets"
+    - service: "harbor"
+      path: "./infrastructure/base/harbor"
+      namespace: "harbor"
+      dependsOn:
+        - "traefik"
+        - "local-path-provisioner"
+        - "sealed-secrets"
 
     # dex OIDC provider (needs traefik and sealed-secrets)
     - service: "dex"
